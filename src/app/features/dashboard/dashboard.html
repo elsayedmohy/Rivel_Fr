@@ -1,0 +1,19 @@
+<section class="page">
+  <header class="heading">
+    <p class="text-sm font-medium text-tertiary">{{ 'dashboard.eyebrow' | translate }}</p>
+    <h1 class="text-2xl font-bold">{{ 'dashboard.title' | translate }}</h1>
+    <p class="text-secondary">{{ 'dashboard.subtitle' | translate }}</p>
+  </header>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    @for (action of visibleActions(); track action.routerLink) {
+      <a [routerLink]="action.routerLink" class="card">
+        <tui-icon [icon]="action.icon" class="icon" />
+        <div>
+          <p class="font-semibold">{{ action.label() }}</p>
+          <p class="text-sm text-tertiary">{{ action.hint() }}</p>
+        </div>
+      </a>
+    }
+  </div>
+</section>

@@ -1,0 +1,6 @@
+import type { Route } from '@angular/router';
+import { SettingsPage } from './settings-page';
+
+export default [
+  { path: '', component: SettingsPage },
+] satisfies Route[];

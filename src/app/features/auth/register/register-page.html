@@ -1,0 +1,112 @@
+<main class="page">
+  <section class="card">
+    <div class="headings">
+      <h2>{{ 'auth.register.title' | translate }}</h2>
+      <p>{{ 'auth.register.subtitle' | translate }}</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
+      @if (serverErrors(); as error) {
+        <div class="error-box" role="alert">
+          @for (item of error.errors ?? [{ message: error.message }]; track $index) {
+            <p>{{ item.message }}</p>
+          }
+        </div>
+      }
+
+      <div class="field">
+        <tui-textfield [invalid]="!!fieldError('name')" tuiTextfieldSize="l">
+          <label tuiLabel>{{ 'auth.register.name' | translate }}</label>
+          <input tuiInput formControlName="name" autocomplete="name" [placeholder]="'auth.register.namePlaceholder' | translate" />
+        </tui-textfield>
+        @if (fieldError('name'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      <div class="field">
+        <tui-textfield [invalid]="!!fieldError('email')" tuiTextfieldSize="l">
+          <label tuiLabel>{{ 'auth.register.email' | translate }}</label>
+          <input tuiInput type="email" formControlName="email" autocomplete="email" [placeholder]="'auth.register.emailPlaceholder' | translate" />
+        </tui-textfield>
+        @if (fieldError('email'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      <div class="field">
+        <tui-textfield [invalid]="!!fieldError('password')" tuiTextfieldSize="l">
+          <label tuiLabel>{{ 'auth.register.password' | translate }}</label>
+          <input
+            tuiInput
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="new-password"
+            [attr.aria-label]="'auth.register.password' | translate"
+          />
+          <ng-template tuiTextfieldContent>
+            <button
+              tuiIconButton
+              type="button"
+              appearance="flat"
+              size="s"
+              [iconStart]="showPassword() ? '@tui.eye-off' : '@tui.eye'"
+              [attr.aria-label]="showPassword() ? ('auth.register.hidePassword' | translate) : ('auth.register.showPassword' | translate)"
+              (click)="togglePassword()"
+            ></button>
+          </ng-template>
+        </tui-textfield>
+        <p class="hint">{{ 'auth.register.passwordHint' | translate }}</p>
+        @if (fieldError('password'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      <div class="field">
+        <span class="label">{{ 'auth.register.role.label' | translate }}</span>
+        <tui-radio-list [formControl]="form.controls.role" [items]="roles" [itemContent]="roleTemplate" />
+        <ng-template #roleTemplate let-role>
+          <div class="role">
+            <tui-icon [icon]="role === 'Carrier' ? '@tui.ship' : '@tui.package'" />
+            <span>{{
+              (role === 'Carrier'
+                ? 'auth.register.role.carrier'
+                : 'auth.register.role.cargoOwner') | translate
+            }}</span>
+          </div>
+        </ng-template>
+        @if (fieldError('companyName'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      @if (isCarrier() === 'Carrier') {
+        <div class="field">
+          <tui-textfield [invalid]="!!fieldError('companyName')" tuiTextfieldSize="l">
+            <label tuiLabel>{{ 'auth.register.companyName' | translate }}</label>
+            <input tuiInput formControlName="companyName" autocomplete="organization" [placeholder]="'auth.register.companyNamePlaceholder' | translate" />
+          </tui-textfield>
+          @if (fieldError('companyName'); as message) {
+            <tui-error [error]="message" />
+          }
+        </div>
+      }
+
+      <button
+        tuiButton
+        type="submit"
+        appearance="primary"
+        size="l"
+        class="submit"
+        [loading]="submitting()"
+      >
+        {{ 'auth.register.submit' | translate }}
+      </button>
+    </form>
+
+    <p class="switch">
+      {{ 'auth.register.hasAccount' | translate }}
+      <a routerLink="/auth/login">{{ 'auth.register.signIn' | translate }}</a>
+    </p>
+  </section>
+</main>

@@ -1,0 +1,140 @@
+.topbar {
+  block-size: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-m);
+  padding: 0 var(--tui-padding-m);
+  border-block-end: 1px solid var(--tui-border-normal);
+  background: var(--tui-background-elevation-1);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-s);
+  color: var(--tui-text-primary);
+  text-decoration: none;
+
+  tui-icon {
+    color: var(--tui-background-accent-1);
+  }
+}
+
+.brand-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.search {
+  display: none;
+  flex: 1;
+  max-inline-size: 26rem;
+}
+
+.search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  inset-inline-start: var(--tui-padding-m);
+  color: var(--tui-text-tertiary);
+  pointer-events: none;
+}
+
+.search-input {
+  inline-size: 100%;
+  padding: 0.45rem 1rem 0.45rem 2.5rem;
+  border: 1px solid var(--tui-border-normal);
+  border-radius: 999px;
+  background: var(--tui-background-base);
+  color: var(--tui-text-primary);
+  font-size: 0.875rem;
+
+  &::placeholder {
+    color: var(--tui-text-tertiary);
+  }
+
+  &:focus {
+    border-color: var(--tui-border-focus);
+    outline: none;
+  }
+}
+
+.spacer {
+  flex: 1;
+
+  @media (min-width: 48rem) {
+    display: none;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-inline-start: auto;
+}
+
+.divider {
+  align-self: stretch;
+  inline-size: 1px;
+  margin: 0.5rem 0.25rem;
+  background: var(--tui-border-normal);
+
+  @media (max-width: 47.99rem) {
+    display: none;
+  }
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-s);
+  padding: 0.25rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--tui-text-primary);
+  text-decoration: none;
+  border-radius: var(--tui-radius-m);
+
+  &:hover {
+    background: var(--tui-background-neutral-1);
+  }
+}
+
+.user-meta {
+  display: none;
+  flex-direction: column;
+  line-height: 1.2;
+
+  @media (min-width: 48rem) {
+    display: flex;
+  }
+}
+
+.user-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.user-email {
+  font-size: 0.75rem;
+  color: var(--tui-text-tertiary);
+}
+
+tui-data-list {
+  inline-size: 11rem;
+
+  tui-icon {
+    font-size: 1rem;
+  }
+}
+
+button[class='checked'] {
+  color: var(--tui-text-action);
+}

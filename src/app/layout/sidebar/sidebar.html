@@ -1,0 +1,12 @@
+<nav class="sidebar" aria-label="Main navigation">
+  @for (item of items(); track item.routerLink) {
+    <a
+      [routerLink]="item.routerLink"
+      routerLinkActive="active"
+      class="nav-item"
+    >
+      <tui-icon [icon]="item.icon" />
+      <span>{{ item.label() }}</span>
+    </a>
+  }
+</nav>

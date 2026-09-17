@@ -1,0 +1,39 @@
+.sidebar {
+  block-size: 100%;
+  inline-size: var(--rl-sidebar-w);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: var(--tui-padding-m) var(--tui-padding-s);
+  border-inline-end: 1px solid var(--tui-border-normal);
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-s);
+  padding: 0.55rem var(--tui-padding-m);
+  border-radius: var(--tui-radius-m);
+  color: var(--tui-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color var(--tui-duration-fast) ease,
+    color var(--tui-duration-fast) ease;
+
+  tui-icon {
+    font-size: 1.25rem;
+  }
+
+  &:hover {
+    background: var(--tui-background-neutral-1);
+    color: var(--tui-text-primary);
+  }
+
+  &.active {
+    background: var(--tui-background-accent-1);
+    color: var(--tui-text-primary-on-accent-1);
+  }
+}

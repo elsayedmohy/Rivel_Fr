@@ -1,0 +1,44 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-l);
+  padding: var(--tui-padding-l) var(--tui-padding-m);
+
+  @media (min-width: 48rem) {
+    padding: 2rem;
+  }
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tui-padding-s);
+  padding: var(--tui-padding-m);
+  border: 1px solid var(--tui-border-normal);
+  border-radius: var(--tui-radius-l);
+  background: var(--tui-background-elevation-1);
+  color: var(--tui-text-primary);
+  text-decoration: none;
+  transition:
+    background-color var(--tui-duration-fast) ease,
+    border-color var(--tui-duration-fast) ease,
+    box-shadow var(--tui-duration-fast) ease;
+
+  &:hover {
+    border-color: var(--tui-border-hover);
+    background: var(--tui-background-elevation-2);
+    box-shadow: var(--tui-shadow-small);
+  }
+}
+
+.icon {
+  margin-block-start: 0.125rem;
+  font-size: 1.75rem;
+  color: var(--tui-background-accent-1);
+}

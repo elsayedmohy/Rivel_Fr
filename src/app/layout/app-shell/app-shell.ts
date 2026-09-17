@@ -1,0 +1,14 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Sidebar } from '../sidebar/sidebar';
+import { Topbar } from '../topbar/topbar';
+import { MobileNavigation } from '../mobile-navigation/mobile-navigation';
+
+@Component({
+  selector: 'rl-app-shell',
+  imports: [RouterOutlet, Sidebar, Topbar, MobileNavigation],
+  templateUrl: './app-shell.html',
+  styleUrl: './app-shell.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AppShell {}

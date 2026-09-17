@@ -1,0 +1,122 @@
+<header class="topbar">
+  <a routerLink="/app/dashboard" class="brand">
+    <tui-icon [icon]="'@tui.sailboat'" />
+    <span class="brand-name">{{ 'app.name' | translate }}</span>
+  </a>
+
+  <div class="search">
+    <div class="search-field">
+      <tui-icon [icon]="'@tui.search'" class="search-icon" />
+      <input
+        [placeholder]="'common.search' | translate"
+        aria-label="Search"
+        class="search-input"
+      />
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="actions">
+    <button
+      tuiIconButton
+      type="button"
+      class="theme-toggle"
+      appearance="flat"
+      [iconStart]="themeIcon()"
+      [tuiDropdown]="themeMenu"
+      [attr.aria-label]="'topbar.theme' | translate"
+    ></button>
+    <ng-template #themeMenu>
+      <tui-data-list>
+        <button tuiOption type="button" (click)="themeService.setTheme('light')">
+          <tui-icon [icon]="'@tui.sun'" />
+          {{ lightLabel() }}
+        </button>
+        <button tuiOption type="button" (click)="themeService.setTheme('dark')">
+          <tui-icon [icon]="'@tui.moon'" />
+          {{ darkLabel() }}
+        </button>
+        <button tuiOption type="button" (click)="themeService.setTheme('system')">
+          <tui-icon [icon]="'@tui.app-window'" />
+          {{ systemLabel() }}
+        </button>
+      </tui-data-list>
+    </ng-template>
+
+    <button
+      tuiIconButton
+      type="button"
+      appearance="flat"
+      iconStart="@tui.globe"
+      [tuiDropdown]="languageMenu"
+      class="language-toggle"
+      [attr.aria-label]="'topbar.language' | translate"
+    ></button>
+    <ng-template #languageMenu>
+      <tui-data-list>
+        <button
+          tuiOption
+          type="button"
+          [class.checked]="languageService.current() === 'en'"
+          (click)="setLanguage('en')"
+        >
+          <span>English</span>
+          @if (languageService.current() === 'en') {
+            <tui-icon [icon]="'@tui.check'" />
+          }
+        </button>
+        <button
+          tuiOption
+          type="button"
+          [class.checked]="languageService.current() === 'ar'"
+          (click)="setLanguage('ar')"
+        >
+          <span>العربية</span>
+          @if (languageService.current() === 'ar') {
+            <tui-icon [icon]="'@tui.check'" />
+          }
+        </button>
+      </tui-data-list>
+    </ng-template>
+
+    <button
+      tuiIconButton
+      type="button"
+      appearance="flat"
+      iconStart="@tui.bell"
+      class="notifications"
+      [attr.aria-label]="'topbar.notifications' | translate"
+    ></button>
+
+    <span class="divider"></span>
+
+    <button
+      type="button"
+      class="user"
+      [tuiDropdown]="userMenu"
+      [tuiDropdownAlign]="'end'"
+      [attr.aria-label]="'topbar.account' | translate"
+    >
+      <div tuiAvatar size="s" [tuiAvatar]="'@tui.user'"></div>
+      <span class="user-meta">
+        <span class="user-name">{{ displayName() }}</span>
+        @if (user()?.name) {
+          <span class="user-email">{{ user()?.email }}</span>
+        }
+      </span>
+    </button>
+    <ng-template #userMenu>
+      <tui-data-list>
+        <a tuiOption routerLink="/app/settings">
+          <tui-icon [icon]="'@tui.settings'" />
+          {{ 'topbar.settings' | translate }}
+        </a>
+        <button tuiOption type="button" (click)="logout()">
+          <tui-icon [icon]="'@tui.log-out'" />
+          {{ 'topbar.logout' | translate }}
+        </button>
+      </tui-data-list>
+    </ng-template>
+  </div>
+</header>
