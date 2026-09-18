@@ -8,10 +8,11 @@ import { LanguageService } from '../../../core/config/language.service';
 import { TokenService } from '../../../core/http/token.service';
 import { ShipmentRequestService } from '../../../core/http/shipment-request.service';
 import { OfferService } from '../../../core/http/offer.service';
-import { VesselService } from '../../../core/mock/vessel.service';
+import { VesselService } from '../../../core/http/vessel.service';
 import type { ShipmentRequestDto } from '../../../models/request/shipment-request';
 import type { CreateOfferDto, OfferDto } from '../../../models/offer/offer';
 import type { ShipmentRequestStatus, VesselStatus } from '../../../models/enums';
+import type { VesselDto } from '../../../models/vessel/vessel';
 
 @Component({
   selector: 'rl-request-detail-page',
@@ -47,7 +48,8 @@ export class RequestDetailPage {
   readonly offersError = signal<string | null>(null);
   readonly acceptingId = signal<string | null>(null);
 
-  readonly vessels = this.vesselService.vessels;
+  readonly vessels = signal<VesselDto[]>([]);
+  readonly vesselsLoading = signal(false);
   readonly minDate = today();
   readonly offerForm = new FormGroup({
     price: new FormControl('', {
@@ -69,13 +71,14 @@ export class RequestDetailPage {
   readonly requestIsOpen = computed(() => this.request()?.status === 'Open');
 
   constructor() {
-    this.vesselService.list();
-
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.notFound.set(true);
       this.loading.set(false);
       return;
+    }
+    if (this.isCarrier()) {
+      void this.loadVessels();
     }
     void this.load(id);
   }
@@ -206,6 +209,20 @@ export class RequestDetailPage {
       error: (error: unknown) => {
         this.offersError.set((error as { message?: string }).message ?? 'Unknown error');
         this.offersLoading.set(false);
+      },
+    });
+  }
+
+  private loadVessels(): void {
+    this.vesselsLoading.set(true);
+
+    this.vesselService.list().subscribe({
+      next: (vessels) => {
+        this.vessels.set(vessels);
+        this.vesselsLoading.set(false);
+      },
+      error: () => {
+        this.vesselsLoading.set(false);
       },
     });
   }

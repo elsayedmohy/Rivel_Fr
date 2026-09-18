@@ -5,6 +5,17 @@ export type OfferStatus = 'Pending' | 'Accepted' | 'Rejected';
 export type ShipmentStatus = 'Matched' | 'PickedUp' | 'InTransit' | 'Delivered';
 export type VesselStatus = 'Available' | 'OnTrip';
 
+export type VesselType =
+  | 'Barge'
+  | 'SelfPropelledBarge'
+  | 'Tugboat'
+  | 'PushBoat'
+  | 'CargoVessel'
+  | 'BulkCarrier'
+  | 'ContainerBarge'
+  | 'TankBarge'
+  | 'RoRo';
+
 export type Theme = 'light' | 'dark' | 'system';
 export type AppLanguage = 'en' | 'ar';
 
@@ -26,6 +37,18 @@ export const SHIPMENT_STATUSES = [
 ] as const satisfies readonly ShipmentStatus[];
 
 export const VESSEL_STATUSES = ['Available', 'OnTrip'] as const satisfies readonly VesselStatus[];
+
+export const VESSEL_TYPES = [
+  'Barge',
+  'SelfPropelledBarge',
+  'Tugboat',
+  'PushBoat',
+  'CargoVessel',
+  'BulkCarrier',
+  'ContainerBarge',
+  'TankBarge',
+  'RoRo',
+] as const satisfies readonly VesselType[];
 
 export const SHIPMENT_TRANSITIONS: Record<ShipmentStatus, ShipmentStatus | null> = {
   Matched: 'PickedUp',

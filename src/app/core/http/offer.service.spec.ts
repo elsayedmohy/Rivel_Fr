@@ -69,6 +69,7 @@ function offerFixture(): OfferDto {
   return {
     id: 'offer-1',
     shipmentRequestId: 'r-1',
+    shipmentId: null,
     carrierId: 'carrier-1',
     vesselId: 'vessel-1',
     price: 1500,

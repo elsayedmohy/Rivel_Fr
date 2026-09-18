@@ -65,7 +65,9 @@
             <p>{{ 'offers.form.subtitle' | translate }}</p>
           </header>
 
-          @if (vessels().length === 0) {
+          @if (vesselsLoading()) {
+            <div class="state">{{ 'common.loading' | translate }}</div>
+          } @else if (vessels().length === 0) {
             <div class="state">
               <tui-icon [icon]="'@tui.ship'" class="state-icon" />
               <p>{{ 'offers.form.noVessels' | translate }}</p>
@@ -114,7 +116,7 @@
                   <option value="" disabled>{{ 'offers.form.vesselPlaceholder' | translate }}</option>
                   @for (vessel of vessels(); track vessel.id) {
                     <option [value]="vessel.id">
-                      {{ vessel.type }} — {{ vessel.capacity }} t ({{ vesselStatusLabel(vessel.status) }})
+                      {{ vessel.name || vessel.type }} — {{ vessel.capacity }} t ({{ vesselStatusLabel(vessel.status) }})
                     </option>
                   }
                 </select>

@@ -9,8 +9,10 @@ import {
 } from '@angular/forms';
 import { TuiButton, TuiError, TuiIcon, TuiInput } from '@taiga-ui/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { VesselService } from '../../core/mock/vessel.service';
-import type { VesselStatus } from '../../models/enums';
+import { VesselService } from '../../core/http/vessel.service';
+import { VESSEL_TYPES } from '../../models/enums';
+import type { VesselStatus, VesselType } from '../../models/enums';
+import type { VesselDto } from '../../models/vessel/vessel';
 
 @Component({
   selector: 'rl-vessels-page',
@@ -23,13 +25,24 @@ export class VesselsPage {
   private readonly service = inject(VesselService);
   private readonly translate = inject(TranslateService);
 
-  readonly vessels = this.service.vessels;
+  readonly vesselTypes = VESSEL_TYPES;
+  readonly vessels = signal<VesselDto[]>([]);
+  readonly loading = signal(true);
+  readonly error = signal<string | null>(null);
   readonly showForm = signal(false);
 
   readonly form = new FormGroup({
-    type: new FormControl('', {
+    name: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(100)],
+    }),
+    type: new FormControl<VesselType>('Barge', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    registrationNumber: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.maxLength(50)],
     }),
     capacity: new FormControl('', {
       nonNullable: true,
@@ -37,7 +50,27 @@ export class VesselsPage {
     }),
   });
 
-  fieldError(key: 'type' | 'capacity'): string | null {
+  constructor() {
+    this.reload();
+  }
+
+  reload(): void {
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.service.list().subscribe({
+      next: (vessels) => {
+        this.vessels.set(vessels);
+        this.loading.set(false);
+      },
+      error: (error: unknown) => {
+        this.error.set((error as { message?: string }).message ?? 'vessels.error.load');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  fieldError(key: 'name' | 'type' | 'registrationNumber' | 'capacity'): string | null {
     const control = this.form.controls[key];
     if (control.invalid && control.errors) {
       const first = Object.keys(control.errors)[0];
@@ -53,25 +86,31 @@ export class VesselsPage {
     }
 
     const raw = this.form.getRawValue();
-    this.service.create({
-      type: raw.type.trim(),
-      capacity: Number(raw.capacity),
-      status: 'Available',
-    });
-    this.form.reset();
-    this.showForm.set(false);
-  }
-
-  toggleStatus(id: string, status: VesselStatus): void {
-    this.service.updateStatus(id, status === 'Available' ? 'OnTrip' : 'Available');
-  }
-
-  remove(id: string): void {
-    this.service.remove(id);
+    this.service
+      .create({
+        name: raw.name.trim(),
+        type: raw.type,
+        registrationNumber: raw.registrationNumber.trim(),
+        capacity: Number(raw.capacity),
+      })
+      .subscribe({
+        next: () => {
+          this.form.reset({ type: 'Barge' });
+          this.showForm.set(false);
+          this.reload();
+        },
+        error: (error: unknown) => {
+          this.error.set((error as { message?: string }).message ?? 'vessels.error.create');
+        },
+      });
   }
 
   statusLabel(status: VesselStatus): string {
     return this.translate.translate(`vessels.status.${status}`)();
+  }
+
+  capacityText(vessel: VesselDto): string {
+    return `${vessel.capacity.toLocaleString()} ${vessel.capacityUnit}`;
   }
 }
 

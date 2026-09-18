@@ -4,6 +4,7 @@ import type { OfferStatus } from '../enums';
 export interface OfferDto {
   readonly id: string;
   readonly shipmentRequestId: string;
+  readonly shipmentId: string | null;
   readonly carrierId: string;
   readonly vesselId: string;
   readonly price: number;

@@ -1,13 +1,20 @@
-import type { VesselStatus } from '../enums';
+import type { VesselStatus, VesselType } from '../enums';
 
-/**
- * Frontend vessel model. Mirrors the shape of the future
- * GET /api/vessels/mine endpoint (pending backend) that the offer form
- * will consume. Until then the mock vessels service stands in for it.
- */
-export interface Vessel {
+/** GET /api/vessels — Carrier only */
+export interface VesselDto {
   readonly id: string;
-  readonly type: string;
+  readonly name: string;
+  readonly type: VesselType;
+  readonly registrationNumber: string;
   readonly capacity: number;
+  readonly capacityUnit: string;
   readonly status: VesselStatus;
+}
+
+/** POST /api/vessels — Carrier only */
+export interface CreateVesselDto {
+  readonly name: string;
+  readonly type: VesselType;
+  readonly registrationNumber: string;
+  readonly capacity: number;
 }
