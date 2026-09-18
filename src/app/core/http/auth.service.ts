@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, EMPTY, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, EMPTY, Observable, of, switchMap, throwError } from 'rxjs';
 import { ApiService } from './api.service';
 import { TokenService } from './token.service';
 import { APP_CONFIG } from '../config/app-config';
 import { toApiErrorResponse, toApiErrorResponseFromIdentity } from './api-error.util';
-import type { AuthResultDto, CredentialsDto, RegisterDto } from '../../models/auth/auth';
+import type { AuthResponseDto, AuthResultDto, CredentialsDto, RegisterDto } from '../../models/auth/auth';
 import type { UserRole } from '../../models/enums';
 import type { User } from '../../models/user/user';
 
@@ -24,7 +24,7 @@ export class AuthService {
   private readonly tokenService = inject(TokenService);
   private readonly config = inject(APP_CONFIG);
 
-  login(credentials: CredentialsDto): Observable<void> {
+  login(credentials: CredentialsDto): Observable<AuthResponseDto> {
     return this.api.post<AuthResultDto>('auth/login', credentials).pipe(
       switchMap((result) =>
         result.response
@@ -39,7 +39,7 @@ export class AuthService {
     );
   }
 
-  register(payload: RegisterDto): Observable<void> {
+  register(payload: RegisterDto): Observable<AuthResponseDto> {
     return this.api.post<AuthResultDto>('auth/register', payload).pipe(
       switchMap((result) =>
         result.response
@@ -59,10 +59,10 @@ export class AuthService {
   }
 
   private persist(
-    response: AuthResultDto['response'],
+    response: AuthResponseDto,
     email: string,
     newName?: string,
-  ): Observable<void> {
+  ): Observable<AuthResponseDto> {
     if (!response) {
       return EMPTY;
     }
@@ -78,7 +78,7 @@ export class AuthService {
     };
 
     this.tokenService.save(response.token, user);
-    return EMPTY;
+    return of(response);
   }
 
   private rememberUser(email: string, name?: string): void {

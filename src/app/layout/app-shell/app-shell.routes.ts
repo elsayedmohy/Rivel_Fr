@@ -36,6 +36,7 @@ export const appShellRoutes: Route[] = [
         path: 'settings',
         loadChildren: () => import('../../features/settings/settings.routes').then((m) => m.default),
       },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'profile', redirectTo: 'settings', pathMatch: 'full' },
     ],
   },

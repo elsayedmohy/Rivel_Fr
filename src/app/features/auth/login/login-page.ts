@@ -65,7 +65,10 @@ export class LoginPage {
     const { email, password } = this.form.getRawValue();
 
     this.authService.login({ email, password }).subscribe({
-      next: () => void this.router.navigate(['/app/dashboard']),
+      next: (res) => {
+        this.submitting.set(false);
+        this.router.navigate(['/dashboard'])
+      },
       error: (error: ApiErrorResponse) => {
         this.submitting.set(false);
         this.serverErrors.set(error);

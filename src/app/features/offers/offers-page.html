@@ -22,7 +22,7 @@
     <div class="state">
       <tui-icon [icon]="'@tui.handshake'" class="state-icon" />
       <p>{{ 'offers.empty.mine' | translate }}</p>
-      <a tuiButton appearance="flat" iconStart="@tui.package" routerLink="/app/requests">
+      <a tuiButton appearance="flat" iconStart="@tui.package" routerLink="/requests">
         {{ 'dashboard.action.browseRequests' | translate }}
       </a>
     </div>
@@ -48,7 +48,7 @@
             tuiButton
             appearance="flat"
             size="s"
-            [routerLink]="['/app/requests', offer.shipmentRequestId]"
+            [routerLink]="['/requests', offer.shipmentRequestId]"
           >
             {{ 'offers.viewRequest' | translate }}
           </a>

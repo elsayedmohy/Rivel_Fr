@@ -18,41 +18,41 @@ export class DashboardPage {
 
   readonly actions: QuickAction[] = [
     {
-      routerLink: '/app/requests',
+      routerLink: '/requests',
       icon: '@tui.package',
       label: this.translate.translate('dashboard.action.browseRequests'),
       hint: this.translate.translate('dashboard.action.browseRequestsHint'),
       role: 'Carrier',
     },
     {
-      routerLink: '/app/requests/new',
+      routerLink: '/requests/new',
       icon: '@tui.plus',
       label: this.translate.translate('dashboard.action.postRequest'),
       hint: this.translate.translate('dashboard.action.postRequestHint'),
       role: 'CargoOwner',
     },
     {
-      routerLink: '/app/offers',
+      routerLink: '/offers',
       icon: '@tui.handshake',
       label: this.translate.translate('dashboard.action.myOffers'),
       hint: this.translate.translate('dashboard.action.myOffersHint'),
       role: 'Carrier',
     },
     {
-      routerLink: '/app/shipments',
+      routerLink: '/shipments',
       icon: '@tui.anchor',
       label: this.translate.translate('dashboard.action.trackShipments'),
       hint: this.translate.translate('dashboard.action.trackShipmentsHint'),
     },
     {
-      routerLink: '/app/vessels',
+      routerLink: '/vessels',
       icon: '@tui.ship',
       label: this.translate.translate('dashboard.action.myVessels'),
       hint: this.translate.translate('dashboard.action.myVesselsHint'),
       role: 'Carrier',
     },
     {
-      routerLink: '/app/ratings',
+      routerLink: '/ratings',
       icon: '@tui.star',
       label: this.translate.translate('dashboard.action.ratings'),
       hint: this.translate.translate('dashboard.action.ratingsHint'),

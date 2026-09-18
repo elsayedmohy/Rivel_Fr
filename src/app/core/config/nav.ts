@@ -19,12 +19,12 @@ export function createNavItems(translate: TranslateService, role: UserRole | nul
   const t = (key: string): Signal<string> => translate.translate(key);
 
   const items: NavItem[] = [
-    { link: '/app/dashboard', icon: '@tui.layout-dashboard', label: t('nav.dashboard') },
-    { link: '/app/requests', icon: '@tui.package', label: t('nav.requests') },
-    { link: '/app/offers', icon: '@tui.handshake', label: t('nav.offers'), roles: ['Carrier'] },
-    { link: '/app/vessels', icon: '@tui.ship', label: t('nav.vessels'), roles: ['Carrier'] },
-    { link: '/app/shipments', icon: '@tui.anchor', label: t('nav.shipments') },
-    { link: '/app/ratings', icon: '@tui.star', label: t('nav.ratings'), roles: ['CargoOwner'] },
+    { link: '/dashboard', icon: '@tui.layout-dashboard', label: t('nav.dashboard') },
+    { link: '/requests', icon: '@tui.package', label: t('nav.requests') },
+    { link: '/offers', icon: '@tui.handshake', label: t('nav.offers'), roles: ['Carrier'] },
+    { link: '/vessels', icon: '@tui.ship', label: t('nav.vessels'), roles: ['Carrier'] },
+    { link: '/shipments', icon: '@tui.anchor', label: t('nav.shipments') },
+    { link: '/ratings', icon: '@tui.star', label: t('nav.ratings'), roles: ['CargoOwner'] },
   ];
 
   return role ? items.filter((item) => !item.roles?.length || item.roles.includes(role)) : items;

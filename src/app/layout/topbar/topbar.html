@@ -1,5 +1,5 @@
 <header class="topbar">
-  <a routerLink="/app/dashboard" class="brand">
+  <a routerLink="/dashboard" class="brand">
     <tui-icon [icon]="'@tui.sailboat'" />
     <span class="brand-name">{{ 'app.name' | translate }}</span>
   </a>
@@ -26,7 +26,11 @@
       [iconStart]="themeIcon()"
       [tuiDropdown]="themeMenu"
       [attr.aria-label]="'topbar.theme' | translate"
-    ></button>
+      iconStart="@tui.arrow-up-right"
+      tuiDropdownAuto
+    >
+    </button>
+
     <ng-template #themeMenu>
       <tui-data-list>
         <button tuiOption type="button" (click)="themeService.setTheme('light')">
@@ -50,6 +54,7 @@
       appearance="flat"
       iconStart="@tui.globe"
       [tuiDropdown]="languageMenu"
+      tuiDropdownAuto
       class="language-toggle"
       [attr.aria-label]="'topbar.language' | translate"
     ></button>
@@ -80,14 +85,14 @@
       </tui-data-list>
     </ng-template>
 
-    <button
-      tuiIconButton
-      type="button"
-      appearance="flat"
-      iconStart="@tui.bell"
-      class="notifications"
-      [attr.aria-label]="'topbar.notifications' | translate"
-    ></button>
+<!--    <button-->
+<!--      tuiIconButton-->
+<!--      type="button"-->
+<!--      appearance="flat"-->
+<!--      iconStart="@tui.bell"-->
+<!--      class="notifications"-->
+<!--      [attr.aria-label]="'topbar.notifications' | translate"-->
+<!--    ></button>-->
 
     <span class="divider"></span>
 
@@ -96,6 +101,7 @@
       class="user"
       [tuiDropdown]="userMenu"
       [tuiDropdownAlign]="'end'"
+      tuiDropdownAuto
       [attr.aria-label]="'topbar.account' | translate"
     >
       <div tuiAvatar size="s" [tuiAvatar]="'@tui.user'"></div>
@@ -108,7 +114,7 @@
     </button>
     <ng-template #userMenu>
       <tui-data-list>
-        <a tuiOption routerLink="/app/settings">
+        <a tuiOption routerLink="/settings">
           <tui-icon [icon]="'@tui.settings'" />
           {{ 'topbar.settings' | translate }}
         </a>

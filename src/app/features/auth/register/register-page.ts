@@ -107,7 +107,7 @@ export class RegisterPage {
     };
 
     this.authService.register(payload).subscribe({
-      next: () => void this.router.navigate(['/app/dashboard']),
+      next: () => void this.router.navigate(['/dashboard']),
       error: (error: ApiErrorResponse) => {
         this.submitting.set(false);
         this.serverErrors.set(error);

@@ -3,7 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import {
   TuiButton,
   TuiDataListComponent,
-  TuiDropdownDirective,
+  TuiDropdownDirective, TuiDropdownOpen,
   TuiDropdownOptionsDirective,
   TuiIcon,
   TuiOption,
@@ -27,6 +27,7 @@ import { AuthService } from '../../core/http/auth.service';
     TuiDataListComponent,
     TuiOption,
     TranslatePipe,
+    TuiDropdownOpen,
   ],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',
@@ -46,7 +47,6 @@ export class Topbar {
     const user = this.user();
     return user?.name?.trim() ? user.name : (user?.email ?? '');
   });
-
   readonly lightLabel = this.translate.translate('common.theme.light');
   readonly darkLabel = this.translate.translate('common.theme.dark');
   readonly systemLabel = this.translate.translate('common.theme.system');

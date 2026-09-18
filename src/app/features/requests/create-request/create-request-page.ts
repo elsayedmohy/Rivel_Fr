@@ -120,7 +120,7 @@ export class CreateRequestPage {
     };
 
     this.service.create(payload).subscribe({
-      next: (created) => void this.router.navigate(['/app/requests', created.id]),
+      next: (created) => void this.router.navigate(['/requests', created.id]),
       error: (error: ApiErrorResponse) => {
         this.submitting.set(false);
         this.serverErrors.set(error);
