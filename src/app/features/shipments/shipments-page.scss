@@ -1,0 +1,151 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--tui-padding-m);
+  flex-wrap: wrap;
+}
+
+.headings h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.headings p {
+  margin-block-start: 0.25rem;
+  color: var(--tui-text-tertiary);
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-xs);
+  padding: var(--tui-padding-s) var(--tui-padding-m);
+  border-radius: var(--tui-radius-m);
+  background: var(--tui-status-negative-pale);
+  color: var(--tui-text-negative);
+  font-size: 0.875rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-s);
+  list-style: none;
+}
+
+.card {
+  padding: var(--tui-padding-m);
+  border: 1px solid var(--tui-border-normal);
+  border-radius: var(--tui-radius-l);
+  background: var(--tui-background-elevation-1);
+}
+
+.shipment {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--tui-padding-m);
+  align-items: start;
+
+  @media (max-width: 47.99rem) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.shipment-title {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-xs);
+}
+
+.shipment-title h2 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.shipment-icon {
+  color: var(--tui-background-accent-1);
+}
+
+.route {
+  margin-block-start: 0.25rem;
+  color: var(--tui-text-secondary);
+  font-size: 0.9375rem;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: var(--tui-padding-s) var(--tui-padding-m);
+  margin-block-start: var(--tui-padding-s);
+}
+
+.meta dt {
+  color: var(--tui-text-tertiary);
+  font-size: 0.75rem;
+}
+
+.meta dd {
+  margin-block-start: 0.125rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.shipment-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--tui-padding-s);
+}
+
+.badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-matched {
+  background: var(--tui-status-info-pale);
+  color: var(--tui-text-info);
+}
+
+.badge-pickedup {
+  background: var(--tui-status-warning-pale);
+  color: var(--tui-text-warning);
+}
+
+.badge-intransit {
+  background: var(--tui-status-warning-pale);
+  color: var(--tui-text-warning);
+}
+
+.badge-delivered {
+  background: var(--tui-status-positive-pale);
+  color: var(--tui-text-positive);
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--tui-padding-s);
+  padding: var(--tui-padding-xl) var(--tui-padding-m);
+  color: var(--tui-text-secondary);
+  text-align: center;
+}
+
+.state-icon {
+  font-size: 2.5rem;
+  color: var(--tui-text-tertiary);
+}
+
+.state-error {
+  color: var(--tui-text-negative);
+}

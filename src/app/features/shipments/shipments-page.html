@@ -1,0 +1,94 @@
+<main class="page">
+  <header class="header">
+    <div class="headings">
+      <h1>{{ 'shipments.title' | translate }}</h1>
+      <p>{{ 'shipments.subtitle' | translate }}</p>
+    </div>
+    <button tuiButton appearance="flat" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
+      {{ 'requests.refresh' | translate }}
+    </button>
+  </header>
+
+  @if (actionError(); as message) {
+    <div class="alert" role="alert">
+      <tui-icon [icon]="'@tui.alert-circle'" />
+      <span>{{ message }}</span>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="state">{{ 'common.loading' | translate }}</div>
+  } @else if (error(); as message) {
+    <div class="state state-error" role="alert">
+      <p>{{ message }}</p>
+      <button tuiButton appearance="flat" type="button" (click)="reload()">
+        {{ 'requests.retry' | translate }}
+      </button>
+    </div>
+  } @else if (shipments().length === 0) {
+    <div class="state">
+      <tui-icon [icon]="'@tui.package'" class="state-icon" />
+      <p>{{ 'shipments.empty' | translate }}</p>
+    </div>
+  } @else {
+    <ul class="list">
+      @for (shipment of shipments(); track shipment.id) {
+        <li class="card shipment">
+          <div class="shipment-main">
+            <div class="shipment-title">
+              <tui-icon [icon]="'@tui.package'" class="shipment-icon" />
+              <h2>{{ shipment.cargoType }}</h2>
+            </div>
+            <p class="route">{{ shipment.origin }} → {{ shipment.destination }}</p>
+
+            <dl class="meta">
+              <div>
+                <dt>{{ 'shipments.meta.weight' | translate }}</dt>
+                <dd>{{ weightText(shipment.weight) }} t</dd>
+              </div>
+              <div>
+                <dt>{{ 'shipments.meta.pickup' | translate }}</dt>
+                <dd>{{ shipment.proposedPickupDate }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'shipments.meta.price' | translate }}</dt>
+                <dd>{{ priceText(shipment.offeredPrice) }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'shipments.meta.vessel' | translate }}</dt>
+                <dd>{{ shipment.vesselType }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'shipments.meta.carrier' | translate }}</dt>
+                <dd>{{ shipment.carrierCompanyName }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'shipments.meta.owner' | translate }}</dt>
+                <dd>{{ shipment.cargoOwnerName }}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="shipment-side">
+            <span class="badge badge-{{ shipment.shipmentStatus.toLowerCase() }}">
+              {{ statusLabel(shipment.shipmentStatus) }}
+            </span>
+
+            @if (isCarrier() && nextStatus(shipment); as next) {
+              <button
+                tuiButton
+                appearance="primary"
+                size="s"
+                type="button"
+                [loading]="updatingId() === shipment.id"
+                (click)="advance(shipment)"
+              >
+                {{ advanceLabel(next) }}
+              </button>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</main>

@@ -1,0 +1,228 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--tui-padding-m);
+  flex-wrap: wrap;
+}
+
+.headings h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.headings p {
+  margin-block-start: 0.25rem;
+  color: var(--tui-text-tertiary);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-s);
+  list-style: none;
+}
+
+.card {
+  padding: var(--tui-padding-m);
+  border: 1px solid var(--tui-border-normal);
+  border-radius: var(--tui-radius-l);
+  background: var(--tui-background-elevation-1);
+}
+
+.rating-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--tui-padding-m);
+  align-items: center;
+
+  @media (max-width: 47.99rem) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rating-main {
+  min-inline-size: 0;
+}
+
+.rating-title {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-xs);
+}
+
+.rating-title h2 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.rating-icon {
+  color: var(--tui-background-accent-1);
+}
+
+.route {
+  margin-block-start: 0.25rem;
+  color: var(--tui-text-secondary);
+  font-size: 0.9375rem;
+}
+
+.meta-line {
+  margin-block-start: 0.25rem;
+  color: var(--tui-text-tertiary);
+  font-size: 0.875rem;
+}
+
+.rated {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--tui-padding-s);
+  justify-self: end;
+}
+
+.rating-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--tui-padding-m);
+  max-inline-size: 28rem;
+}
+
+.form-row {
+  display: flex;
+  gap: var(--tui-padding-m);
+  inline-size: 100%;
+
+  @media (max-width: 47.99rem) {
+    flex-direction: column;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field-grow {
+  flex: 1;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.select {
+  block-size: 2.75rem;
+  padding: 0 var(--tui-padding-s);
+  border: 1px solid var(--tui-border-normal);
+  border-radius: var(--tui-radius-m);
+  background: var(--tui-background-base);
+  color: var(--tui-text-primary);
+  font-size: 0.9375rem;
+
+  &:focus {
+    border-color: var(--tui-border-focus);
+    outline: none;
+  }
+}
+
+.comment-input {
+  inline-size: 100%;
+  block-size: 2.75rem;
+  padding: 0 var(--tui-padding-s);
+  border: 1px solid var(--tui-border-normal);
+  border-radius: var(--tui-radius-m);
+  background: var(--tui-background-base);
+  color: var(--tui-text-primary);
+  font-size: 0.9375rem;
+
+  &:focus {
+    border-color: var(--tui-border-focus);
+    outline: none;
+  }
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-xs);
+  padding: var(--tui-padding-s) var(--tui-padding-m);
+  border-radius: var(--tui-radius-m);
+  background: var(--tui-status-negative-pale);
+  color: var(--tui-text-negative);
+  font-size: 0.875rem;
+}
+
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--tui-status-positive-pale);
+  color: var(--tui-text-positive);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.star {
+  color: var(--tui-status-warning);
+}
+
+.comment {
+  color: var(--tui-text-secondary);
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-xs);
+}
+
+.summary-score {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-s);
+}
+
+.summary-icon {
+  font-size: 1.75rem;
+  color: var(--tui-status-warning);
+}
+
+.summary-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.summary-label {
+  color: var(--tui-text-tertiary);
+  font-size: 0.875rem;
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--tui-padding-s);
+  padding: var(--tui-padding-xl) var(--tui-padding-m);
+  color: var(--tui-text-secondary);
+  text-align: center;
+}
+
+.state-icon {
+  font-size: 2.5rem;
+  color: var(--tui-text-tertiary);
+}
+
+.state-error {
+  color: var(--tui-text-negative);
+}

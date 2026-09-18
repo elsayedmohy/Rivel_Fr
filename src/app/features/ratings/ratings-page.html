@@ -1,0 +1,140 @@
+<main class="page">
+  <header class="header">
+    <div class="headings">
+      <h1>{{ 'ratings.title' | translate }}</h1>
+      <p>
+        @if (isOwner()) {
+          {{ 'ratings.subtitle.owner' | translate }}
+        } @else {
+          {{ 'ratings.subtitle.carrier' | translate }}
+        }
+      </p>
+    </div>
+    <button tuiButton appearance="flat" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
+      {{ 'requests.refresh' | translate }}
+    </button>
+  </header>
+
+  @if (error(); as message) {
+    <div class="state state-error" role="alert">
+      <p>{{ message }}</p>
+      <button tuiButton appearance="flat" type="button" (click)="reload()">
+        {{ 'requests.retry' | translate }}
+      </button>
+    </div>
+  } @else if (loading()) {
+    <div class="state">{{ 'common.loading' | translate }}</div>
+  } @else if (isOwner()) {
+    @if (deliveredShipments(); as deliveries) {
+      @if (deliveries.length === 0) {
+        <div class="state">
+          <tui-icon [icon]="'@tui.star'" class="state-icon" />
+          <p>{{ 'ratings.empty.owner' | translate }}</p>
+          <a tuiButton appearance="flat" iconStart="@tui.package" routerLink="/shipments">
+            {{ 'nav.shipments' | translate }}
+          </a>
+        </div>
+      } @else {
+        <ul class="list">
+          @for (shipment of deliveries; track shipment.id) {
+            <li class="card rating-card">
+              <div class="rating-main">
+                <div class="rating-title">
+                  <tui-icon [icon]="'@tui.package'" class="rating-icon" />
+                  <h2>{{ shipment.cargoType }}</h2>
+                </div>
+                <p class="route">{{ routeText(shipment.origin, shipment.destination) }}</p>
+                <p class="meta-line">{{ 'shipments.meta.carrier' | translate }}: {{ shipment.carrierCompanyName }}</p>
+              </div>
+
+              @if (shipment.rating; as rating) {
+                <div class="rated">
+                  <span class="score-badge">
+                    <tui-icon [icon]="'@tui.star'" class="star" />
+                    {{ rating.score }}/5
+                  </span>
+                  @if (rating.comment) {
+                    <p class="comment">{{ rating.comment }}</p>
+                  }
+                </div>
+              } @else {
+                <form
+                  [formGroup]="formFor(shipment.id)"
+                  (ngSubmit)="submit(shipment, formFor(shipment.id))"
+                  novalidate
+                  class="rating-form"
+                >
+                  @if (formError(); as message) {
+                    <div class="alert" role="alert">
+                      <tui-icon [icon]="'@tui.alert-circle'" />
+                      <span>{{ message }}</span>
+                    </div>
+                  }
+
+                  <div class="form-row">
+                    <div class="field">
+                      <label class="label" [for]="'score-' + shipment.id">{{ 'ratings.score' | translate }}</label>
+                      <select class="select" [id]="'score-' + shipment.id" formControlName="score">
+                        @for (score of scoreOptions; track score) {
+                          <option [value]="score">{{ score }}</option>
+                        }
+                      </select>
+                    </div>
+
+                    <div class="field field-grow">
+                      <label class="label" [for]="'comment-' + shipment.id">{{ 'ratings.comment' | translate }}</label>
+                      <input
+                        class="comment-input"
+                        [id]="'comment-' + shipment.id"
+                        type="text"
+                        formControlName="comment"
+                        [placeholder]="'ratings.commentPlaceholder' | translate"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    tuiButton
+                    appearance="primary"
+                    type="submit"
+                    [loading]="submittingFor() === shipment.id"
+                    [disabled]="submittingFor() !== null"
+                  >
+                    {{ 'ratings.submit' | translate }}
+                  </button>
+                </form>
+              }
+            </li>
+          }
+        </ul>
+      }
+    }
+  } @else {
+    @if (ratings().length === 0) {
+      <div class="state">
+        <tui-icon [icon]="'@tui.star'" class="state-icon" />
+        <p>{{ 'ratings.empty.carrier' | translate }}</p>
+      </div>
+    } @else {
+      <div class="summary card">
+        <div class="summary-score">
+          <tui-icon [icon]="'@tui.star'" class="summary-icon" />
+          <span class="summary-value">{{ scoreText(averageScore()) }}/5</span>
+        </div>
+        <p class="summary-label">{{ 'ratings.average' | translate }} — {{ ratings().length }} {{ 'ratings.count' | translate }}</p>
+      </div>
+
+      <ul class="list">
+        @for (rating of ratings(); track rating.id) {
+          <li class="card rating-card">
+            <span class="score-badge">
+              <tui-icon [icon]="'@tui.star'" class="star" />
+              {{ rating.score }}/5
+            </span>
+            <p class="comment">{{ rating.comment || ('common.empty' | translate) }}</p>
+          </li>
+        }
+      </ul>
+    }
+  }
+</main>
