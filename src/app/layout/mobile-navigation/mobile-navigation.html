@@ -1,7 +1,7 @@
 <nav class="mobile-nav" aria-label="Main navigation">
-  @for (item of items(); track item.routerLink) {
+  @for (item of items(); track item.link) {
     <a
-      [routerLink]="item.routerLink"
+      [routerLink]="item.link"
       routerLinkActive="active"
       class="item"
       [attr.aria-label]="item.label()"

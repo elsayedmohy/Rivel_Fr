@@ -12,6 +12,7 @@ export interface AppConfig {
   readonly userStorageKey: string;
   readonly themeStorageKey: string;
   readonly knownUsersKey: string;
+  readonly vesselsStorageKey: string;
 }
 
 export const appConfig: AppConfig = {
@@ -23,6 +24,7 @@ export const appConfig: AppConfig = {
   userStorageKey: 'rl:user',
   themeStorageKey: 'tuiDark',
   knownUsersKey: 'rl:known_users',
+  vesselsStorageKey: 'rl:vessels',
 };
 
 export const APP_CONFIG = new InjectionToken<AppConfig>('APP_CONFIG', {

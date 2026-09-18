@@ -1,0 +1,87 @@
+<main class="page">
+  <header class="header">
+    <div class="headings">
+      <h1>{{ 'vessels.title' | translate }}</h1>
+      <p>{{ 'vessels.subtitle' | translate }}</p>
+    </div>
+    <button tuiButton appearance="primary" iconStart="@tui.plus" type="button" (click)="showForm.set(!showForm())">
+      {{ 'vessels.add.button' | translate }}
+    </button>
+  </header>
+
+  <p class="notice" role="note">
+    <tui-icon [icon]="'@tui.info'" />
+    {{ 'vessels.mockNotice' | translate }}
+  </p>
+
+  @if (showForm()) {
+    <section class="card form-card">
+      <form [formGroup]="form" (ngSubmit)="add()" novalidate class="form">
+        <div class="field">
+          <tui-textfield [invalid]="!!fieldError('type')" tuiTextfieldSize="l">
+            <label tuiLabel>{{ 'vessels.form.type' | translate }}</label>
+            <input
+              tuiInput
+              formControlName="type"
+              [placeholder]="'vessels.form.typePlaceholder' | translate"
+            />
+          </tui-textfield>
+          @if (fieldError('type'); as message) {
+            <tui-error [error]="message" />
+          }
+        </div>
+
+        <div class="field">
+          <tui-textfield [invalid]="!!fieldError('capacity')" tuiTextfieldSize="l">
+            <label tuiLabel>{{ 'vessels.form.capacity' | translate }}</label>
+            <input tuiInput type="number" min="0" step="1" formControlName="capacity" />
+          </tui-textfield>
+          @if (fieldError('capacity'); as message) {
+            <tui-error [error]="message" />
+          }
+        </div>
+
+        <div class="form-actions">
+          <button tuiButton appearance="primary" type="submit">
+            {{ 'vessels.form.submit' | translate }}
+          </button>
+          <button tuiButton appearance="flat" type="button" (click)="showForm.set(false)">
+            {{ 'common.cancel' | translate }}
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+
+  @if (vessels().length === 0) {
+    <div class="state">
+      <tui-icon [icon]="'@tui.ship'" class="state-icon" />
+      <p>{{ 'vessels.empty' | translate }}</p>
+    </div>
+  } @else {
+    <ul class="list">
+      @for (vessel of vessels(); track vessel.id) {
+        <li class="card vessel">
+          <div class="vessel-info">
+            <div class="vessel-title">
+              <tui-icon [icon]="'@tui.ship'" class="vessel-icon" />
+              <h2>{{ vessel.type }}</h2>
+            </div>
+            <p class="vessel-meta">{{ vessel.capacity }} t</p>
+          </div>
+
+          <span class="badge badge-{{ vessel.status.toLowerCase() }}">
+            {{ statusLabel(vessel.status) }}
+          </span>
+
+          <div class="vessel-actions">
+            <button tuiButton appearance="flat" size="s" type="button" (click)="toggleStatus(vessel.id, vessel.status)">
+              {{ (vessel.status === 'Available' ? 'vessels.action.markOnTrip' : 'vessels.action.markAvailable') | translate }}
+            </button>
+            <button tuiIconButton appearance="flat" size="s" type="button" iconStart="@tui.trash" [attr.aria-label]="'vessels.action.remove' | translate" (click)="remove(vessel.id)"></button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</main>

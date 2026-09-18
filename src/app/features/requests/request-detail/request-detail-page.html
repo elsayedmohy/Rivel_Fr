@@ -1,0 +1,203 @@
+<main class="page">
+  @if (loading()) {
+    <div class="state">{{ 'common.loading' | translate }}</div>
+  } @else if (notFound()) {
+    <div class="state">
+      <tui-icon [icon]="'@tui.inbox'" class="state-icon" />
+      <p>{{ 'requests.detail.notFound' | translate }}</p>
+      <a tuiButton appearance="flat" routerLink="/app/requests" iconStart="@tui.arrow-left">
+        {{ 'requests.back' | translate }}
+      </a>
+    </div>
+  } @else if (error(); as message) {
+    <div class="state state-error" role="alert">
+      <p>{{ message }}</p>
+      <button tuiButton appearance="flat" type="button" (click)="reload()">
+        {{ 'requests.retry' | translate }}
+      </button>
+    </div>
+  } @else if (request(); as request) {
+    <header class="header">
+      <a routerLink="/app/requests" class="back" tuiButton appearance="flat" iconStart="@tui.arrow-left">
+        {{ 'requests.back' | translate }}
+      </a>
+      <div class="headings">
+        <h1>{{ 'requests.detail.title' | translate }}</h1>
+        <p class="cargo-type">{{ request.cargoType }}</p>
+      </div>
+      <span class="badge badge-{{ request.status.toLowerCase() }}">
+        {{ requestStatusLabel(request.status) }}
+      </span>
+    </header>
+
+    <dl class="facts">
+      <div>
+        <dt>{{ 'requests.meta.cargoType' | translate }}</dt>
+        <dd>{{ request.cargoType }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'requests.meta.weight' | translate }}</dt>
+        <dd>{{ weightText(request.weight) }} t</dd>
+      </div>
+      <div>
+        <dt>{{ 'requests.meta.origin' | translate }}</dt>
+        <dd>{{ request.origin }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'requests.meta.destination' | translate }}</dt>
+        <dd>{{ request.destination }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'requests.meta.date' | translate }}</dt>
+        <dd>{{ request.requestedDate }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'requests.meta.offers' | translate }}</dt>
+        <dd>{{ request.offersCount }}</dd>
+      </div>
+    </dl>
+
+    @if (isCarrier()) {
+      @if (request.status === 'Open') {
+        <section class="offer-form">
+          <header class="offers-header">
+            <h2>{{ 'offers.form.title' | translate }}</h2>
+            <p>{{ 'offers.form.subtitle' | translate }}</p>
+          </header>
+
+          @if (vessels().length === 0) {
+            <div class="state">
+              <tui-icon [icon]="'@tui.ship'" class="state-icon" />
+              <p>{{ 'offers.form.noVessels' | translate }}</p>
+              <a tuiButton appearance="flat" iconStart="@tui.ship" routerLink="/app/vessels">
+                {{ 'vessels.add.button' | translate }}
+              </a>
+            </div>
+          } @else {
+            <form [formGroup]="offerForm" (ngSubmit)="submitOffer()" novalidate class="form">
+              @if (offerError(); as message) {
+                <div class="error-box" role="alert">
+                  <p>{{ message }}</p>
+                </div>
+              }
+              @if (offerSuccess()) {
+                <div class="success-box" role="status">
+                  <p>{{ 'offers.form.success' | translate }}</p>
+                </div>
+              }
+
+              <div class="form-row">
+                <div class="field">
+                  <tui-textfield [invalid]="!!offerFieldError('price')" tuiTextfieldSize="l">
+                    <label tuiLabel>{{ 'offers.form.price' | translate }}</label>
+                    <input tuiInput type="number" min="0" step="1" formControlName="price" />
+                  </tui-textfield>
+                  @if (offerFieldError('price'); as message) {
+                    <tui-error [error]="message" />
+                  }
+                </div>
+
+                <div class="field">
+                  <tui-textfield [invalid]="!!offerFieldError('proposedPickupDate')" tuiTextfieldSize="l">
+                    <label tuiLabel>{{ 'offers.form.pickup' | translate }}</label>
+                    <input tuiInput type="date" [min]="minDate" formControlName="proposedPickupDate" />
+                  </tui-textfield>
+                  @if (offerFieldError('proposedPickupDate'); as message) {
+                    <tui-error [error]="message" />
+                  }
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label" for="offer-vessel">{{ 'offers.form.vessel' | translate }}</label>
+                <select id="offer-vessel" class="select" formControlName="vesselId">
+                  <option value="" disabled>{{ 'offers.form.vesselPlaceholder' | translate }}</option>
+                  @for (vessel of vessels(); track vessel.id) {
+                    <option [value]="vessel.id">
+                      {{ vessel.type }} — {{ vessel.capacity }} t ({{ vesselStatusLabel(vessel.status) }})
+                    </option>
+                  }
+                </select>
+                @if (offerFieldError('vesselId'); as message) {
+                  <tui-error [error]="message" />
+                }
+              </div>
+
+              <button
+                tuiButton
+                type="submit"
+                appearance="primary"
+                class="submit"
+                [loading]="offerSubmitting()"
+              >
+                {{ 'offers.form.submit' | translate }}
+              </button>
+            </form>
+          }
+        </section>
+      } @else {
+        <p class="notice" role="note">{{ 'offers.form.closed' | translate }}</p>
+      }
+    }
+
+    @if (isOwner()) {
+      <section class="offers">
+        <header class="offers-header">
+          <h2>{{ 'requests.detail.offers.title' | translate }}</h2>
+          <p>{{ 'requests.detail.offers.subtitle' | translate }}</p>
+        </header>
+
+        @if (offersLoading()) {
+          <div class="state">{{ 'common.loading' | translate }}</div>
+        } @else if (offersError(); as message) {
+          <div class="state state-error" role="alert">
+            <p>{{ message }}</p>
+          </div>
+        } @else if (offers()?.length === 0) {
+          <div class="state">
+            <tui-icon [icon]="'@tui.inbox'" class="state-icon" />
+            <p>{{ 'requests.detail.offers.empty' | translate }}</p>
+          </div>
+        } @else {
+          <ul class="offer-list">
+            @for (offer of offers(); track offer.id) {
+              <li class="offer">
+                <div class="offer-main">
+                  <p class="offer-carrier">{{ offer.carrierName ?? offer.companyName ?? ('common.guest' | translate) }}</p>
+                  @if (offer.companyName) {
+                    <p class="offer-company">{{ offer.companyName }}</p>
+                  }
+                </div>
+                <dl class="offer-meta">
+                  <div>
+                    <dt>{{ 'offers.meta.price' | translate }}</dt>
+                    <dd>{{ priceText(offer.price) }}</dd>
+                  </div>
+                  <div>
+                    <dt>{{ 'offers.meta.pickup' | translate }}</dt>
+                    <dd>{{ offer.proposedPickupDate }}</dd>
+                  </div>
+                </dl>
+                <span class="badge badge-offer badge-{{ offer.status.toLowerCase() }}">
+                  {{ offerStatusLabel(offer.status) }}
+                </span>
+                @if (request.status === 'Open' && offer.status === 'Pending') {
+                  <button
+                    tuiButton
+                    type="button"
+                    appearance="primary"
+                    size="s"
+                    [loading]="acceptingId() === offer.id"
+                    (click)="accept(offer)"
+                  >
+                    {{ 'offers.accept' | translate }}
+                  </button>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+  }
+</main>

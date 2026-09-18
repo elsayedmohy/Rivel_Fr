@@ -1,0 +1,141 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--tui-padding-m);
+  flex-wrap: wrap;
+}
+
+.headings h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.headings p {
+  margin-block-start: 0.25rem;
+  color: var(--tui-text-tertiary);
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-xs);
+  padding: var(--tui-padding-s) var(--tui-padding-m);
+  border-radius: var(--tui-radius-m);
+  background: var(--tui-status-info-pale);
+  color: var(--tui-text-info);
+  font-size: 0.8125rem;
+}
+
+.card {
+  padding: var(--tui-padding-m);
+  border: 1px solid var(--tui-border-normal);
+  border-radius: var(--tui-radius-l);
+  background: var(--tui-background-elevation-1);
+}
+
+.form-card {
+  padding: var(--tui-padding-l);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+  max-inline-size: 26rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--tui-padding-xs);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-s);
+  list-style: none;
+}
+
+.vessel {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--tui-padding-m);
+  align-items: center;
+
+  @media (max-width: 47.99rem) {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+.vessel-title {
+  display: flex;
+  align-items: center;
+  gap: var(--tui-padding-xs);
+}
+
+.vessel-title h2 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.vessel-icon {
+  color: var(--tui-background-accent-1);
+}
+
+.vessel-meta {
+  margin-block-start: 0.25rem;
+  color: var(--tui-text-tertiary);
+  font-size: 0.875rem;
+}
+
+.vessel-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge {
+  justify-self: end;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-available {
+  background: var(--tui-status-positive-pale);
+  color: var(--tui-text-positive);
+}
+
+.badge-ontrip {
+  background: var(--tui-status-warning-pale);
+  color: var(--tui-text-warning);
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--tui-padding-s);
+  padding: var(--tui-padding-xl) var(--tui-padding-m);
+  color: var(--tui-text-secondary);
+  text-align: center;
+}
+
+.state-icon {
+  font-size: 2.5rem;
+  color: var(--tui-text-tertiary);
+}

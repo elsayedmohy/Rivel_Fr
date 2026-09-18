@@ -1,0 +1,59 @@
+<main class="page">
+  <header class="header">
+    <div class="headings">
+      <h1>{{ 'offers.title' | translate }}</h1>
+      <p>{{ 'offers.subtitle.mine' | translate }}</p>
+    </div>
+    <button tuiButton appearance="flat" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
+      {{ 'requests.refresh' | translate }}
+    </button>
+  </header>
+
+  @if (loading()) {
+    <div class="state">{{ 'common.loading' | translate }}</div>
+  } @else if (error(); as message) {
+    <div class="state state-error" role="alert">
+      <p>{{ message }}</p>
+      <button tuiButton appearance="flat" type="button" (click)="reload()">
+        {{ 'requests.retry' | translate }}
+      </button>
+    </div>
+  } @else if (offers().length === 0) {
+    <div class="state">
+      <tui-icon [icon]="'@tui.handshake'" class="state-icon" />
+      <p>{{ 'offers.empty.mine' | translate }}</p>
+      <a tuiButton appearance="flat" iconStart="@tui.package" routerLink="/app/requests">
+        {{ 'dashboard.action.browseRequests' | translate }}
+      </a>
+    </div>
+  } @else {
+    <ul class="list">
+      @for (offer of offers(); track offer.id) {
+        <li class="card offer">
+          <div class="offer-main">
+            <div class="offer-title">
+              <tui-icon [icon]="'@tui.handshake'" class="offer-icon" />
+              <h2>{{ priceText(offer.price) }}</h2>
+            </div>
+            <p class="offer-meta">
+              {{ 'offers.meta.pickup' | translate }}: {{ offer.proposedPickupDate }}
+            </p>
+          </div>
+
+          <span class="badge badge-{{ offer.status.toLowerCase() }}">
+            {{ statusLabel(offer.status) }}
+          </span>
+
+          <a
+            tuiButton
+            appearance="flat"
+            size="s"
+            [routerLink]="['/app/requests', offer.shipmentRequestId]"
+          >
+            {{ 'offers.viewRequest' | translate }}
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</main>

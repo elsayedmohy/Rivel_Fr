@@ -1,0 +1,91 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+  max-inline-size: 34rem;
+}
+
+.header .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  inline-size: fit-content;
+  color: var(--tui-text-action);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.header h1 {
+  margin-block-start: var(--tui-padding-xs);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.header p {
+  margin-block-start: 0.25rem;
+  color: var(--tui-text-tertiary);
+}
+
+.card {
+  padding: var(--tui-padding-l);
+  border: 1px solid var(--tui-border-normal);
+  border-radius: var(--tui-radius-l);
+  background: var(--tui-background-elevation-1);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.chip {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--tui-border-normal);
+  border-radius: 999px;
+  background: none;
+  color: var(--tui-text-secondary);
+  font-size: 0.8125rem;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--tui-border-hover);
+  }
+}
+
+.chip-active {
+  border-color: var(--tui-background-accent-1);
+  background: var(--tui-background-accent-1-pale);
+  color: var(--tui-text-accent);
+  font-weight: 600;
+}
+
+.error-box {
+  padding: var(--tui-padding-s);
+  border-radius: var(--tui-radius-m);
+  background: var(--tui-status-negative-pale);
+  color: var(--tui-text-negative);
+  font-size: 0.875rem;
+}
+
+.error-box p + p {
+  margin-block-start: 0.25rem;
+}
+
+.submit {
+  inline-size: 100%;
+  margin-block-start: var(--tui-padding-xs);
+}

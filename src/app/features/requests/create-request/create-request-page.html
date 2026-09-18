@@ -1,0 +1,111 @@
+<main class="page">
+  <header class="header">
+    <a routerLink=".." class="back">
+      <span aria-hidden="true">←</span>
+      {{ 'requests.back' | translate }}
+    </a>
+    <h1>{{ 'requests.create.title' | translate }}</h1>
+    <p>{{ 'requests.create.subtitle' | translate }}</p>
+  </header>
+
+  <section class="card">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
+      @if (serverErrors(); as error) {
+        @for (item of error.errors ?? [{ message: error.message }]; track $index) {
+          @if (!isServerFieldMessage(item.field)) {
+            <div class="error-box" role="alert">
+              <p>{{ item.message }}</p>
+            </div>
+          }
+        }
+      }
+
+      <div class="field">
+        <tui-textfield [invalid]="!!fieldError('cargoType')" tuiTextfieldSize="l">
+          <label tuiLabel>{{ 'requests.create.cargoType' | translate }}</label>
+          <input
+            tuiInput
+            formControlName="cargoType"
+            [placeholder]="'requests.create.cargoTypePlaceholder' | translate"
+          />
+        </tui-textfield>
+        <div class="chips">
+          @for (type of cargoSuggestions; track type) {
+            <button
+              type="button"
+              class="chip"
+              [class.chip-active]="isCargoPicked(type)"
+              (click)="pickCargoType(type)"
+            >
+              {{ type }}
+            </button>
+          }
+        </div>
+        @if (fieldError('cargoType'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      <div class="field">
+        <tui-textfield [invalid]="!!fieldError('weight')" tuiTextfieldSize="l">
+          <label tuiLabel>{{ 'requests.create.weight' | translate }}</label>
+          <input tuiInput type="number" min="0" step="0.1" formControlName="weight" />
+        </tui-textfield>
+        @if (fieldError('weight'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      <div class="field">
+        <tui-textfield [invalid]="!!fieldError('origin')" tuiTextfieldSize="l">
+          <label tuiLabel>{{ 'requests.create.origin' | translate }}</label>
+          <input
+            tuiInput
+            formControlName="origin"
+            autocomplete="off"
+            [placeholder]="'requests.create.originPlaceholder' | translate"
+          />
+        </tui-textfield>
+        @if (fieldError('origin'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      <div class="field">
+        <tui-textfield [invalid]="!!fieldError('destination')" tuiTextfieldSize="l">
+          <label tuiLabel>{{ 'requests.create.destination' | translate }}</label>
+          <input
+            tuiInput
+            formControlName="destination"
+            autocomplete="off"
+            [placeholder]="'requests.create.destinationPlaceholder' | translate"
+          />
+        </tui-textfield>
+        @if (fieldError('destination'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      <div class="field">
+        <tui-textfield [invalid]="!!fieldError('requestedDate')" tuiTextfieldSize="l">
+          <label tuiLabel>{{ 'requests.create.requestedDate' | translate }}</label>
+          <input tuiInput type="date" [min]="minDate" formControlName="requestedDate" />
+        </tui-textfield>
+        @if (fieldError('requestedDate'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      <button
+        tuiButton
+        type="submit"
+        appearance="primary"
+        size="l"
+        class="submit"
+        [loading]="submitting()"
+      >
+        {{ 'requests.create.submit' | translate }}
+      </button>
+    </form>
+  </section>
+</main>

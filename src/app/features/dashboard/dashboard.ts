@@ -25,6 +25,13 @@ export class DashboardPage {
       role: 'Carrier',
     },
     {
+      routerLink: '/app/requests/new',
+      icon: '@tui.plus',
+      label: this.translate.translate('dashboard.action.postRequest'),
+      hint: this.translate.translate('dashboard.action.postRequestHint'),
+      role: 'CargoOwner',
+    },
+    {
       routerLink: '/app/offers',
       icon: '@tui.handshake',
       label: this.translate.translate('dashboard.action.myOffers'),
