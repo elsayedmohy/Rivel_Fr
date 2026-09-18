@@ -9,7 +9,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--tui-padding-m);
-  padding: var(--tui-padding-xl) var(--tui-padding-m);
+  padding: var(--tui-padding-l) var(--tui-padding-m);
   color: var(--tui-text-secondary);
   text-align: center;
 }
@@ -41,7 +41,7 @@
 }
 
 .cargo-type {
-  margin-block-start: 0.25rem;
+  margin-block-start: 0.375rem;
   color: var(--tui-text-tertiary);
 }
 
@@ -74,7 +74,7 @@
 }
 
 .facts div {
-  padding: var(--tui-padding-m);
+  padding: var(--tui-padding-l);
   border: 1px solid var(--tui-border-normal);
   border-radius: var(--tui-radius-l);
   background: var(--tui-background-elevation-1);
@@ -103,7 +103,7 @@
 }
 
 .offers-header p {
-  margin-block-start: 0.125rem;
+  margin-block-start: 0.25rem;
   color: var(--tui-text-tertiary);
   font-size: 0.875rem;
 }
@@ -120,7 +120,7 @@
   grid-template-columns: auto 1fr auto auto;
   gap: var(--tui-padding-m);
   align-items: center;
-  padding: var(--tui-padding-m);
+  padding: var(--tui-padding-l);
   border: 1px solid var(--tui-border-normal);
   border-radius: var(--tui-radius-l);
   background: var(--tui-background-elevation-1);
@@ -136,7 +136,7 @@
 }
 
 .offer-company {
-  margin-block-start: 0.125rem;
+  margin-block-start: 0.25rem;
   color: var(--tui-text-tertiary);
   font-size: 0.8125rem;
 }
@@ -152,7 +152,7 @@
 }
 
 .offer-meta dd {
-  margin-block-start: 0.125rem;
+  margin-block-start: 0.25rem;
   font-weight: 600;
 }
 

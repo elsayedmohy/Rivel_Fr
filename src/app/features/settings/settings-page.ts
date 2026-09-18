@@ -113,7 +113,7 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
       gap: var(--tui-padding-m);
       max-inline-size: 48rem;
       margin: 0 auto;
-      padding: var(--tui-padding-xl) var(--tui-padding-m);
+      padding: var(--tui-padding-l) var(--tui-padding-m);
     }
 
     .header {

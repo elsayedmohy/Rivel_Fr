@@ -18,7 +18,7 @@
 }
 
 .headings p {
-  margin-block-start: 0.25rem;
+  margin-block-start: 0.375rem;
   color: var(--tui-text-tertiary);
 }
 
@@ -35,7 +35,7 @@
   grid-template-columns: 1fr auto;
   gap: var(--tui-padding-m);
   align-items: center;
-  padding: var(--tui-padding-m);
+  padding: var(--tui-padding-l);
   border: 1px solid var(--tui-border-normal);
   border-radius: var(--tui-radius-l);
   background: var(--tui-background-elevation-1);
@@ -58,7 +58,7 @@
 .card-title {
   display: flex;
   align-items: center;
-  gap: var(--tui-padding-xs);
+  gap: var(--tui-padding-s);
 }
 
 .card-title h2 {
@@ -73,7 +73,7 @@
 .route {
   display: flex;
   align-items: center;
-  gap: var(--tui-padding-xs);
+  gap: var(--tui-padding-s);
   margin-block-start: 0.375rem;
   color: var(--tui-text-secondary);
   font-size: 0.875rem;
@@ -98,7 +98,7 @@
 }
 
 .card-meta dd {
-  margin-block-start: 0.125rem;
+  margin-block-start: 0.25rem;
   font-weight: 600;
 }
 
@@ -132,7 +132,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--tui-padding-m);
-  padding: var(--tui-padding-xl) var(--tui-padding-m);
+  padding: var(--tui-padding-l) var(--tui-padding-m);
   color: var(--tui-text-secondary);
   text-align: center;
 }
