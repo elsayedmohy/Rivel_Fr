@@ -1,59 +1,98 @@
-# Rivel
+# Rivel 🚢
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.7.
+A two-sided freight logistics marketplace digitizing Nile river shipping — connecting **Cargo Owners** who need to move goods with **Carriers** who operate vessels.
 
-## Development server
+🌐 **Live:** [rivel-seven.vercel.app](https://rivel-seven.vercel.app/auth/login) &nbsp;|&nbsp; 🔌 **API:** [rivel.runasp.net](https://rivel.runasp.net/swagger)
 
-To start a local development server, run:
+---
 
+## What it does
+
+Cargo owners post shipment requests with cargo details, weight, origin and destination. Carriers browse open requests and submit offers with a price and pickup date. The cargo owner reviews all offers and accepts one — which auto-rejects the rest and creates a shipment. The carrier then advances the shipment through its lifecycle (Matched → Picked Up → In Transit → Delivered), after which the cargo owner can leave a rating.
+
+---
+
+## Roles
+
+| Role | Capabilities |
+|---|---|
+| **Cargo Owner** | Post requests · Review & accept offers · Track shipments · Rate carriers |
+| **Carrier** | Register vessels · Browse open requests · Submit offers · Advance shipment status |
+
+---
+
+## Tech Stack
+
+**Backend**
+- ASP.NET Core (.NET) — REST API
+- Entity Framework Core + PostgreSQL (Supabase)
+- ASP.NET Core Identity + JWT authentication
+- FluentValidation · Pessimistic locking for race conditions
+
+**Frontend**
+- Angular 21 — standalone components
+- NgRx Signals — state management
+- Taiga UI — component library
+- Deployed on Vercel
+
+---
+
+## Core Flow
+
+```
+Cargo Owner posts request
+        ↓
+Carriers browse & submit offers
+        ↓
+Owner accepts one offer → others auto-rejected
+        ↓
+Shipment created → Carrier advances status
+        ↓
+Owner leaves rating after delivery
+```
+
+---
+
+## API
+
+Full API available at [`/swagger`](https://rivel.runasp.net/swagger)
+
+| Resource | Endpoints |
+|---|---|
+| Auth | `POST /api/auth/register` · `POST /api/auth/login` |
+| Shipment Requests | `GET · POST · PUT · DELETE /api/shipment-requests` |
+| Offers | `GET · POST /api/shipment-requests/{id}/offers` · `PUT .../accept` |
+| Shipments | `GET · PUT /api/shipments` · `PUT /api/shipments/{id}/status` |
+| Ratings | `POST · GET /api/shipments/{id}/rating` |
+| Vessels | `GET · POST /api/vessels` |
+
+---
+
+## Local Development
+
+**Backend**
 ```bash
+cd RiverLine.API
+dotnet restore
+# Set connection string in appsettings.Development.json
+dotnet ef database update
+dotnet run
+```
+
+**Frontend**
+```bash
+cd rivel-frontend
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## Roadmap
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Phase | Status |
+|---|---|
+| v1 — Core marketplace (auth, requests, offers, shipments, ratings, vessels) | ✅ Done |
+| v1.1 — Production deployment | ✅ Done |
+| v1.2 — Auto-suggest matching based on carrier routes | 🔜 Planned |
+| v2 — Capacity validation, notifications | 🔜 Planned |
