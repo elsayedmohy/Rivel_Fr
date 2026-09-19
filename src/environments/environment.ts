@@ -5,5 +5,5 @@ export interface Environment {
 
 export const environment: Environment = {
   production: true,
-  apiBaseUrl: '/api',
+  apiBaseUrl: 'https://rivel.runasp.net/api',
 };
