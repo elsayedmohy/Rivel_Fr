@@ -10,14 +10,6 @@ import type { User } from '../../models/user/user';
 
 type KnownUsers = Record<string, string>;
 
-/**
- * Login / register against the real backend and keeps the local session in
- * sync with TokenService.
- *
- * The backend returns no display name on login (nor via `/me`), so names are
- * remembered locally (keyed by lower-cased email) at registration time and
- * replayed on later logins — otherwise the UI falls back to the e-mail.
- */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = inject(ApiService);

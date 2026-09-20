@@ -4,6 +4,7 @@ import type { AppLanguage } from '../../models/enums';
 
 export interface AppConfig {
   readonly apiBaseUrl: string;
+  readonly notificationBaseUrl: string;
   readonly production: boolean;
   readonly appName: string;
   readonly defaultLanguage: AppLanguage;

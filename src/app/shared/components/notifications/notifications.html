@@ -1,0 +1,88 @@
+
+  <tui-badged-content>
+
+
+    <button
+      tuiIconButton
+      [tuiDropdown]="dropdown"
+      [(tuiDropdownOpen)]="open"
+      type="button"
+      appearance="flat"
+      aria-label="الإشعارات"
+      (click)="toggle()"
+    >
+      <tui-icon icon="@tui.bell"/>
+      @if (notifService.unreadCount() > 0) {
+        <tui-badge-notification
+          style="top: 5px"
+          size="m"
+          tuiSlot="top"
+        >
+          {{ notifService.unreadCount() }}
+        </tui-badge-notification>
+      }
+    </button>
+    <ng-template #dropdown>
+      <div class="notifications-dropdown">
+        <header class="notifications-header">
+      <span class="notifications-title">
+  الإشعارات
+  </span>
+
+          @if (notifService.unreadCount() > 0) {
+            <button
+              tuiButton
+              type="button"
+              appearance="flat"
+              size="s"
+              (click)="markAllRead()"
+            >
+              تعليم الكل كمقروء
+            </button>
+          }
+        </header>
+
+        <div class="notifications-list">
+          @if (notifService.notifications().length > 0) {
+            @for (
+              notification of notifService.notifications();
+              track notification.id
+              ) {
+              <div
+                class="notification-item"
+                [class.unread]="!notification.isRead"
+              >
+                <div class="notification-icon-wrapper">
+                  <tui-icon icon="@tui.check-circle" />
+                </div>
+
+                <div class="notification-content">
+                  <h3 class="my-2">
+                    {{ notification.title }}
+                  </h3>
+                  <p class="notification-message">
+                    {{ notification.message }}
+                  </p>
+
+                  <time class="notification-time">
+                    {{ notification.createdAt | date: 'shortTime' }}
+                  </time>
+                </div>
+              </div>
+            }
+          } @else {
+            <div class="empty-state">
+              <tui-icon
+                icon="@tui.bell-off"
+                class="empty-icon"
+              />
+
+              <p>لا توجد إشعارات</p>
+            </div>
+          }
+        </div>
+      </div>
+    </ng-template>
+  </tui-badged-content>
+
+

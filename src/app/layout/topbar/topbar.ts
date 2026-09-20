@@ -14,6 +14,7 @@ import { ThemeService } from '../../core/config/theme.service';
 import { LanguageService } from '../../core/config/language.service';
 import { TokenService } from '../../core/http/token.service';
 import { AuthService } from '../../core/http/auth.service';
+import { NotificationsComponent } from '../../shared/components/notifications/notifications';
 
 @Component({
   selector: 'rl-topbar',
@@ -28,6 +29,7 @@ import { AuthService } from '../../core/http/auth.service';
     TuiOption,
     TranslatePipe,
     TuiDropdownOpen,
+    NotificationsComponent,
   ],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',
