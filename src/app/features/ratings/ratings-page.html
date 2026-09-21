@@ -1,8 +1,8 @@
 <main class="rl-page">
-  <header class="header">
-    <div class="headings">
-      <h1>{{ 'ratings.title' | translate }}</h1>
-      <p>
+  <header class="rl-page__heading">
+    <div >
+      <h1 class="rl-page__title">{{ 'ratings.title' | translate }}</h1>
+      <p class="rl-page__subtitle">
         @if (isOwner()) {
           {{ 'ratings.subtitle.owner' | translate }}
         } @else {
@@ -10,7 +10,7 @@
         }
       </p>
     </div>
-    <button tuiButton appearance="flat" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
+    <button tuiButton appearance="primary" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
       {{ 'requests.refresh' | translate }}
     </button>
   </header>
@@ -18,7 +18,7 @@
   @if (error(); as message) {
     <div class="state state-error" role="alert">
       <p>{{ message }}</p>
-      <button tuiButton appearance="flat" type="button" (click)="reload()">
+      <button tuiButton appearance="primary" type="button" (click)="reload()">
         {{ 'requests.retry' | translate }}
       </button>
     </div>
@@ -30,7 +30,7 @@
         <div class="state">
           <tui-icon [icon]="'@tui.star'" class="state-icon" />
           <p>{{ 'ratings.empty.owner' | translate }}</p>
-          <a tuiButton appearance="flat" iconStart="@tui.package" routerLink="/shipments">
+          <a tuiButton appearance="primary" iconStart="@tui.package" routerLink="/shipments">
             {{ 'nav.shipments' | translate }}
           </a>
         </div>

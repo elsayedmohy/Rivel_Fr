@@ -15,7 +15,10 @@ import { LanguageService } from './core/config/language.service';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { routes } from './app.routes';
+import { registerLocaleData } from '@angular/common';
+import localeAr from '@angular/common/locales/ar';
 
+registerLocaleData(localeAr);
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),

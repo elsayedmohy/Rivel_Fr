@@ -83,49 +83,9 @@
   color: var(--tui-text-tertiary);
 }
 
-.card-meta {
-  display: flex;
-  gap: var(--tui-padding-m);
-}
 
-.card-meta div {
-  text-align: end;
-}
 
-.card-meta dt {
-  color: var(--tui-text-tertiary);
-  font-size: 0.75rem;
-}
 
-.card-meta dd {
-  margin-block-start: 0.25rem;
-  font-weight: 600;
-}
-
-.badge {
-  position: absolute;
-  inset-block-start: var(--tui-padding-m);
-  inset-inline-end: var(--tui-padding-m);
-  padding: 0.125rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.badge-open {
-  background: var(--tui-status-positive-pale);
-  color: var(--tui-text-positive);
-}
-
-.badge-matched {
-  background: var(--tui-status-info-pale);
-  color: var(--tui-text-info);
-}
-
-.badge-closed {
-  background: var(--tui-background-neutral-1);
-  color: var(--tui-text-secondary);
-}
 
 .state {
   display: flex;

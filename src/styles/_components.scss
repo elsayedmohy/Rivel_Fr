@@ -67,9 +67,12 @@ body {
   svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
   &--new     { border-color: transparent; background: var(--rl-accent-soft); color: var(--rl-accent-ink); font-weight: 600; }
+  &--open     { border-color: transparent; background: var(--rl-accent-soft); color: var(--rl-accent-ink); font-weight: 600; }
   &--success { border-color: transparent; background: var(--rl-accent-soft); color: var(--rl-accent-ink); }
   &--warning { border-color: transparent; background: var(--rl-warning-soft); color: var(--rl-warning); }
+  &--matched { border-color: transparent; background: var(--rl-warning-soft); color: var(--rl-warning); }
   &--danger  { border-color: transparent; background: var(--rl-danger-soft);  color: var(--rl-danger); }
+  &--closed  { border-color: transparent; background: var(--rl-danger-soft);  color: var(--rl-danger); }
 }
 
 .rl-btn {
@@ -209,3 +212,23 @@ body {
 
 .rl-link { color: var(--rl-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 a { color: var(--rl-ink); font-weight: 600; text-decoration: none; }
+.badge {
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.badge-open {
+  background: var(--tui-status-positive-pale);
+  color: var(--tui-text-positive);
+}
+
+.badge-matched {
+  background: var(--tui-status-info-pale);
+  color: var(--tui-text-info);
+}
+
+.badge-closed {
+  background: var(--tui-background-neutral-1);
+  color: var(--tui-text-secondary);
+}

@@ -1,0 +1,75 @@
+<article class="card rl-card" >
+  <div class="card__glyph" >
+    <tui-icon icon="@tui.package" [style.font-size.px]="22" />
+  </div>
+
+  <div class="card__body">
+    <div class="card__titles">
+      <span class="card__cargo">{{ request().cargoType }}</span>
+
+<!--      @if (request().status) {-->
+
+        <span class="rl-chip rl-chip--{{ request().status.toLowerCase() }}">{{statusLabel(request().status)}}</span>
+<!--      }-->
+
+<!--      @if (overCapacity()) {-->
+<!--        <span class="rl-chip rl-chip&#45;&#45;over">-->
+<!--              <tui-icon icon="@tui.circle-alert" [style.font-size.px]="11" />-->
+<!--              أكبر من سعة سفنك — أقصى سعة {{ request().maxVesselCapacity | number }} طن-->
+<!--            </span>-->
+<!--      } @else {-->
+<!--        <span class="rl-chip rl-chip&#45;&#45;fits">-->
+<!--              <tui-icon icon="@tui.check" [style.font-size.px]="11" />-->
+<!--          {{ fitsLabel() }}-->
+<!--            </span>-->
+<!--      }-->
+    </div>
+
+    <div class="card__route">
+      <span class="card__berth">{{ request().originNileBerth.arabicName }}</span>
+      <svg
+        class="rl-arrow"
+        width="8"
+        height="9"
+        viewBox="0 0 9 10"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M6.5 1 2 5l4.5 4"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <span class="card__berth">{{ request().destinationNileBerth.arabicName }}</span>
+      <span class="card__route-meta">· {{ berthPair() }} · {{ axisLabel() }}</span>
+    </div>
+
+    <div class="card__meta">
+      {{ request().weight | number }} طن · التاريخ المطلوب
+      {{ request().requestedDate | date: 'd MMMM yyyy':undefined:'ar-EG' }} ·
+      {{ offersLabel() }}
+<!--      @if (request().lowestOfferPrice !== null) {-->
+<!--        · أقل عرض {{ request().lowestOfferPrice | number }} ج.م-->
+<!--      }-->
+    </div>
+  </div>
+
+  <div class="card__actions">
+    <button type="button" tuiButton appearance="primary"  (click)="details.emit(request().id)">
+      التفاصيل
+    </button>
+
+<!--    <button-->
+<!--      type="button"-->
+<!--      class="btn btn&#45;&#45;primary"-->
+<!--      [disabled]="overCapacity()"-->
+<!--      [attr.title]="overCapacity() ? 'لا توجد لديك سفينة بسعة كافية لهذه الشحنة' : null"-->
+<!--      (click)="makeOffer.emit(request().id)"-->
+<!--    >-->
+<!--      تقديم عرض-->
+<!--    </button>-->
+  </div>
+</article>

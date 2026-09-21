@@ -1,22 +1,12 @@
 <main class="rl-page">
-  <header class="header">
-    <div class="headings">
-      <h1>{{ 'requests.title' | translate }}</h1>
-      <p>{{ (isOwner() ? 'requests.subtitle.mine' : 'requests.subtitle.open') | translate }}</p>
+  <header class="rl-page__heading">
+    <div >
+      <h1 class="rl-page__title">{{ 'requests.title' | translate }}</h1>
+      <p class="rl-page__subtitle"> {{ 'requests.subtitle.mine' | translate }}</p>
     </div>
-
-    @if (isOwner()) {
       <a tuiButton appearance="primary" iconStart="@tui.plus" routerLink="new">
         {{ 'requests.create.button' | translate }}
       </a>
-    }
-
-    @if (!isOwner()) {
-      <button tuiButton appearance="primary"
-              iconStart="@tui.refresh-cw" type="button" (click)="reload()">
-        {{ 'requests.refresh' | translate }}
-      </button>
-    }
   </header>
 
   @if (loading()) {
@@ -31,51 +21,18 @@
   } @else if (requests()?.length === 0) {
     <div class="state">
       <tui-icon [icon]="'@tui.inbox'" class="state-icon" />
-      <p>{{ (isOwner() ? 'requests.empty.mine' : 'requests.empty.open') | translate }}</p>
-      @if (isOwner()) {
+      <p>{{  'requests.empty.mine'  | translate }}</p>
+
         <a tuiButton appearance="primary" iconStart="@tui.plus" routerLink="new">
           {{ 'requests.create.button' | translate }}
         </a>
-      }
+
     </div>
   } @else {
-    <ul class="list">
+    <div >
       @for (request of requests(); track request.id) {
-        <li>
-          <a [routerLink]="[request.id]" class="card rl-card">
-            <div class="card-main">
-              <div class="card-title">
-                <tui-icon [icon]="'@tui.package'" class="cargo-icon" />
-                <h2>{{ request.cargoType }}</h2>
-              </div>
-              <p class="route">
-                <span>{{ request.origin }}</span>
-                <tui-icon [icon]="'@tui.arrow-right'" class="route-icon" />
-                <span>{{ request.destination }}</span>
-              </p>
-            </div>
-            <dl class="card-meta">
-              <div>
-                <dt>{{ 'requests.meta.weight' | translate }}</dt>
-                <dd>{{ weightText(request.weight) }} t</dd>
-              </div>
-              <div>
-                <dt>{{ 'requests.meta.date' | translate }}</dt>
-                <dd>{{ request.requestedDate }}</dd>
-              </div>
-              @if (!isOwner()) {
-                <div>
-                  <dt>{{ 'requests.meta.offers' | translate }}</dt>
-                  <dd>{{ request.offersCount }}</dd>
-                </div>
-              }
-            </dl>
-            <span class="badge badge-{{ request.status.toLowerCase() }}">
-              {{ statusLabel(request.status) }}
-            </span>
-          </a>
-        </li>
+        <request-card [request]="request" (details)="details($event)"/>
       }
-    </ul>
+    </div>
   }
 </main>

@@ -1,10 +1,10 @@
 <main class="rl-page">
-  <header class="header">
-    <div class="headings">
-      <h1>{{ 'shipments.title' | translate }}</h1>
-      <p>{{ 'shipments.subtitle' | translate }}</p>
+  <header class="rl-page__heading">
+    <div >
+      <h1 class="rl-page__title">{{ 'shipments.title' | translate }}</h1>
+      <p class="rl-page__subtitle" >{{ 'shipments.subtitle' | translate }}</p>
     </div>
-    <button tuiButton appearance="flat" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
+    <button tuiButton appearance="primary" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
       {{ 'requests.refresh' | translate }}
     </button>
   </header>
@@ -21,7 +21,7 @@
   } @else if (error(); as message) {
     <div class="state state-error" role="alert">
       <p>{{ message }}</p>
-      <button tuiButton appearance="flat" type="button" (click)="reload()">
+      <button tuiButton appearance="primary" type="button" (click)="reload()">
         {{ 'requests.retry' | translate }}
       </button>
     </div>

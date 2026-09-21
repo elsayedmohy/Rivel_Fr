@@ -1,24 +1,24 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { TokenService } from '../../core/http/token.service';
 import { LanguageService } from '../../core/config/language.service';
 import { ShipmentRequestService } from '../../core/http/shipment-request.service';
 import type { ShipmentRequestDto } from '../../models/request/shipment-request';
-import type { ShipmentRequestStatus } from '../../models/enums';
+import { RequestCard } from './components/request-card/request-card';
 
 @Component({
   selector: 'rl-requests-page',
-  imports: [RouterLink, TuiButton, TuiIcon, TranslatePipe],
+  imports: [RouterLink, TuiButton, TuiIcon, TranslatePipe, RequestCard],
   templateUrl: './requests-page.html',
   styleUrl: './requests-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestsPage {
   private readonly service = inject(ShipmentRequestService);
+  private readonly router = inject(Router);
   private readonly user = inject(TokenService).userSignal;
-  private readonly translate = inject(TranslateService);
   private readonly language = inject(LanguageService);
 
   readonly role = computed(() => this.user()?.role ?? null);
@@ -35,24 +35,15 @@ export class RequestsPage {
     void this.load();
   }
 
-  weightText(weight: number): string {
-    return new Intl.NumberFormat(this.language.current(), {
-      maximumFractionDigits: 1,
-    }).format(weight);
-  }
-
-  statusLabel(status: ShipmentRequestStatus): string {
-    return this.translate.translate(`requests.status.${status}`)();
+  details(requestId:string) {
+    this.router.navigate([`/requests/${requestId}`]);
   }
 
   private load(): void {
     this.loading.set(true);
     this.error.set(null);
 
-    const source =
-      this.role() === 'CargoOwner' ? this.service.listMine() : this.service.listOpen();
-
-    source.subscribe({
+    this.service.listMine().subscribe({
       next: (requests) => {
         this.requests.set(requests);
         this.loading.set(false);

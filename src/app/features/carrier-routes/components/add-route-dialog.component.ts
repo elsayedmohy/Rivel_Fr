@@ -17,14 +17,6 @@ import { CreateCarrierRouteDto, NileBerth } from '../routes.model';
           <h2 class="dialog__title">إضافة خط سير</h2>
           <p class="dialog__sub">اختر ميناء القيام وميناء الوصول من مراسي النيل المسجّلة.</p>
         </div>
-        <button
-          type="button"
-          class="dialog__close"
-          aria-label="إغلاق"
-          (click)="cancel()"
-        >
-          <tui-icon icon="@tui.x" [style.font-size.px]="18" />
-        </button>
       </header>
 
       <rl-berth-picker

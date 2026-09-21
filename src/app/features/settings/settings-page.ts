@@ -70,7 +70,7 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
             <button
               tuiButton
               type="button"
-              appearance="flat"
+              appearance="primary"
               [iconStart]="option.icon"
               [class.active]="theme() === option.value"
               (click)="setTheme(option)"
@@ -92,7 +92,7 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
             <button
               tuiButton
               type="button"
-              appearance="flat"
+              appearance="primary"
               [iconStart]="option.icon"
               [class.active]="language() === option.value"
               (click)="setLanguage(option)"

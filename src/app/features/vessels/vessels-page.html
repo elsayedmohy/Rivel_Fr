@@ -1,6 +1,6 @@
 <main class="rl-page">
   <header class="rl-page__heading">
-    <div class="headings">
+    <div>
       <h1  class="rl-page__title">{{ 'vessels.title' | translate }}</h1>
       <p class="rl-page__subtitle">{{ 'vessels.subtitle' | translate }}</p>
     </div >
@@ -85,7 +85,7 @@
   } @else if (error() && vessels().length === 0) {
     <div class="state state-error" role="alert">
       <p>{{ error() }}</p>
-      <button tuiButton appearance="flat" type="button" (click)="reload()">
+      <button tuiButton appearance="primary" type="button" (click)="reload()">
         {{ 'requests.retry' | translate }}
       </button>
     </div>

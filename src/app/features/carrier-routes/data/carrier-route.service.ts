@@ -50,7 +50,6 @@ export class CarrierRouteService {
       params = params.set('sort', query.sort);
     }
 
-    // return this.http.get<SuggestedRequestsPage>(`${this.url}/suggested-requests`, { params });
-    return this.http.get<SuggestedRequestsPage>(`${this.url}/suggested-requests`);
+    return this.http.get<SuggestedRequestsPage>(`${this.url}/suggested-requests`, { params });
   }
 }

@@ -13,11 +13,11 @@
   display: flex;
   align-items: center;
   gap: var(--tui-padding-s);
-  padding: 0.55rem var(--tui-padding-m);
+  padding: var(--tui-padding-m);
   border-radius: var(--tui-radius-m);
   color: var(--tui-text-secondary);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.925rem;
+  font-weight: 700;
   text-decoration: none;
   transition:
     background-color var(--tui-duration-fast) ease,

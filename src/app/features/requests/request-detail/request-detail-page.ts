@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TuiButton, TuiError, TuiIcon, TuiInput } from '@taiga-ui/core';
+import { TuiButton, TuiError, TuiIcon, TuiInput, TuiLoader } from '@taiga-ui/core';
 import { TuiButtonLoading } from '@taiga-ui/kit';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../../core/config/language.service';
@@ -25,6 +25,7 @@ import type { VesselDto } from '../../../models/vessel/vessel';
     TuiIcon,
     TuiInput,
     TranslatePipe,
+    TuiLoader,
   ],
   templateUrl: './request-detail-page.html',
   styleUrl: './request-detail-page.scss',
@@ -91,7 +92,9 @@ export class RequestDetailPage {
   }
 
   weightText(weight: number): string {
-    return new Intl.NumberFormat(this.language.current(), { maximumFractionDigits: 1 }).format(weight);
+    return new Intl.NumberFormat(this.language.current(), { maximumFractionDigits: 1 }).format(
+      weight,
+    );
   }
 
   priceText(price: number): string {
