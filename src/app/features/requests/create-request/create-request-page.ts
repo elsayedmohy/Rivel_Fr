@@ -8,7 +8,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TuiButton, TuiError, TuiInput } from '@taiga-ui/core';
 import { TuiButtonLoading } from '@taiga-ui/kit';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -27,7 +27,15 @@ const SERVER_FIELD_KEYS: Record<string, 'cargoType' | 'weight' | 'origin' | 'des
 
 @Component({
   selector: 'rl-create-request-page',
-  imports: [ReactiveFormsModule, TuiButton, TuiButtonLoading, TuiError, TuiInput, TranslatePipe],
+  imports: [
+    ReactiveFormsModule,
+    TuiButton,
+    TuiButtonLoading,
+    TuiError,
+    TuiInput,
+    TranslatePipe,
+    RouterLink,
+  ],
   templateUrl: './create-request-page.html',
   styleUrl: './create-request-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -83,7 +91,9 @@ export class CreateRequestPage {
     return !!field && field in SERVER_FIELD_KEYS;
   }
 
-  fieldError(key: 'cargoType' | 'weight' | 'origin' | 'destination' | 'requestedDate'): string | null {
+  fieldError(
+    key: 'cargoType' | 'weight' | 'origin' | 'destination' | 'requestedDate',
+  ): string | null {
     const control = this.form.controls[key];
 
     if (control.invalid && control.errors) {
@@ -96,8 +106,9 @@ export class CreateRequestPage {
       return this.translate.translate(`auth.validation.${first}`)();
     }
 
-    const server = this.serverErrors()
-      ?.errors?.find((error) => error.field && SERVER_FIELD_KEYS[error.field] === key);
+    const server = this.serverErrors()?.errors?.find(
+      (error) => error.field && SERVER_FIELD_KEYS[error.field] === key,
+    );
     return server?.message ?? null;
   }
 
