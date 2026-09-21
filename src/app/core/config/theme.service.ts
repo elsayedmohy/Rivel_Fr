@@ -1,18 +1,9 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, DOCUMENT, effect, inject, Injectable, signal } from '@angular/core';
 import { TUI_DARK_MODE } from '@taiga-ui/core';
 import { APP_CONFIG } from './app-config';
 import type { Theme } from '../../models/enums';
 
-/**
- * Wraps the Taiga `TUI_DARK_MODE` token to expose a light/dark/system toggle.
- *
- * `TUI_DARK_MODE` is a writable signal backed by localStorage (`tuiDark`):
- * - `.set(true | false)` pins the theme and persists it.
- * - `.reset()` clears the pin and follows `prefers-color-scheme`.
- *
- * The three-state theme (`system` un-pinned, `light`/`dark` pinned) mirrors
- * exactly what the token supports, so no extra state is kept.
- */
+
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly darkMode = inject(TUI_DARK_MODE);
@@ -20,6 +11,7 @@ export class ThemeService {
   private readonly theme = signal<Theme>(this.readInitial());
   readonly current = this.theme.asReadonly();
   readonly isDark = computed(() => this.darkMode());
+  private readonly document = inject(DOCUMENT);
 
   private readonly media = typeof window === 'undefined'
     ? null
@@ -31,6 +23,9 @@ export class ThemeService {
       if (this.theme() === 'system') {
         this.sync();
       }
+    });
+    effect(() => {
+      this.document.documentElement.dataset['theme'] = this.darkMode() ? 'dark' : 'light';
     });
   }
 

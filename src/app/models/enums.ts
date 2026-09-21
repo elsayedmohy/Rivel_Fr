@@ -62,3 +62,22 @@ export const SHIPMENT_TRANSITIONS: Record<ShipmentStatus, ShipmentStatus | null>
  * field stays a plain string — these values are only a convenience list.
  */
 export const CARGO_TYPES = ['General', 'Food', 'Agricultural', 'Construction', 'Liquid', 'Other'] as const;
+
+export enum BerthType {
+  Port = 'Port',
+  Terminal = 'Terminal',
+  Dock = 'Dock',
+  Pier = 'Pier',
+  LandingSite = 'LandingSite',
+}
+
+export enum NavigationAxis {
+  CairoAswan = 'CairoAswan',
+  CairoDamietta = 'CairoDamietta',
+  AswanWadiHalfa = 'AswanWadiHalfa',
+}
+
+export enum CoordinateAccuracy {
+  Exact = 'Exact',
+  Approximate = 'Approximate',
+}

@@ -4,9 +4,7 @@ import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { LanguageService } from '../../core/config/language.service';
 import { ThemeService } from '../../core/config/theme.service';
 import { TokenService } from '../../core/http/token.service';
-import type { Theme } from '../../models/enums';
-import type { AppLanguage } from '../../models/enums';
-import type { UserRole } from '../../models/enums';
+import type { AppLanguage, Theme } from '../../models/enums';
 
 interface ChoiceOption<T extends string> {
   readonly value: T;
@@ -29,7 +27,7 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
   selector: 'rl-settings-page',
   imports: [TuiButton, TuiIcon, TranslatePipe],
   template: `
-    <main class="page">
+    <main class="rl-page">
       <header class="header">
         <div class="headings">
           <h1>{{ 'settings.title' | translate }}</h1>

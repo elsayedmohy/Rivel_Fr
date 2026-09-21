@@ -13,10 +13,11 @@ import { VesselService } from '../../core/http/vessel.service';
 import { VESSEL_TYPES } from '../../models/enums';
 import type { VesselStatus, VesselType } from '../../models/enums';
 import type { VesselDto } from '../../models/vessel/vessel';
+import { RlCard } from '../../shared/components/rl-card/rl-card';
 
 @Component({
   selector: 'rl-vessels-page',
-  imports: [ReactiveFormsModule, TuiButton, TuiError, TuiIcon, TuiInput, TranslatePipe],
+  imports: [ReactiveFormsModule, TuiButton, TuiError, TuiIcon, TuiInput, TranslatePipe, RlCard],
   templateUrl: './vessels-page.html',
   styleUrl: './vessels-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

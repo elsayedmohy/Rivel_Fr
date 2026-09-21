@@ -1,4 +1,4 @@
-<main class="page">
+<main class="rl-page">
   <header class="header">
     <div class="headings">
       <h1>{{ 'requests.title' | translate }}</h1>
@@ -12,7 +12,8 @@
     }
 
     @if (!isOwner()) {
-      <button tuiButton appearance="flat" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
+      <button tuiButton appearance="primary"
+              iconStart="@tui.refresh-cw" type="button" (click)="reload()">
         {{ 'requests.refresh' | translate }}
       </button>
     }
@@ -23,7 +24,7 @@
   } @else if (error(); as message) {
     <div class="state state-error" role="alert">
       <p>{{ message }}</p>
-      <button tuiButton appearance="flat" type="button" (click)="reload()">
+      <button tuiButton appearance="primary" type="button" (click)="reload()">
         {{ 'requests.retry' | translate }}
       </button>
     </div>
@@ -32,7 +33,7 @@
       <tui-icon [icon]="'@tui.inbox'" class="state-icon" />
       <p>{{ (isOwner() ? 'requests.empty.mine' : 'requests.empty.open') | translate }}</p>
       @if (isOwner()) {
-        <a tuiButton appearance="flat" iconStart="@tui.plus" routerLink="new">
+        <a tuiButton appearance="primary" iconStart="@tui.plus" routerLink="new">
           {{ 'requests.create.button' | translate }}
         </a>
       }
@@ -41,7 +42,7 @@
     <ul class="list">
       @for (request of requests(); track request.id) {
         <li>
-          <a [routerLink]="[request.id]" class="card">
+          <a [routerLink]="[request.id]" class="card rl-card">
             <div class="card-main">
               <div class="card-title">
                 <tui-icon [icon]="'@tui.package'" class="cargo-icon" />

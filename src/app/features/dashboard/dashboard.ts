@@ -4,10 +4,11 @@ import { TuiIcon } from '@taiga-ui/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TokenService } from '../../core/http/token.service';
 import type { QuickAction } from './dashboard.models';
+import { RlCard } from '../../shared/components/rl-card/rl-card';
 
 @Component({
   selector: 'rl-dashboard',
-  imports: [RouterLink, TuiIcon, TranslatePipe],
+  imports: [RouterLink, TuiIcon, TranslatePipe, RlCard],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -62,6 +63,8 @@ export class DashboardPage {
 
   visibleActions(): QuickAction[] {
     const role = this.user()?.role;
-    return role ? this.actions.filter((action) => !action.role || action.role === role) : this.actions;
+    return role
+      ? this.actions.filter((action) => !action.role || action.role === role)
+      : this.actions;
   }
 }

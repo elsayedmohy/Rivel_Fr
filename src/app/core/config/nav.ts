@@ -25,6 +25,8 @@ export function createNavItems(translate: TranslateService, role: UserRole | nul
     { link: '/vessels', icon: '@tui.ship', label: t('nav.vessels'), roles: ['Carrier'] },
     { link: '/shipments', icon: '@tui.anchor', label: t('nav.shipments') },
     { link: '/ratings', icon: '@tui.star', label: t('nav.ratings'), roles: ['CargoOwner'] },
+    { link: '/carrier-routes', icon: '@tui.route', label: t('nav.shippingRoutes'), roles: ['Carrier'] },
+    { link: '/suggested-requests', icon: '@tui.route', label: t('nav.shippingRoutes'), roles: ['Carrier'] },
   ];
 
   return role ? items.filter((item) => !item.roles?.length || item.roles.includes(role)) : items;

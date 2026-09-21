@@ -1,19 +1,22 @@
-<section class="page">
-  <header class="heading">
-    <p class="text-sm font-medium text-tertiary">{{ 'dashboard.eyebrow' | translate }}</p>
-    <h1 class="text-2xl font-bold">{{ 'dashboard.title' | translate }}</h1>
-    <p class="text-secondary">{{ 'dashboard.subtitle' | translate }}</p>
+<section class="rl-page">
+  <header class="rl-page__heading">
+    <div>
+    <h1 class="rl-page__title">{{ 'dashboard.title' | translate }}</h1>
+    <p class="rl-page__subtitle">{{ 'dashboard.subtitle' | translate }}</p>
+    </div>
   </header>
 
-  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <div class="rl-page__grid">
     @for (action of visibleActions(); track action.routerLink) {
-      <a [routerLink]="action.routerLink" class="card">
-        <tui-icon [icon]="action.icon" class="icon" />
-        <div>
-          <h3 class="font-semibold">{{ action.label() }}</h3>
-          <p class="text-sm text-tertiary">{{ action.hint() }}</p>
-        </div>
-      </a>
+        <a [routerLink]="action.routerLink">
+      <rl-card>
+          <tui-icon [icon]="action.icon" class="icon" />
+          <div>
+            <h3>{{ action.label() }}</h3>
+            <p >{{ action.hint() }}</p>
+          </div>
+      </rl-card>
+        </a>
     }
   </div>
 </section>

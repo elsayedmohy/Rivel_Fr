@@ -12,12 +12,9 @@
   display: flex;
   align-items: center;
   gap: var(--tui-padding-s);
-  color: var(--tui-text-primary);
   text-decoration: none;
 
-  tui-icon {
-    color: var(--tui-background-accent-1);
-  }
+
 }
 
 .brand-name {
@@ -41,7 +38,6 @@
 .search-icon {
   position: absolute;
   inset-inline-start: var(--tui-padding-m);
-  color: var(--tui-text-tertiary);
   pointer-events: none;
 }
 
@@ -136,5 +132,5 @@ tui-data-list {
 }
 
 button[class='checked'] {
-  color: var(--tui-text-action);
+  color: var(--rl-focus);
 }

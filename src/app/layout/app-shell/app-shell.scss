@@ -44,9 +44,6 @@
   grid-area: content;
   overflow-y: auto;
   overscroll-behavior-y: contain;
-  @media (min-width: 48rem) {
-    padding: 2rem;
-  }
 }
 
 .mobile-nav {

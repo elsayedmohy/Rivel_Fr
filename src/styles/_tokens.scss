@@ -1,0 +1,187 @@
+.ibm-plex-sans-arabic-thin {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.ibm-plex-sans-arabic-extralight {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.ibm-plex-sans-arabic-light {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.ibm-plex-sans-arabic-regular {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.ibm-plex-sans-arabic-medium {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.ibm-plex-sans-arabic-semibold {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.ibm-plex-sans-arabic-bold {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+@mixin light {
+  color-scheme: light;
+
+  --rl-canvas: #f8f9eb;
+  --rl-raised: #ffffff;
+  --rl-sunken: #efefe2;
+  --rl-feature: #18251d;
+  --rl-scrim: rgb(26 26 23 / 65%);
+
+  --rl-ink: #1a1a17;
+  --rl-ink-2: #5a5a4f;
+  --rl-ink-3: #6c6d63;
+  --rl-on-feature: #f8f9eb;
+  --rl-on-feature-2: #a9b3a4;
+
+  --rl-line-subtle: #e6e7d8;
+  --rl-line: #d6d7c5;
+  --rl-line-control: #8e8f80;
+  --rl-line-strong: #1a1a17;
+  --rl-focus: #18251d;
+
+  --rl-primary: #202020;
+  --rl-primary-hover: #34342f;
+  --rl-primary-ink: #f8f9eb;
+  --rl-quiet-hover: #efefe2;
+
+  --rl-accent-soft: #e9fcd2;
+  --rl-accent-ink: #3a6410;
+
+  --rl-warning: #8a5a00;
+  --rl-warning-soft: #fbeed3;
+  --rl-danger: #a32c1e;
+  --rl-danger-soft: #f9e4de;
+
+  --rl-shadow-float: 0 16px 40px rgb(26 26 23 / 12%);
+}
+
+@mixin dark {
+  color-scheme: dark;
+
+  --rl-canvas: #0f110f;
+  --rl-raised: #171a17;
+  --rl-sunken: #0b0c0b;
+  --rl-feature: #1c3024;
+  --rl-scrim: rgb(0 0 0 / 78%);
+
+  --rl-ink: #f6f4e2;
+  --rl-ink-2: #b3b2a2;
+  --rl-ink-3: #8a8a7e;
+  --rl-on-feature: #f6f4e2;
+  --rl-on-feature-2: #a9b3a4;
+
+  --rl-line-subtle: #23261f;
+  --rl-line: #2e3129;
+  --rl-line-control: #6b6d62;
+  --rl-line-strong: #f6f4e2;
+  --rl-focus: #b7ff72;
+
+  --rl-primary: #f6f4e2;
+  --rl-primary-hover: #e4e2cf;
+  --rl-primary-ink: #171a17;
+  --rl-quiet-hover: #23261f;
+
+  --rl-accent-soft: #212c19;
+  --rl-accent-ink: #b7ff72;
+
+  --rl-warning: #f0c06a;
+  --rl-warning-soft: #2c2410;
+  --rl-danger: #ff9a86;
+  --rl-danger-soft: #331a15;
+
+  --rl-shadow-float: 0 16px 40px rgb(0 0 0 / 60%);
+}
+
+:root {
+  --rl-forest: #18251d;
+  --rl-mint: #b7ff72;
+
+  --rl-font:"IBM Plex Sans Arabic", sans-serif;
+  --rl-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --rl-s1: 4px;  --rl-s2: 8px;  --rl-s3: 12px; --rl-s4: 16px;
+  --rl-s6: 24px; --rl-s8: 32px; --rl-s12: 48px;
+
+  --rl-r-sm: 8px; --rl-r-md: 12px; --rl-r-lg: 20px; --rl-r-xl: 28px; --rl-r-pill: 999px;
+
+  --rl-tap: 44px;
+
+  @include light;
+}
+
+[data-theme='light'] { @include light; }
+[data-theme='dark']  { @include dark; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { @include dark; }
+}
+
+:root,
+[data-theme],
+tui-root,
+tui-root[tuiTheme] {
+  --tui-background-base: var(--rl-canvas);
+  --tui-background-base-alt: var(--rl-sunken);
+  --tui-background-elevation-1: var(--rl-raised);
+  --tui-background-elevation-2: var(--rl-raised);
+  --tui-background-elevation-3: var(--rl-raised);
+  --tui-background-neutral-1: var(--rl-sunken);
+  --tui-background-neutral-1-hover: var(--rl-quiet-hover);
+
+  --tui-background-accent-1: var(--rl-primary);
+  --tui-background-accent-1-hover: var(--rl-primary-hover);
+  --tui-background-accent-1-pressed: var(--rl-primary-hover);
+  --tui-text-primary-on-accent-1: var(--rl-primary-ink);
+
+  --tui-text-primary: var(--rl-ink);
+  --tui-text-secondary: var(--rl-ink-2);
+  --tui-text-tertiary: var(--rl-ink-3);
+  --tui-text-action: var(--rl-ink);
+  --tui-text-negative: var(--rl-danger);
+  --tui-text-positive: var(--rl-accent-ink);
+
+  --tui-border-normal: var(--rl-line-control);
+  --tui-border-hover: var(--rl-line-strong);
+  --tui-border-focus: var(--rl-focus);
+  --tui-status-negative: var(--rl-danger);
+  --tui-status-negative-pale: var(--rl-danger-soft);
+  --tui-status-positive: var(--rl-accent-ink);
+  --tui-status-positive-pale: var(--rl-accent-soft);
+  --tui-status-warning: var(--rl-warning);
+  --tui-status-warning-pale: var(--rl-warning-soft);
+
+  --tui-radius-m: var(--rl-r-md);
+  --tui-radius-l: var(--rl-r-lg);
+  --tui-shadow-medium: var(--rl-shadow-float);
+
+  --tui-font-text: var(--rl-font);
+  --tui-font-heading: var(--rl-font);
+  --tui-font-family: var(--rl-font);
+  --tui-typography-family-text: var(--rl-font);
+}
+
+
+

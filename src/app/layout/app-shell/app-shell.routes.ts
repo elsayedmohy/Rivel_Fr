@@ -10,11 +10,13 @@ export const appShellRoutes: Route[] = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('../../features/dashboard/dashboard.routes').then((m) => m.default),
+        loadChildren: () =>
+          import('../../features/dashboard/dashboard.routes').then((m) => m.default),
       },
       {
         path: 'requests',
-        loadChildren: () => import('../../features/requests/requests.routes').then((m) => m.default),
+        loadChildren: () =>
+          import('../../features/requests/requests.routes').then((m) => m.default),
       },
       {
         path: 'offers',
@@ -26,15 +28,29 @@ export const appShellRoutes: Route[] = [
       },
       {
         path: 'shipments',
-        loadChildren: () => import('../../features/shipments/shipments.routes').then((m) => m.default),
+        loadChildren: () =>
+          import('../../features/shipments/shipments.routes').then((m) => m.default),
       },
       {
         path: 'ratings',
         loadChildren: () => import('../../features/ratings/ratings.routes').then((m) => m.default),
       },
       {
+        path: 'carrier-routes',
+        loadChildren: () =>
+          import('../../features/carrier-routes/carrier.routes').then((m) => m.CARRIER_ROUTES),
+      },
+      {
+        path: 'suggested-requests',
+        loadChildren: () =>
+          import('../../features/suggested-requests/suggested-requests.routes').then(
+            (m) => m.SUGGESTED_ROUTES,
+          ),
+      },
+      {
         path: 'settings',
-        loadChildren: () => import('../../features/settings/settings.routes').then((m) => m.default),
+        loadChildren: () =>
+          import('../../features/settings/settings.routes').then((m) => m.default),
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'profile', redirectTo: 'settings', pathMatch: 'full' },

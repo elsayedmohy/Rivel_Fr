@@ -1,9 +1,9 @@
-<main class="page">
-  <header class="header">
+<main class="rl-page">
+  <header class="rl-page__heading">
     <div class="headings">
-      <h1>{{ 'vessels.title' | translate }}</h1>
-      <p>{{ 'vessels.subtitle' | translate }}</p>
-    </div>
+      <h1  class="rl-page__title">{{ 'vessels.title' | translate }}</h1>
+      <p class="rl-page__subtitle">{{ 'vessels.subtitle' | translate }}</p>
+    </div >
     <button tuiButton appearance="primary" iconStart="@tui.plus" type="button" (click)="showForm.set(!showForm())">
       {{ 'vessels.add.button' | translate }}
     </button>
@@ -72,7 +72,7 @@
           <button tuiButton appearance="primary" type="submit">
             {{ 'vessels.form.submit' | translate }}
           </button>
-          <button tuiButton appearance="flat" type="button" (click)="showForm.set(false)">
+          <button tuiButton appearance="accent" type="button" (click)="showForm.set(false)">
             {{ 'common.cancel' | translate }}
           </button>
         </div>
@@ -95,10 +95,10 @@
       <p>{{ 'vessels.empty' | translate }}</p>
     </div>
   } @else {
-    <ul class="list">
+    <div class="rl-page__grid">
       @for (vessel of vessels(); track vessel.id) {
-        <li class="card vessel">
-          <div class="vessel-info">
+        <rl-card>
+          <div class="vessel-info flex-1">
             <div class="vessel-title">
               <tui-icon [icon]="'@tui.ship'" class="vessel-icon" />
               <h2>{{ vessel.name }}</h2>
@@ -106,11 +106,13 @@
             <p class="vessel-meta">{{ vessel.type }} — {{ capacityText(vessel) }}</p>
           </div>
 
-          <span class="badge badge-{{ vessel.status.toLowerCase() }}">
+          <div>
+            <span class="badge badge-{{ vessel.status.toLowerCase() }}">
             {{ statusLabel(vessel.status) }}
           </span>
-        </li>
+          </div>
+        </rl-card>
       }
-    </ul>
+    </div>
   }
 </main>

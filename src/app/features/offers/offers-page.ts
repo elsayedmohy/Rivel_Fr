@@ -5,10 +5,11 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../core/config/language.service';
 import { OfferService } from '../../core/http/offer.service';
 import type { OfferDto } from '../../models/offer/offer';
+import { RlCard } from '../../shared/components/rl-card/rl-card';
 
 @Component({
   selector: 'rl-offers-page',
-  imports: [RouterLink, TuiButton, TuiIcon, TranslatePipe],
+  imports: [RouterLink, TuiButton, TuiIcon, TranslatePipe, RlCard],
   templateUrl: './offers-page.html',
   styleUrl: './offers-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
