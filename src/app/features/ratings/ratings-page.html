@@ -1,6 +1,6 @@
-<main class="rl-page">
-  <header class="rl-page__heading">
-    <div >
+<main class="rl-page ratings">
+  <header class="head">
+    <div>
       <h1 class="rl-page__title">{{ 'ratings.title' | translate }}</h1>
       <p class="rl-page__subtitle">
         @if (isOwner()) {
@@ -10,128 +10,182 @@
         }
       </p>
     </div>
-    <button tuiButton appearance="primary" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
-      {{ 'requests.refresh' | translate }}
+
+    <button
+      type="button"
+      class="rl-icon-btn refresh"
+      [attr.aria-label]="'requests.refresh' | translate"
+      [attr.title]="'requests.refresh' | translate"
+      [disabled]="loading()"
+      (click)="reload()"
+    >
+      <tui-icon icon="@tui.refresh-cw" [class.spin]="loading()" />
     </button>
   </header>
 
   @if (error(); as message) {
-    <div class="state state-error" role="alert">
-      <p>{{ message }}</p>
+    <div class="state" role="alert">
+      <p class="state__error">{{ message }}</p>
       <button tuiButton appearance="primary" type="button" (click)="reload()">
         {{ 'requests.retry' | translate }}
       </button>
     </div>
   } @else if (loading()) {
-    <div class="state">{{ 'common.loading' | translate }}</div>
-  } @else if (isOwner()) {
-    @if (deliveredShipments(); as deliveries) {
-      @if (deliveries.length === 0) {
-        <div class="state">
-          <tui-icon [icon]="'@tui.star'" class="state-icon" />
-          <p>{{ 'ratings.empty.owner' | translate }}</p>
-          <a tuiButton appearance="primary" iconStart="@tui.package" routerLink="/shipments">
-            {{ 'nav.shipments' | translate }}
-          </a>
-        </div>
-      } @else {
-        <ul class="list">
-          @for (shipment of deliveries; track shipment.id) {
-            <li class="card rating-card">
-              <div class="rating-main">
-                <div class="rating-title">
-                  <tui-icon [icon]="'@tui.package'" class="rating-icon" />
-                  <h2>{{ shipment.cargoType }}</h2>
-                </div>
-                <p class="route">{{ routeText(shipment.origin, shipment.destination) }}</p>
-                <p class="meta-line">{{ 'shipments.meta.carrier' | translate }}: {{ shipment.carrierCompanyName }}</p>
-              </div>
+    <div class="state" aria-live="polite"><tui-loader size="m" /></div>
+  }
+  @else if (isOwner()) {
+    @let deliveries = deliveredShipments();
+    @let pending = deliveries.length - ratedCount();
+
+    @if (deliveries.length === 0) {
+      <div class="state rl-card">
+        <span class="rl-tile"><tui-icon icon="@tui.star" /></span>
+        <p>{{ 'ratings.empty.owner' | translate }}</p>
+        <a routerLink="/shipments" class="rl-btn rl-btn--quiet">
+          <tui-icon icon="@tui.package" />
+          {{ 'nav.shipments' | translate }}
+        </a>
+      </div>
+    } @else {
+      @if (pending > 0) {
+        <p class="rl-eyebrow section">{{ 'ratings.pending' | translate }} · {{ pending }}</p>
+      }
+
+      @if (formError(); as message) {
+        <p class="notice notice--error" role="alert">
+          <tui-icon icon="@tui.circle-alert" />
+          <span>{{ message }}</span>
+        </p>
+      }
+
+      <ul class="list">
+        @for (shipment of deliveries; track shipment.id) {
+          <li class="rl-card row" [class.row--done]="!!shipment.rating">
+            <span class="rl-tile"><tui-icon icon="@tui.package" /></span>
+
+            <div class="row__body">
+              <h2 class="row__title">{{ shipment.cargoType }}</h2>
+              <p class="row__route">
+                <span>{{ shipment.originNileBerth.arabicName }}</span>
+                <svg class="tip" viewBox="0 0 9 10" aria-hidden="true"><path d="M6.5 1 2 5l4.5 4" /></svg>
+                <span>{{ shipment.destinationNileBerth.arabicName }}</span>
+                <span class="row__dim">· {{ shipment.carrierCompanyName }}</span>
+              </p>
 
               @if (shipment.rating; as rating) {
-                <div class="rated">
-                  <span class="score-badge">
-                    <tui-icon [icon]="'@tui.star'" class="star" />
-                    {{ rating.score }}/5
-                  </span>
-                  @if (rating.comment) {
-                    <p class="comment">{{ rating.comment }}</p>
-                  }
-                </div>
-              } @else {
-                <form
-                  [formGroup]="formFor(shipment.id)"
-                  (ngSubmit)="submit(shipment, formFor(shipment.id))"
-                  novalidate
-                  class="rating-form"
-                >
-                  @if (formError(); as message) {
-                    <div class="alert" role="alert">
-                      <tui-icon [icon]="'@tui.alert-circle'" />
-                      <span>{{ message }}</span>
-                    </div>
-                  }
-
-                  <div class="form-row">
-                    <div class="field">
-                      <label class="label" [for]="'score-' + shipment.id">{{ 'ratings.score' | translate }}</label>
-                      <select class="select" [id]="'score-' + shipment.id" formControlName="score">
-                        @for (score of scoreOptions; track score) {
-                          <option [value]="score">{{ score }}</option>
-                        }
-                      </select>
-                    </div>
-
-                    <div class="field field-grow">
-                      <label class="label" [for]="'comment-' + shipment.id">{{ 'ratings.comment' | translate }}</label>
-                      <input
-                        class="comment-input"
-                        [id]="'comment-' + shipment.id"
-                        type="text"
-                        formControlName="comment"
-                        [placeholder]="'ratings.commentPlaceholder' | translate"
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    tuiButton
-                    appearance="primary"
-                    type="submit"
-                    [loading]="submittingFor() === shipment.id"
-                    [disabled]="submittingFor() !== null"
-                  >
-                    {{ 'ratings.submit' | translate }}
-                  </button>
-                </form>
+                @if (rating.comment) {
+                  <p class="quote">{{ rating.comment }}</p>
+                }
               }
-            </li>
-          }
-        </ul>
-      }
+            </div>
+
+            <div class="row__end">
+              @if (shipment.rating; as rating) {
+                <span class="stars" [attr.aria-label]="rating.score + ' / 5'">
+                  @for (n of scale; track n) {
+                    <svg viewBox="0 0 24 24" aria-hidden="true" [class.on]="n <= rating.score">
+                      <path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8L12 3.6Z" />
+                    </svg>
+                  }
+                </span>
+              } @else {
+                <button
+                  tuiButton
+                  appearance="primary"
+                  size="m"
+                  type="button"
+                  iconStart="@tui.star"
+                  [loading]="submittingFor() === shipment.id"
+                  (click)="rate(shipment)"
+                >
+                  {{ 'ratings.rateCarrier' | translate }}
+                </button>
+              }
+            </div>
+          </li>
+        }
+      </ul>
     }
-  } @else {
-    @if (ratings().length === 0) {
-      <div class="state">
-        <tui-icon [icon]="'@tui.star'" class="state-icon" />
+  }
+
+  @else {
+    @if (ratingCount() === 0) {
+      <div class="state rl-card">
+        <span class="rl-tile"><tui-icon icon="@tui.star" /></span>
         <p>{{ 'ratings.empty.carrier' | translate }}</p>
       </div>
     } @else {
-      <div class="summary card">
-        <div class="summary-score">
-          <tui-icon [icon]="'@tui.star'" class="summary-icon" />
-          <span class="summary-value">{{ scoreText(averageScore()) }}/5</span>
+      <section class="summary rl-card" aria-labelledby="summary-title">
+        <div class="summary__score">
+          <bdi class="summary__value rl-num">{{ scoreText(overallRating()) }}</bdi>
+          <span class="stars stars--lg" [attr.aria-label]="scoreText(overallRating()) + ' / 5'">
+            @for (n of scale; track n) {
+              <svg viewBox="0 0 24 24" aria-hidden="true" [class.on]="n <= roundedOverall()">
+                <path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8L12 3.6Z" />
+              </svg>
+            }
+          </span>
+          <p id="summary-title" class="summary__label">
+            {{ 'ratings.average' | translate }} · {{ ratingCount() }} {{ 'ratings.count' | translate }}
+          </p>
         </div>
-        <p class="summary-label">{{ 'ratings.average' | translate }} — {{ ratings().length }} {{ 'ratings.count' | translate }}</p>
-      </div>
+
+        <ol class="dist">
+          @for (n of scaleDesc; track n) {
+            @let c = distribution(n);
+            <li class="dist__row">
+              <span class="dist__label rl-num">{{ n }}</span>
+              <span class="dist__track">
+                <span class="dist__fill" [style.inline-size.%]="ratingCount() ? (c / ratingCount()) * 100 : 0"></span>
+              </span>
+              <span class="dist__count rl-num">{{ c }}</span>
+            </li>
+          }
+        </ol>
+      </section>
+
+      <p class="rl-eyebrow section">{{ 'ratings.latest' | translate }}</p>
 
       <ul class="list">
         @for (rating of ratings(); track rating.id) {
-          <li class="card rating-card">
-            <span class="score-badge">
-              <tui-icon [icon]="'@tui.star'" class="star" />
-              {{ rating.score }}/5
-            </span>
-            <p class="comment">{{ rating.comment || ('common.empty' | translate) }}</p>
+          <li class="rl-card review">
+            <div class="review__head">
+              <span class="stars" [attr.aria-label]="rating.score + ' / 5'">
+                @for (n of scale; track n) {
+                  <svg viewBox="0 0 24 24" aria-hidden="true" [class.on]="n <= rating.score">
+                    <path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8L12 3.6Z" />
+                  </svg>
+                }
+              </span>
+
+              @if (rating.createdAt) {
+                <bdi class="review__date rl-num">{{ rating.createdAt }}</bdi>
+              }
+            </div>
+
+            @if (rating.comment) {
+              <p class="quote quote--lg">{{ rating.comment }}</p>
+            } @else {
+              <p class="review__nocomment">{{ 'ratings.noComment' | translate }}</p>
+            }
+
+            @if (rating.cargoType || rating.origin) {
+              <p class="review__context">
+                @if (rating.cargoType) {
+                  <span>{{ rating.cargoType }}</span>
+                }
+                @if (rating.origin && rating.destination) {
+                  <span class="review__route">
+                    {{ rating.origin }}
+                    <svg class="tip" viewBox="0 0 9 10" aria-hidden="true"><path d="M6.5 1 2 5l4.5 4" /></svg>
+                    {{ rating.destination }}
+                  </span>
+                }
+                @if (rating.cargoOwnerName) {
+                  <span class="review__dim">· {{ rating.cargoOwnerName }}</span>
+                }
+              </p>
+            }
           </li>
         }
       </ul>

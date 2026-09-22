@@ -1,20 +1,36 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { TuiButton, TuiIcon } from '@taiga-ui/core';
+import { TuiButton, TuiDialogService, TuiIcon, TuiLoader } from '@taiga-ui/core';
 import { TuiButtonLoading } from '@taiga-ui/kit';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../core/config/language.service';
 import { toApiErrorResponse } from '../../core/http/api-error.util';
 import { RatingService } from '../../core/http/rating.service';
 import { ShipmentService } from '../../core/http/shipment.service';
 import { TokenService } from '../../core/http/token.service';
-import type { CreateRatingDto, RatingDto } from '../../models/rating/rating';
+import type { CreateRatingDto, RatingDto, RatingsSummary } from '../../models/rating/rating';
 import type { ShipmentDto } from '../../models/shipment/shipment';
+import {
+  RateCarrierData,
+  RateCarrierDialogComponent,
+  RateCarrierResult,
+} from '../shipments/rate-carrier-dialog/rate-carrier-dialog.component';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { EMPTY, switchMap } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'rl-ratings-page',
-  imports: [ReactiveFormsModule, RouterLink, TuiButton, TuiButtonLoading, TuiIcon, TranslatePipe],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TuiButton,
+    TuiButtonLoading,
+    TuiIcon,
+    TranslatePipe,
+    TuiLoader,
+  ],
   templateUrl: './ratings-page.html',
   styleUrl: './ratings-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,9 +39,8 @@ export class RatingsPage {
   private readonly shipmentsService = inject(ShipmentService);
   private readonly ratingsService = inject(RatingService);
   private readonly language = inject(LanguageService);
+  private readonly translate = inject(TranslateService);
   private readonly user = inject(TokenService).userSignal;
-
-  readonly scoreOptions = [1, 2, 3, 4, 5];
 
   readonly isOwner = computed(() => this.user()?.role === 'CargoOwner');
   readonly ownId = computed(() => this.user()?.id ?? '');
@@ -40,19 +55,90 @@ export class RatingsPage {
   readonly deliveredShipments = computed(() =>
     this.shipments().filter((s) => s.shipmentStatus === 'Delivered'),
   );
-  readonly averageScore = computed(() => {
-    const ratings = this.ratings();
-    if (ratings.length === 0) {
-      return 0;
-    }
-    return ratings.reduce((sum, rating) => sum + rating.score, 0) / ratings.length;
-  });
 
-  private readonly forms = new Map<string, FormGroup>();
+  private readonly dialogs = inject(TuiDialogService);
+  private readonly ratingsApi = inject(RatingService);
+
+  protected readonly scale = [1, 2, 3, 4, 5];
+  protected readonly scaleDesc = [5, 4, 3, 2, 1];
+
+  protected readonly ratedCount = computed(
+    () => this.deliveredShipments().filter((s) => !!s.rating).length,
+  );
 
   constructor() {
     this.reload();
   }
+
+  protected rate(shipment: ShipmentDto): void {
+    const data: RateCarrierData = {
+      carrierName: shipment.carrierCompanyName,
+      cargoType: shipment.cargoType,
+      route: `${shipment.originNileBerth.arabicName} ← ${shipment.destinationNileBerth.arabicName}`,
+    };
+
+    this.dialogs
+      .open<RateCarrierResult | null>(new PolymorpheusComponent(RateCarrierDialogComponent), {
+        data,
+        size: 's',
+        dismissible: true,
+      })
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            return EMPTY;
+          }
+          this.submittingFor.set(shipment.id);
+          return this.ratingsApi.create({ shipmentId: shipment.id, ...result });
+        }),
+      )
+      .subscribe({
+        next: (rating) => {
+          this.submittingFor.set(null);
+          this.shipments.update((list) =>
+            list.map((s) => (s.id === shipment.id ? { ...s, rating } : s)),
+          );
+        },
+        error: (err: HttpErrorResponse) => {
+          this.submittingFor.set(null);
+          if (err.status === 409) {
+            this.reload();
+            return;
+          }
+          this.formError.set(err.error?.message ?? this.translate.instant('ratings.error'));
+        },
+      });
+  }
+
+
+  protected readonly ratingCount = computed(
+    () => this.summary()?.ratingCount ?? this.ratings().length,
+  );
+
+  protected readonly overallRating = computed(() => {
+    const fromServer = this.summary()?.overallRating;
+    if (fromServer != null) {
+      return fromServer;
+    }
+    const list = this.ratings();
+    return list.length ? list.reduce((sum, r) => sum + r.score, 0) / list.length : 0;
+  });
+
+  protected readonly roundedOverall = computed(() => Math.round(this.overallRating()));
+
+  private readonly localDistribution = computed(() => {
+    const map: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    for (const r of this.ratings()) {
+      map[r.score] = (map[r.score] ?? 0) + 1;
+    }
+    return map;
+  });
+
+  protected distribution(score: number): number {
+    return this.summary()?.distribution?.[score] ?? this.localDistribution()[score] ?? 0;
+  }
+
+  protected readonly summary = signal<RatingsSummary | null>(null);
 
   reload(): void {
     this.loading.set(true);
@@ -74,8 +160,9 @@ export class RatingsPage {
     }
 
     this.ratingsService.listForCarrier(this.ownId()).subscribe({
-      next: (ratings) => {
-        this.ratings.set(ratings);
+      next: (response) => {
+        this.summary.set(response);
+        this.ratings.set(response.items);
         this.loading.set(false);
       },
       error: (error: unknown) => {
@@ -87,18 +174,6 @@ export class RatingsPage {
         this.loading.set(false);
       },
     });
-  }
-
-  formFor(id: string): FormGroup {
-    let group = this.forms.get(id);
-    if (!group) {
-      group = new FormGroup({
-        score: new FormControl('5', { nonNullable: true }),
-        comment: new FormControl('', { nonNullable: true }),
-      });
-      this.forms.set(id, group);
-    }
-    return group;
   }
 
   submit(shipment: ShipmentDto, form: FormGroup): void {
@@ -130,8 +205,5 @@ export class RatingsPage {
       maximumFractionDigits: 1,
     }).format(score);
   }
-
-  routeText(origin: string, destination: string): string {
-    return `${origin} → ${destination}`;
-  }
 }
+

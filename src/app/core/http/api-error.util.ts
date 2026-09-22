@@ -5,14 +5,7 @@ function isProblemDetails(body: unknown): body is ProblemDetails {
   return !!body && typeof body === 'object' && 'errors' in body && body !== null;
 }
 
-/**
- * Normalizes every error the backend can produce into a single shape:
- * - ASP.NET `ValidationProblemDetails` (HTTP 400) → per-field messages
- * - plain-text body (business errors, invalid credentials) → one message
- * - the register envelope's Identity errors (`{ code, description }`)
- *
- * Used by AuthService so pages only deal with `ApiErrorResponse`.
- */
+
 export function toApiErrorResponse(error: unknown): ApiErrorResponse {
   if (isApiErrorResponse(error)) {
     return error;

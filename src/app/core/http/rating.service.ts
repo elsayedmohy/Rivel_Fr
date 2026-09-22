@@ -1,7 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import type { CreateRatingDto, RatingDto } from '../../models/rating/rating';
+import {
+  CreateRatingDto,
+  RatingDto,
+  RatingsResponseDto,
+  RatingsSummary,
+} from '../../models/rating/rating';
 
 @Injectable({ providedIn: 'root' })
 export class RatingService {
@@ -13,7 +18,7 @@ export class RatingService {
   }
 
   /** GET /api/ratings/{carrierId} — public */
-  listForCarrier(carrierId: string): Observable<RatingDto[]> {
-    return this.api.get<RatingDto[]>(`ratings/${carrierId}`);
+  listForCarrier(carrierId: string): Observable<RatingsResponseDto> {
+    return this.api.get<RatingsResponseDto>(`ratings/${carrierId}`);
   }
 }
