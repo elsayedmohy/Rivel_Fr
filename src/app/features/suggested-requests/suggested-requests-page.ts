@@ -12,6 +12,7 @@ import {
   SuggestedSort,
 } from '../carrier-routes/routes.model';
 import { CarrierRouteService } from '../carrier-routes/data/carrier-route.service';
+import { AlertService } from '../../core/services/alert.service';
 
 
 const PAGE_SIZE = 4;
@@ -296,7 +297,7 @@ const PAGE_SIZE = 4;
 })
 export class SuggestedRequestsPage implements OnInit {
   private readonly routeService = inject(CarrierRouteService);
-  private readonly alerts = inject(TuiAlertService);
+  private readonly alerts = inject(AlertService);
   private readonly router = inject(Router);
 
   protected readonly sortOptions: SuggestedSort[] = [
@@ -372,8 +373,7 @@ export class SuggestedRequestsPage implements OnInit {
         error: () => {
           this.loading.set(false);
           this.alerts
-            .open('تعذّر تحميل الشحنات المقترحة.', { appearance: 'negative' })
-            .subscribe();
+            .error('تعذّر تحميل الشحنات المقترحة.')
         },
       });
   }
