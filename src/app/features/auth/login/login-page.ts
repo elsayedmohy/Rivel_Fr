@@ -76,8 +76,8 @@ export class LoginPage {
     });
   }
 
-  private validationMessage(control: { invalid: boolean; errors: Record<string, unknown> | null }): string | null {
-    if (control.invalid && control.errors) {
+  private validationMessage(control: {touched:boolean, invalid: boolean; errors: Record<string, unknown> | null }): string | null {
+    if (control.touched &&  control.invalid && control.errors) {
       const key = Object.keys(control.errors)[0];
       return this.translate.translate(`auth.validation.${key}`)();
     }

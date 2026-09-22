@@ -119,7 +119,8 @@
   --rl-forest: #18251d;
   --rl-mint: #b7ff72;
 
-  --rl-font:"IBM Plex Sans Arabic", sans-serif;
+  --rl-ar-font:"IBM Plex Sans Arabic", sans-serif;
+  --rl-en-font:"Bricolage Grotesque", sans-serif;
   --rl-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --rl-s1: 4px;  --rl-s2: 8px;  --rl-s3: 12px; --rl-s4: 16px;
@@ -163,7 +164,7 @@ tui-root[tuiTheme] {
   --tui-text-negative: var(--rl-danger);
   --tui-text-positive: var(--rl-accent-ink);
 
-  --tui-border-normal: var(--rl-line-control);
+  --tui-border-normal: var(--rl-line);
   --tui-border-hover: var(--rl-line-strong);
   --tui-border-focus: var(--rl-focus);
   --tui-status-negative: var(--rl-danger);
@@ -177,11 +178,22 @@ tui-root[tuiTheme] {
   --tui-radius-l: var(--rl-r-lg);
   --tui-shadow-medium: var(--rl-shadow-float);
 
-  --tui-font-text: var(--rl-font);
-  --tui-font-heading: var(--rl-font);
-  --tui-font-family: var(--rl-font);
-  --tui-typography-family-text: var(--rl-font);
+  --tui-font-text: var(--rl-ar-fontfont);
+  --tui-font-heading: var(--rl-ar-font);
+  --tui-font-family: var(--rl-ar-font);
+  --tui-typography-family-text: var(--rl-ar-font);
 }
 
+html[dir='ltr'] body,
+html[dir='ltr'] tui-root {
+  --tui-font-family: var(--rl-en-font);
+  --tui-typography-family-text: var(--rl-en-font);
+
+  font-family: var(--tui-font-family);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
 
 

@@ -77,7 +77,7 @@ export class RegisterPage {
 
   fieldError(key: 'name' | 'email' | 'password' | 'companyName'): string | null {
     const control = this.form.controls[key];
-    if (control.invalid && control.errors) {
+    if (control.touched &&  control.invalid && control.errors) {
       const firstKey = Object.keys(control.errors)[0];
       return this.translate.translate(`auth.validation.${firstKey}`)();
     }

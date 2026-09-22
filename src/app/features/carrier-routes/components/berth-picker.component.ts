@@ -24,13 +24,6 @@ interface BerthGroup {
   berths: NileBerth[];
 }
 
-/**
- * combobox للمراسي: input + dropdown مخصص.
- *
- * مش مستخدم tui-combo-box / tui-data-list-wrapper عن قصد — الـ option هنا
- * سطرين + badge للـ CoordinateAccuracy + grouping بالـ NavigationAxis،
- * وده أسهل نبنيه من أن نعمل override لقوالب الـ data-list.
- */
 @Component({
   selector: 'rl-berth-picker',
   standalone: true,
@@ -146,7 +139,7 @@ interface BerthGroup {
         align-items: center;
         height: 48px;
         padding-inline: 14px 12px;
-        background: var(--rl-surface);
+        background: var(--tui-background-base);
         border: 1px solid var(--rl-border-strong);
         border-radius: 11px;
         transition: border-color 0.15s;
@@ -178,7 +171,7 @@ interface BerthGroup {
         background: transparent;
         font-family: inherit;
         font-size: 14px;
-        color: var(--rl-ink);
+        color: var(--tui-text-tertiary);
 
         &::placeholder {
           color: var(--rl-ink-3);
@@ -205,7 +198,7 @@ interface BerthGroup {
 
         &:hover {
           background: var(--rl-surface-muted);
-          color: var(--rl-ink);
+          color: var(--rl-ink-3);
         }
       }
 
@@ -217,10 +210,10 @@ interface BerthGroup {
         max-height: 280px;
         overflow-y: auto;
         padding: 6px;
-        background: var(--rl-surface);
-        border: 1px solid var(--rl-border);
+        background: var(--tui-background-base);
+        border: 1px solid var(--tui-border-normal);
         border-radius: 12px;
-        box-shadow: var(--rl-shadow-card);
+        box-shadow: var(--tui-shadow-card);
       }
 
       .picker__group-label {
@@ -246,7 +239,7 @@ interface BerthGroup {
 
         &:hover,
         &--active {
-          background: var(--rl-teal-soft);
+          background: var(--rl-line-subtle);
         }
       }
 
@@ -282,7 +275,6 @@ interface BerthGroup {
       }
 
       .picker__chip-soft {
-        background: var(--rl-surface-muted);
         color: var(--rl-ink-2);
       }
 
@@ -304,7 +296,6 @@ export class BerthPickerComponent {
   readonly berths = input.required<NileBerth[]>();
   readonly label = input('');
   readonly placeholder = input('ابحث باسم الميناء');
-  /** الميناء اللي مختار في الحقل التاني — بيتشال من القائمة */
   readonly excludeId = input<string | null>(null);
 
   readonly value = model<NileBerth | null>(null);
@@ -325,8 +316,7 @@ export class BerthPickerComponent {
 
     const matches = this.berths().filter(
       (b) =>
-        b.id !== excluded &&
-        (!term || b.arabicName.includes(term) || b.governorate.includes(term)),
+        b.id !== excluded && (!term || b.arabicName.includes(term) || b.governorate.includes(term)),
     );
 
     const byAxis = new Map<NavigationAxis, NileBerth[]>();

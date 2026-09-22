@@ -4,9 +4,17 @@
       <h1 class="rl-page__title">{{ 'requests.title' | translate }}</h1>
       <p class="rl-page__subtitle"> {{ 'requests.subtitle.mine' | translate }}</p>
     </div>
+    @if (isOwner()) {
       <a tuiButton appearance="primary" iconStart="@tui.plus" routerLink="new">
         {{ 'requests.create.button' | translate }}
       </a>
+    }
+    @if (!isOwner()) {
+      <button tuiButton appearance="primary" iconStart="@tui.refresh-cw" (click)="reload()">
+        {{ 'requests.refresh' | translate }}
+      </button>
+    }
+
   </header>
 
   @if (loading()) {

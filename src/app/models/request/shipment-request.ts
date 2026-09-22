@@ -18,7 +18,7 @@ export interface ShipmentRequestDto {
 export interface CreateShipmentRequestDto {
   readonly cargoType: string;
   readonly weight: number;
-  readonly origin: string;
-  readonly destination: string;
+  readonly originNileBerthId: string;
+  readonly destinationNileBerthId: string;
   readonly requestedDate: string;
 }

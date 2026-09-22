@@ -43,7 +43,10 @@ export class RequestsPage {
     this.loading.set(true);
     this.error.set(null);
 
-    this.service.listMine().subscribe({
+    const source =
+      this.role() === 'CargoOwner' ? this.service.listMine() : this.service.listOpen();
+
+    source.subscribe({
       next: (requests) => {
         this.requests.set(requests);
         this.loading.set(false);

@@ -20,10 +20,16 @@ export function createNavItems(translate: TranslateService, role: UserRole | nul
 
   const items: NavItem[] = [
     { link: '/dashboard', icon: '@tui.layout-dashboard', label: t('nav.dashboard') },
-    { link: '/requests', icon: '@tui.package', label: t('nav.requests'), roles: ['CargoOwner'] },
-    { link: '/offers', icon: '@tui.handshake', label: t('nav.offers'), roles: ['Carrier'] },
-    { link: '/vessels', icon: '@tui.ship', label: t('nav.vessels'), roles: ['Carrier'] },
+    {
+      link: '/suggested-requests',
+      icon: '@tui.astroid',
+      label: t('nav.suggestedRequests'),
+      roles: ['Carrier'],
+    },
+    { link: '/requests', icon: '@tui.package', label: t('nav.requests') },
     { link: '/shipments', icon: '@tui.anchor', label: t('nav.shipments') },
+    { link: '/offers', icon: '@tui.handshake', label: t('nav.offers'), roles: ['Carrier'] },
+
     { link: '/ratings', icon: '@tui.star', label: t('nav.ratings'), roles: ['CargoOwner'] },
     {
       link: '/carrier-routes',
@@ -31,12 +37,7 @@ export function createNavItems(translate: TranslateService, role: UserRole | nul
       label: t('nav.shippingRoutes'),
       roles: ['Carrier'],
     },
-    {
-      link: '/suggested-requests',
-      icon: '@tui.astroid',
-      label: t('nav.suggestedRequests'),
-      roles: ['Carrier'],
-    },
+    { link: '/vessels', icon: '@tui.ship', label: t('nav.vessels'), roles: ['Carrier'] },
   ];
 
   return role ? items.filter((item) => !item.roles?.length || item.roles.includes(role)) : items;

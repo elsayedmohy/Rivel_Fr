@@ -7,26 +7,8 @@
   max-width: 1040px;
 }
 
-// ---------- الرجوع ----------
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--rl-s2);
-  min-height: var(--rl-tap);
-  margin-inline-start: calc(var(--rl-s3) * -1);
-  padding-inline: var(--rl-s3);
-  border-radius: var(--rl-r-md);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--rl-ink-2);
-  text-decoration: none;
 
-  tui-icon { font-size: 18px; }
-  &:hover { background: var(--rl-quiet-hover); color: var(--rl-ink); }
-  &:focus-visible { outline: 2px solid var(--rl-focus); outline-offset: 2px; }
-}
 
-// ---------- العنوان ----------
 .head {
   margin-top: var(--rl-s6);
 

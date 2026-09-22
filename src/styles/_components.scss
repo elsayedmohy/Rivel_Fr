@@ -3,7 +3,6 @@
 html, body { background: var(--rl-canvas); }
 body {
   margin: 0;
-  font-family: var(--rl-font);
   font-size: 14px;
   line-height: 22px;
   color: var(--rl-ink);
@@ -231,4 +230,21 @@ a { color: var(--rl-ink); font-weight: 600; text-decoration: none; }
 .badge-closed {
   background: var(--tui-background-neutral-1);
   color: var(--tui-text-secondary);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rl-s2);
+  min-height: var(--rl-tap);
+  margin-inline-start: calc(var(--rl-s3) * -1);
+  padding-inline: var(--rl-s3);
+  border-radius: var(--rl-r-md);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rl-ink-2);
+  text-decoration: none;
+
+  tui-icon { font-size: 18px; }
+  &:hover { background: var(--rl-quiet-hover); color: var(--rl-ink); }
+  &:focus-visible { outline: 2px solid var(--rl-focus); outline-offset: 2px; }
 }

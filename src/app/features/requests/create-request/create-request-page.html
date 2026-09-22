@@ -1,11 +1,13 @@
 <main class="rl-page">
-  <header class="header">
-    <a routerLink=".." class="back">
-      <span aria-hidden="true">←</span>
+  <header class="rl-page__heading">
+  <div>
+    <a routerLink="/requests" class="back mb-4">
+      <tui-icon icon="@tui.arrow-right" />
       {{ 'requests.back' | translate }}
     </a>
-    <h1>{{ 'requests.create.title' | translate }}</h1>
-    <p>{{ 'requests.create.subtitle' | translate }}</p>
+    <h1 class="rl-page__title ">{{ 'requests.create.title' | translate }}</h1>
+    <p class="rl-page__subtitle">{{ 'requests.create.subtitle' | translate }}</p>
+  </div>
   </header>
 
   <section class="card">
@@ -56,40 +58,42 @@
         }
       </div>
 
-      <div class="field">
-        <tui-textfield [invalid]="!!fieldError('origin')" tuiTextfieldSize="l">
-          <label tuiLabel>{{ 'requests.create.origin' | translate }}</label>
-          <input
-            tuiInput
-            formControlName="origin"
-            autocomplete="off"
-            [placeholder]="'requests.create.originPlaceholder' | translate"
-          />
-        </tui-textfield>
-        @if (fieldError('origin'); as message) {
-          <tui-error [error]="message" />
-        }
+
+      <rl-berth-picker
+        label="{{ 'requests.create.origin' | translate }}"
+        [berths]="berths()"
+        [excludeId]="destination()?.id ?? null"
+        [(value)]="origin"
+      />
+
+      <div class="dialog__swap">
+        <span class="dialog__rule"></span>
+        <button
+          type="button"
+          class="dialog__swap-btn"
+          [disabled]="!origin() && !destination()"
+          (click)="swap()"
+        >
+          <tui-icon icon="@tui.repeat" [style.font-size.px]="17" />
+        </button>
+        <span class="dialog__rule"></span>
       </div>
 
-      <div class="field">
-        <tui-textfield [invalid]="!!fieldError('destination')" tuiTextfieldSize="l">
-          <label tuiLabel>{{ 'requests.create.destination' | translate }}</label>
-          <input
-            tuiInput
-            formControlName="destination"
-            autocomplete="off"
-            [placeholder]="'requests.create.destinationPlaceholder' | translate"
-          />
-        </tui-textfield>
-        @if (fieldError('destination'); as message) {
-          <tui-error [error]="message" />
-        }
-      </div>
-
+      <rl-berth-picker
+        label="{{ 'requests.create.destination' | translate }}"
+        [berths]="berths()"
+        [excludeId]="origin()?.id ?? null"
+        [(value)]="destination"
+      />
       <div class="field">
         <tui-textfield [invalid]="!!fieldError('requestedDate')" tuiTextfieldSize="l">
           <label tuiLabel>{{ 'requests.create.requestedDate' | translate }}</label>
-          <input tuiInput type="date" [min]="minDate" formControlName="requestedDate" />
+          <input
+            [min]="current"
+            tuiInputDate
+            formControlName="requestedDate"
+          />
+          <tui-calendar *tuiDropdown />
         </tui-textfield>
         @if (fieldError('requestedDate'); as message) {
           <tui-error [error]="message" />

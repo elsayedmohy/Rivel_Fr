@@ -73,7 +73,7 @@ export class VesselsPage {
 
   fieldError(key: 'name' | 'type' | 'registrationNumber' | 'capacity'): string | null {
     const control = this.form.controls[key];
-    if (control.invalid && control.errors) {
+    if (control.touched &&  control.invalid && control.errors) {
       const first = Object.keys(control.errors)[0];
       return this.translate.translate(`auth.validation.${first}`)();
     }

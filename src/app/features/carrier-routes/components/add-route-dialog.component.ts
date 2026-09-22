@@ -57,9 +57,9 @@ import { CreateCarrierRouteDto, NileBerth } from '../routes.model';
         </button>
         <button
           tuiButton
+          appearance="primary"
           type="button"
           size="m"
-          class="dialog__save"
           [disabled]="!canSave()"
           (click)="save()"
         >
@@ -166,11 +166,6 @@ import { CreateCarrierRouteDto, NileBerth } from '../routes.model';
         margin-top: 22px;
       }
 
-      .dialog__save {
-        --tui-background-accent-1: var(--rl-clay);
-        --tui-background-accent-1-hover: var(--rl-clay-hover);
-        --tui-background-accent-1-pressed: var(--rl-clay-hover);
-      }
     `,
   ],
 })
@@ -180,8 +175,8 @@ export class AddRouteDialogComponent {
 
   protected readonly berths = this.context.data;
 
-  protected  origin = signal<NileBerth | null>(null);
-  protected  destination = signal<NileBerth | null>(null);
+  protected origin = signal<NileBerth | null>(null);
+  protected destination = signal<NileBerth | null>(null);
   protected readonly error = signal<string | null>(null);
 
   protected readonly canSave = computed(() => {

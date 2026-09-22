@@ -118,7 +118,7 @@ export class RequestDetailPage {
 
   offerFieldError(key: 'price' | 'proposedPickupDate' | 'vesselId'): string | null {
     const control = this.offerForm.controls[key];
-    if (control.invalid && control.errors) {
+    if (control.touched &&  control.invalid && control.errors) {
       const first = Object.keys(control.errors)[0];
       return this.translate.translate(`auth.validation.${first}`)();
     }
