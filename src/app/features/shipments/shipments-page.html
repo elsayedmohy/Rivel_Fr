@@ -1,92 +1,167 @@
-<main class="rl-page">
-  <header class="rl-page__heading">
-    <div >
+<main class="rl-page shipments">
+  <header class="head">
+    <div>
       <h1 class="rl-page__title">{{ 'shipments.title' | translate }}</h1>
-      <p class="rl-page__subtitle" >{{ 'shipments.subtitle' | translate }}</p>
+      <p class="rl-page__subtitle">{{ 'shipments.subtitle' | translate }}</p>
     </div>
-    <button tuiButton appearance="primary" iconStart="@tui.refresh-cw" type="button" (click)="reload()">
-      {{ 'requests.refresh' | translate }}
+
+    <!-- التحديث مش هو الإجراء الأساسي في الصفحة — زرار أيقونة هادي -->
+    <button
+      type="button"
+      class="rl-icon-btn refresh"
+      [attr.aria-label]="'requests.refresh' | translate"
+      [attr.title]="'requests.refresh' | translate"
+      [disabled]="loading()"
+      (click)="reload()"
+    >
+      <tui-icon icon="@tui.refresh-cw" [class.spin]="loading()" />
     </button>
   </header>
 
   @if (actionError(); as message) {
-    <div class="alert" role="alert">
-      <tui-icon [icon]="'@tui.alert-circle'" />
+    <p class="notice notice--error" role="alert">
+      <tui-icon icon="@tui.circle-alert" />
       <span>{{ message }}</span>
-    </div>
+    </p>
   }
 
-  @if (loading()) {
-    <div class="state">{{ 'common.loading' | translate }}</div>
+  @if (loading() && shipments().length === 0) {
+    <div class="state" aria-live="polite"><tui-loader size="m" /></div>
   } @else if (error(); as message) {
-    <div class="state state-error" role="alert">
-      <p>{{ message }}</p>
+    <div class="state" role="alert">
+      <p class="state__error">{{ message }}</p>
       <button tuiButton appearance="primary" type="button" (click)="reload()">
         {{ 'requests.retry' | translate }}
       </button>
     </div>
   } @else if (shipments().length === 0) {
-    <div class="state">
-      <tui-icon [icon]="'@tui.package'" class="state-icon" />
+    <div class="state rl-card">
+      <span class="rl-tile"><tui-icon icon="@tui.package" /></span>
       <p>{{ 'shipments.empty' | translate }}</p>
     </div>
   } @else {
+    <p class="rl-eyebrow count">{{ shipments().length }}</p>
+
+    <!-- ⚠️ راجع الأسماء دي على الـ enum بتاع ShipmentStatus في الباك -->
+    @let steps = ['Matched', 'PickedUp', 'InTransit', 'Delivered'];
+
     <ul class="list">
       @for (shipment of shipments(); track shipment.id) {
-        <li class="card shipment">
-          <div class="shipment-main">
-            <div class="shipment-title">
-              <tui-icon [icon]="'@tui.package'" class="shipment-icon" />
-              <h2>{{ shipment.cargoType }}</h2>
+        @let at = steps.indexOf(shipment.shipmentStatus);
+        @let done = shipment.shipmentStatus === 'Delivered';
+
+        <li class="rl-card shipment" [class.shipment--done]="done">
+          <!-- ١. العنوان والحالة -->
+          <div class="shipment__top">
+            <span class="rl-tile"><tui-icon icon="@tui.package" /></span>
+            <div class="shipment__titles">
+              <h2 class="shipment__cargo">{{ shipment.cargoType }}</h2>
+              <p class="shipment__route">
+                <span>{{ shipment.originNileBerth.arabicName || '—' }}</span>
+                <svg class="shipment__tip" viewBox="0 0 9 10" aria-hidden="true"><path d="M6.5 1 2 5l4.5 4" /></svg>
+                <span>{{ shipment.destinationNileBerth.arabicName || '—' }}</span>
+              </p>
             </div>
-            <p class="route">{{ shipment.origin }} → {{ shipment.destination }}</p>
-
-            <dl class="meta">
-              <div>
-                <dt>{{ 'shipments.meta.weight' | translate }}</dt>
-                <dd>{{ weightText(shipment.weight) }} t</dd>
-              </div>
-              <div>
-                <dt>{{ 'shipments.meta.pickup' | translate }}</dt>
-                <dd>{{ shipment.proposedPickupDate }}</dd>
-              </div>
-              <div>
-                <dt>{{ 'shipments.meta.price' | translate }}</dt>
-                <dd>{{ priceText(shipment.offeredPrice) }}</dd>
-              </div>
-              <div>
-                <dt>{{ 'shipments.meta.vessel' | translate }}</dt>
-                <dd>{{ shipment.vesselType }}</dd>
-              </div>
-              <div>
-                <dt>{{ 'shipments.meta.carrier' | translate }}</dt>
-                <dd>{{ shipment.carrierCompanyName }}</dd>
-              </div>
-              <div>
-                <dt>{{ 'shipments.meta.owner' | translate }}</dt>
-                <dd>{{ shipment.cargoOwnerName }}</dd>
-              </div>
-            </dl>
-          </div>
-
-          <div class="shipment-side">
-            <span class="badge badge-{{ shipment.shipmentStatus.toLowerCase() }}">
+            <span class="status status--{{ shipment.shipmentStatus.toLowerCase() }}">
               {{ statusLabel(shipment.shipmentStatus) }}
             </span>
+          </div>
 
-            @if (isCarrier() && nextStatus(shipment); as next) {
+          <!-- ٢. مراحل الشحنة -->
+          @if (at >= 0) {
+            <ol class="steps" [attr.aria-label]="statusLabel(shipment.shipmentStatus)">
+              @for (step of steps; track step; let i = $index) {
+                <li
+                  class="steps__item"
+                  [class.steps__item--passed]="i < at"
+                  [class.steps__item--current]="i === at"
+                  [attr.aria-current]="i === at ? 'step' : null"
+                >
+                  <span class="steps__dot" aria-hidden="true"></span>
+                  <span class="steps__label">{{ statusLabel(step) }}</span>
+                </li>
+              }
+            </ol>
+          }
+
+          <!-- ٣. الأرقام — الطرف التاني بس، مش إنت -->
+          <dl class="ledger">
+            <div class="ledger__cell">
+              <dt>{{ 'shipments.meta.weight' | translate }}</dt>
+              <dd><bdi class="rl-num">{{ weightText(shipment.weight) }} t</bdi></dd>
+            </div>
+            <div class="ledger__cell">
+              <dt>{{ 'shipments.meta.pickup' | translate }}</dt>
+              <dd><bdi class="rl-num">{{ shipment.proposedPickupDate }}</bdi></dd>
+            </div>
+            <div class="ledger__cell">
+              <dt>{{ 'shipments.meta.price' | translate }}</dt>
+              <dd><bdi class="rl-num">{{ priceText(shipment.offeredPrice) }}</bdi></dd>
+            </div>
+            <div class="ledger__cell">
+              <dt>{{ 'shipments.meta.vessel' | translate }}</dt>
+              <dd>{{ shipment.vesselType }}</dd>
+            </div>
+            <div class="ledger__cell">
+              @if (isCarrier()) {
+                <dt>{{ 'shipments.meta.owner' | translate }}</dt>
+                <dd>{{ shipment.cargoOwnerName }}</dd>
+              } @else {
+                <dt>{{ 'shipments.meta.carrier' | translate }}</dt>
+                <dd>{{ shipment.carrierCompanyName }}</dd>
+              }
+            </div>
+          </dl>
+
+          <!-- ٤. الخطوة الجاية — للناقل بس -->
+          @if (isCarrier() && nextStatus(shipment); as next) {
+            <div class="shipment__foot">
               <button
                 tuiButton
                 appearance="primary"
-                size="s"
+                size="m"
                 type="button"
+                iconEnd="@tui.chevron-left"
                 [loading]="updatingId() === shipment.id"
                 (click)="advance(shipment)"
               >
                 {{ advanceLabel(next) }}
               </button>
-            }
-          </div>
+            </div>
+          }
+
+          <!-- ٥. التقييم — صاحب الشحنة بعد التسليم بس -->
+          @if (!isCarrier() && done) {
+            <div class="shipment__foot">
+              @if (shipment.isRated) {
+                <span class="rated">
+                  @if (shipment.rating) {
+                    <span class="rated__stars" [attr.aria-label]="shipment.rating.score + ' / 5'">
+                      @for (n of [1, 2, 3, 4, 5]; track n) {
+                        <svg viewBox="0 0 24 24" aria-hidden="true" [class.on]="n <= shipment.rating.score!">
+                          <path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8L12 3.6Z" />
+                        </svg>
+                      }
+                    </span>
+                  }
+                  {{ 'ratings.rated' | translate }}
+                </span>
+              } @else {
+                <span class="rate-prompt">{{ 'ratings.prompt' | translate }}</span>
+                <button
+                  tuiButton
+                  appearance="primary"
+                  size="m"
+                  type="button"
+                  iconStart="@tui.star"
+                  [loading]="ratingId() === shipment.id"
+                  (click)="rate(shipment)"
+                >
+                  {{ 'ratings.rateCarrier' | translate }}
+                </button>
+              }
+            </div>
+          }
         </li>
       }
     </ul>

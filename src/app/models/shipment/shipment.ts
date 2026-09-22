@@ -1,5 +1,6 @@
 import type { RatingDto } from '../rating/rating';
 import type { ShipmentStatus, VesselType } from '../enums';
+import { NileBerth } from '../../features/carrier-routes/routes.model';
 
 /** GET /api/shipments, GET /api/shipments/{id} */
 export interface ShipmentDto {
@@ -8,8 +9,8 @@ export interface ShipmentDto {
   readonly shipmentRequestId: string;
   readonly cargoType: string;
   readonly weight: number;
-  readonly origin: string;
-  readonly destination: string;
+  readonly originNileBerth: NileBerth;
+  readonly destinationNileBerth: NileBerth;
   readonly requestedDate: string;
   readonly cargoOwnerId: string;
   readonly cargoOwnerName: string;
@@ -19,6 +20,7 @@ export interface ShipmentDto {
   readonly vesselId: string;
   readonly vesselType: VesselType;
   readonly carrierCompanyName: string;
+  readonly isRated: boolean;
   readonly rating: RatingDto | null;
 }
 

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { TuiButton, TuiIcon } from '@taiga-ui/core';
+import { TuiButton, TuiDialogService, TuiIcon, TuiLoader } from '@taiga-ui/core';
 import { TuiButtonLoading } from '@taiga-ui/kit';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../core/config/language.service';
@@ -9,10 +9,19 @@ import { TokenService } from '../../core/http/token.service';
 import { SHIPMENT_TRANSITIONS } from '../../models/enums';
 import type { ShipmentStatus } from '../../models/enums';
 import type { ShipmentDto } from '../../models/shipment/shipment';
+import { RatingService } from '../../core/http/rating.service';
+import {
+  RateCarrierData,
+  RateCarrierDialogComponent,
+  RateCarrierResult,
+} from './rate-carrier-dialog/rate-carrier-dialog.component';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { EMPTY, switchMap } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'rl-shipments-page',
-  imports: [TuiButton, TuiButtonLoading, TuiIcon, TranslatePipe],
+  imports: [TuiButton, TuiButtonLoading, TuiIcon, TranslatePipe, TuiLoader],
   templateUrl: './shipments-page.html',
   styleUrl: './shipments-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,9 +39,59 @@ export class ShipmentsPage {
   readonly actionError = signal<string | null>(null);
 
   readonly isCarrier = computed(() => this.user()?.role === 'Carrier');
+  private readonly dialogs = inject(TuiDialogService);
+  private readonly ratings = inject(RatingService);
+  protected readonly ratingId = signal<string | null>(null);
 
   constructor() {
     this.reload();
+  }
+
+
+
+  protected rate(shipment: ShipmentDto): void {
+    const data: RateCarrierData = {
+      carrierName: shipment.carrierCompanyName,
+      cargoType: shipment.cargoType,
+      route: `${shipment.originNileBerth.arabicName} ← ${shipment.destinationNileBerth.arabicName}`,
+    };
+
+    this.dialogs
+      .open<RateCarrierResult>(new PolymorpheusComponent(RateCarrierDialogComponent), {
+        data,
+        size: 's',
+        dismissible: true,
+      })
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            return EMPTY;
+          }
+          this.ratingId.set(shipment.id);
+          return this.ratings.create({ shipmentId: shipment.id, ...result });
+        }),
+      )
+      .subscribe({
+        next: (rating) => {
+          this.ratingId.set(null);
+          this.markRated(shipment.id, rating.score);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.ratingId.set(null);
+          if (err.status === 409) {
+            this.markRated(shipment.id, null);
+            return;
+          }
+          this.actionError.set(err.error?.message ?? this.translate.instant('ratings.error'));
+        },
+      });
+  }
+
+  private markRated(id: string, score: number | null): void {
+    // لو shipments عندك signal
+    this.shipments.update((list) =>
+      list.map((s) => (s.id === id ? { ...s, isRated: true, ratingScore: score } : s)),
+    );
   }
 
   reload(): void {
@@ -78,7 +137,9 @@ export class ShipmentsPage {
   }
 
   weightText(weight: number): string {
-    return new Intl.NumberFormat(this.language.current(), { maximumFractionDigits: 1 }).format(weight);
+    return new Intl.NumberFormat(this.language.current(), { maximumFractionDigits: 1 }).format(
+      weight,
+    );
   }
 
   priceText(price: number): string {
@@ -88,7 +149,7 @@ export class ShipmentsPage {
     }).format(price);
   }
 
-  statusLabel(status: ShipmentStatus): string {
+  statusLabel(status: string): string {
     return this.translate.translate(`shipments.status.${status}`)();
   }
 
