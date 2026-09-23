@@ -11,7 +11,7 @@ import { OfferService } from '../../../core/http/offer.service';
 import type { ShipmentRequestDto } from '../../../models/request/shipment-request';
 import type { CreateOfferDto, OfferDto } from '../../../models/offer/offer';
 import { VesselService } from '../../vessels/data/vessel.service';
-import { Vessel, VesselStatus } from '../../vessels/data/vessel.model';
+import { Vessel, VesselStatus, VESSEL_STATUS_KEY } from '../../vessels/data/vessel.model';
 import { ShipmentRequestStatus } from '../../../models/enums';
 
 @Component({
@@ -113,7 +113,7 @@ export class RequestDetailPage {
   }
 
   vesselStatusLabel(status: VesselStatus): string {
-    return this.translate.translate(`vessels.status.${status}`)();
+    return this.translate.translate(VESSEL_STATUS_KEY[status])();
   }
 
   offerFieldError(key: 'price' | 'proposedPickupDate' | 'vesselId'): string | null {

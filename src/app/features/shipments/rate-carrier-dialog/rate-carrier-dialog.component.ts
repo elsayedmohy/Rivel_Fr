@@ -142,7 +142,6 @@ const MAX_COMMENT = 500;
         &:has(.star__input:focus-visible) { outline: 2px solid var(--rl-focus); outline-offset: 2px; }
       }
 
-      /* برّه الـ nesting عمداً: &--on مش CSS صالح لو inlineStyleLanguage مش scss */
       .star.star--on { color: var(--rl-ink); }
 
       .star__input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }

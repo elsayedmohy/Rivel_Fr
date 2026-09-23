@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Sidebar } from '../sidebar/sidebar';
 import { Topbar } from '../topbar/topbar';
 import { MobileNavigation } from '../mobile-navigation/mobile-navigation';
@@ -8,7 +9,7 @@ import { TokenService } from '../../core/http/token.service';
 
 @Component({
   selector: 'rl-app-shell',
-  imports: [RouterOutlet, Sidebar, Topbar, MobileNavigation],
+  imports: [RouterOutlet, Sidebar, Topbar, MobileNavigation, TranslatePipe],
   templateUrl: './app-shell.html',
   styleUrl: './app-shell.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,7 +19,7 @@ export class AppShell {
   private readonly tokenService = inject(TokenService);
   constructor(){
     if(this.tokenService.isAuthenticated()) {
-      this.notificationService.connect(this.tokenService.tokenSignal()!);
+      this.notificationService.connect(() => this.tokenService.tokenSignal()!);
     }
   }
 }

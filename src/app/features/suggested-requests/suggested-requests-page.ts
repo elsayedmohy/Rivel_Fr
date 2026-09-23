@@ -3,11 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TuiAlertService, TuiDataList, TuiDropdown, TuiIcon, TuiLoader } from '@taiga-ui/core';
 import { TuiPagination, TuiSwitch } from '@taiga-ui/kit';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { SuggestedRequestCardComponent } from './components/suggested-request-card.component';
 import {
   RouteFilterOption,
-  SORT_LABEL,
+  SORT_KEY,
   SuggestedRequest,
   SuggestedSort,
 } from '../carrier-routes/routes.model';
@@ -30,21 +31,22 @@ const PAGE_SIZE = 4;
     TuiPagination,
     TuiSwitch,
     SuggestedRequestCardComponent,
+    TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="rl-page">
       <header>
-        <h1 class="rl-page__title">شحنات مقترحة</h1>
+        <h1 class="rl-page__title">{{ 'suggested.title' | translate }}</h1>
         <p class="rl-page__subtitle">
-          شحنات مفتوحة على المسارات التي حفظتها.
-          <a routerLink="/carrier/routes" class="link">عدّل خطوط سيرك</a>
-          لتغيير ما يظهر هنا.
+          {{ 'suggested.subtitle' | translate }}
+          <a routerLink="/carrier/routes" class="link">{{ 'suggested.editRoutes' | translate }}</a>
+          {{ 'suggested.subtitleHint' | translate }}
         </p>
       </header>
 
       @if (routeFilters().length > 1) {
-        <div class="filters" role="group" aria-label="فلترة بالمسار">
+        <div class="filters" role="group" [attr.aria-label]="'suggested.filterAria' | translate">
           @for (filter of routeFilters(); track filter.routeId) {
             <button
               type="button"
@@ -71,7 +73,7 @@ const PAGE_SIZE = 4;
               [ngModel]="fittingOnly()"
               (ngModelChange)="setFittingOnly($event)"
             />
-            <span>ما تناسب سفني فقط</span>
+            <span>{{ 'suggested.fittingOnly' | translate }}</span>
           </label>
 
           <button
@@ -80,8 +82,8 @@ const PAGE_SIZE = 4;
             [tuiDropdown]="sortMenu"
             [(tuiDropdownOpen)]="sortOpen"
           >
-            <span class="sort__prefix">الترتيب:</span>
-            <span>{{ sortLabel() }}</span>
+            <span class="sort__prefix">{{ 'suggested.sortPrefix' | translate }}</span>
+            <span>{{ sortLabel() | translate }}</span>
             <tui-icon icon="@tui.chevron-down" [style.font-size.px]="13" />
           </button>
 
@@ -89,7 +91,7 @@ const PAGE_SIZE = 4;
             <tui-data-list>
               @for (option of sortOptions; track option) {
                 <button tuiOption type="button" (click)="selectSort(option)">
-                  {{ sortLabels[option] }}
+                  {{ sortLabels[option] | translate }}
                 </button>
               }
             </tui-data-list>
@@ -98,7 +100,7 @@ const PAGE_SIZE = 4;
       </div>
 
       @if (loading()) {
-        <tui-loader class="loader" size="l" [textContent]="'جارٍ التحميل…'" />
+        <tui-loader class="loader" size="l" [textContent]="'common.loading' | translate" />
       } @else if (items().length === 0) {
         <div class="empty rl-card">
           <div class="empty__glyph">
@@ -120,7 +122,9 @@ const PAGE_SIZE = 4;
 
         @if (pageCount() > 1) {
           <div class="pager">
-            <span class="pager__label">الصفحة {{ page() }} من {{ pageCount() }}</span>
+            <span class="pager__label">{{
+              'suggested.pageLabel' | translate: { current: page(), total: pageCount() }
+            }}</span>
             <tui-pagination
               [length]="pageCount()"
               [index]="page() - 1"
@@ -306,7 +310,9 @@ export class SuggestedRequestsPage implements OnInit {
     'weightAsc',
     'weightDesc',
   ];
-  protected readonly sortLabels = SORT_LABEL;
+  protected readonly sortLabels = SORT_KEY;
+
+  private readonly translate = inject(TranslateService);
 
   protected readonly items = signal<SuggestedRequest[]>([]);
   protected readonly routeFilters = signal<RouteFilterOption[]>([]);
@@ -320,7 +326,7 @@ export class SuggestedRequestsPage implements OnInit {
 
   protected sortOpen = false;
 
-  protected readonly sortLabel = computed(() => SORT_LABEL[this.sort()]);
+  protected readonly sortLabel = computed(() => SORT_KEY[this.sort()]);
 
   protected readonly pageCount = computed(() =>
     Math.max(1, Math.ceil(this.totalCount() / PAGE_SIZE)),
@@ -329,21 +335,27 @@ export class SuggestedRequestsPage implements OnInit {
   protected readonly rangeLabel = computed(() => {
     const total = this.totalCount();
     if (total === 0) {
-      return 'لا توجد شحنات مطابقة';
+      return this.translate.translate('suggested.range.empty')();
     }
     const from = (this.page() - 1) * PAGE_SIZE + 1;
     const to = Math.min(this.page() * PAGE_SIZE, total);
-    return `عرض ${from}–${to} من ${total} شحنة`;
+    return this.translate.translate('suggested.range.summary', {
+      from: String(from),
+      to: String(to),
+      total: String(total),
+    })();
   });
 
   protected readonly emptyTitle = computed(() =>
-    this.fittingOnly() ? 'لا توجد شحنات تناسب سفنك' : 'لا توجد شحنات مقترحة الآن',
+    this.translate.translate(
+      this.fittingOnly() ? 'suggested.empty.fittingTitle' : 'suggested.empty.allTitle',
+    )(),
   );
 
   protected readonly emptyText = computed(() =>
-    this.fittingOnly()
-      ? 'جرّب إيقاف فلتر السعة لرؤية باقي الشحنات المفتوحة على مساراتك.'
-      : 'لا توجد شحنات مفتوحة على خطوط سيرك حاليًا. سنعرضها هنا فور نشرها.',
+    this.translate.translate(
+      this.fittingOnly() ? 'suggested.empty.fittingText' : 'suggested.empty.allText',
+    )(),
   );
 
   ngOnInit(): void {
@@ -372,8 +384,7 @@ export class SuggestedRequestsPage implements OnInit {
         },
         error: () => {
           this.loading.set(false);
-          this.alerts
-            .error('تعذّر تحميل الشحنات المقترحة.')
+          this.alerts.error(this.translate.instant('suggested.alerts.loadFailed'))
         },
       });
   }

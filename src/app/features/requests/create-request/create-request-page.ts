@@ -110,7 +110,7 @@ export class CreateRequestPage {
   ngOnInit(): void {
     this.berthService.getAll().subscribe({
       next: (berths) => this.berths.set(berths),
-      error: () => this.alerts.error('تعذّر تحميل قائمة المراسي.'),
+      error: () => this.alerts.error(this.translate.instant('routes.alerts.berthsFailed')),
     });
   }
 
@@ -153,7 +153,7 @@ export class CreateRequestPage {
       return;
     }
     if (from.id === to.id) {
-      this.error.set('ميناء القيام وميناء الوصول لا يمكن أن يكونا نفس الميناء.');
+      this.error.set('routes.dialog.samePort');
       return;
     }
     this.serverErrors.set(null);

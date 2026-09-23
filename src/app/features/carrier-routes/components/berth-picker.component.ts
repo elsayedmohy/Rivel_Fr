@@ -9,11 +9,12 @@ import {
   signal,
 } from '@angular/core';
 import { TuiIcon } from '@taiga-ui/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import {
-  ACCURACY_LABEL,
-  AXIS_LABEL,
-  BERTH_TYPE_LABEL,
+  ACCURACY_KEY,
+  AXIS_KEY,
+  BERTH_TYPE_KEY,
   NavigationAxis,
   NileBerth,
 } from '../routes.model';
@@ -27,7 +28,7 @@ interface BerthGroup {
 @Component({
   selector: 'rl-berth-picker',
   standalone: true,
-  imports: [TuiIcon],
+  imports: [TuiIcon, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(document:click)': 'onDocumentClick($event)',
@@ -50,7 +51,7 @@ interface BerthGroup {
           autocomplete="off"
           [attr.aria-expanded]="open()"
           [attr.aria-controls]="listId"
-          [placeholder]="placeholder()"
+          [placeholder]="placeholder() | translate"
           [value]="displayText()"
           (input)="onInput($event)"
           (focus)="open.set(true)"
@@ -60,7 +61,7 @@ interface BerthGroup {
           <button
             type="button"
             class="picker__clear"
-            [attr.aria-label]="'مسح ' + value()!.arabicName"
+            [attr.aria-label]="'routes.picker.clear' | translate: { name: value()!.arabicName }"
             (click)="clear()"
           >
             <tui-icon icon="@tui.x" [style.font-size.px]="16" />
@@ -96,7 +97,7 @@ interface BerthGroup {
                 <span class="picker__option-body">
                   <span class="picker__option-name">{{ berth.arabicName }}</span>
                   <span class="picker__option-meta">
-                    {{ typeLabel(berth) }} · محافظة {{ berth.governorate }}
+                    {{ typeLabel(berth) }} · {{ 'common.governorate' | translate }} {{ berth.governorate }}
                   </span>
                 </span>
 
@@ -109,10 +110,10 @@ interface BerthGroup {
                 </span>
               </button>
             } @empty {
-              <p class="picker__no-results">لا توجد نتائج</p>
+              <p class="picker__no-results">{{ 'common.noResults' | translate }}</p>
             }
           } @empty {
-            <p class="picker__no-results">لا يوجد مرسى بهذا الاسم</p>
+            <p class="picker__no-results">{{ 'routes.picker.noBerth' | translate }}</p>
           }
         </div>
       }
@@ -292,10 +293,11 @@ export class BerthPickerComponent {
   private static nextId = 0;
 
   private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly translate = inject(TranslateService);
 
   readonly berths = input.required<NileBerth[]>();
   readonly label = input('');
-  readonly placeholder = input('ابحث باسم الميناء');
+  readonly placeholder = input('routes.picker.placeholder');
   readonly excludeId = input<string | null>(null);
 
   readonly value = model<NileBerth | null>(null);
@@ -328,17 +330,17 @@ export class BerthPickerComponent {
 
     return [...byAxis.entries()].map(([axis, berths]) => ({
       axis,
-      label: AXIS_LABEL[axis],
+      label: this.translate.translate(AXIS_KEY[axis])(),
       berths,
     }));
   });
 
   protected typeLabel(berth: NileBerth): string {
-    return BERTH_TYPE_LABEL[berth.type];
+    return this.translate.translate(BERTH_TYPE_KEY[berth.type])();
   }
 
   protected accuracyLabel(berth: NileBerth): string {
-    return ACCURACY_LABEL[berth.coordinateAccuracy];
+    return this.translate.translate(ACCURACY_KEY[berth.coordinateAccuracy])();
   }
 
   protected onInput(event: Event): void {

@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { TuiIcon } from '@taiga-ui/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import { AXIS_LABEL, BERTH_TYPE_LABEL, CarrierRoute, NileBerth } from '../routes.model';
+import { AXIS_KEY, BERTH_TYPE_KEY, CarrierRoute, NileBerth } from '../routes.model';
 
 @Component({
   selector: 'rl-route-card',
   standalone: true,
-  imports: [TuiIcon],
+  imports: [TuiIcon, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="card rl-card">
@@ -16,7 +17,10 @@ import { AXIS_LABEL, BERTH_TYPE_LABEL, CarrierRoute, NileBerth } from '../routes
         <button
           type="button"
           class="card__delete"
-          [attr.aria-label]="'حذف خط السير ' + originName() + ' إلى ' + destinationName()"
+          [attr.aria-label]="
+            'routes.delete'
+              | translate: { origin: originName(), destination: destinationName() }
+          "
           [disabled]="deleting()"
           (click)="remove.emit(route().id)"
         >
@@ -147,6 +151,8 @@ export class RouteCardComponent {
 
   readonly remove = output<string>();
 
+  private readonly translate = inject(TranslateService);
+
   protected originName(): string {
     return this.route().originNileBerth.arabicName;
   }
@@ -156,10 +162,13 @@ export class RouteCardComponent {
   }
 
   protected axisLabel(): string {
-    return AXIS_LABEL[this.route().originNileBerth?.axis];
+    return this.translate.translate(AXIS_KEY[this.route().originNileBerth?.axis])();
   }
 
   protected meta(berth: NileBerth): string {
-    return `${BERTH_TYPE_LABEL[berth.type]} · محافظة ${berth.governorate}`;
+    return this.translate.translate('routes.berthMeta', {
+      type: this.translate.instant(BERTH_TYPE_KEY[berth.type]),
+      governorate: berth.governorate,
+    })();
   }
 }

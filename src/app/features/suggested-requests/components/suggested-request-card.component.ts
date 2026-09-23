@@ -1,13 +1,15 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { TuiIcon } from '@taiga-ui/core';
-import { AXIS_LABEL, BERTH_TYPE_LABEL, SuggestedRequest } from '../../carrier-routes/routes.model';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { AXIS_KEY, BERTH_TYPE_KEY, SuggestedRequest } from '../../carrier-routes/routes.model';
+import { LanguageService } from '../../../core/config/language.service';
 
 
 @Component({
   selector: 'rl-suggested-request-card',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, TuiIcon],
+  imports: [DatePipe, DecimalPipe, TuiIcon, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="card rl-card" [class.card--blocked]="overCapacity()">
@@ -20,13 +22,16 @@ import { AXIS_LABEL, BERTH_TYPE_LABEL, SuggestedRequest } from '../../carrier-ro
           <span class="card__cargo">{{ request().cargoType }}</span>
 
           @if (request().isNew) {
-            <span class="rl-chip rl-chip--new">جديد</span>
+            <span class="rl-chip rl-chip--new">{{ 'suggested.new' | translate }}</span>
           }
 
           @if (overCapacity()) {
             <span class="rl-chip rl-chip--over">
               <tui-icon icon="@tui.circle-alert" [style.font-size.px]="11" />
-              أكبر من سعة سفنك — أقصى سعة {{ request().maxVesselCapacity | number }} طن
+              {{
+                'suggested.overCapacity'
+                  | translate: { capacity: request().maxVesselCapacity | number }
+              }}
             </span>
           } @else {
             <span class="rl-chip rl-chip--fits">
@@ -59,28 +64,29 @@ import { AXIS_LABEL, BERTH_TYPE_LABEL, SuggestedRequest } from '../../carrier-ro
         </div>
 
         <div class="card__meta">
-          {{ request().weight | number }} طن · الاستلام
-          {{ request().pickupDate | date: 'd MMMM' : undefined : 'ar-EG' }} ·
+          {{ request().weight | number }} {{ 'common.ton' | translate }} · {{ 'common.pickup' | translate }}
+          {{ request().pickupDate | date: 'd MMMM' : undefined : language.current() }} ·
           {{ offersLabel() }}
           @if (request().lowestOfferPrice !== null) {
-            · أقل عرض {{ request().lowestOfferPrice | number }} ج.م
+            ·
+            {{ 'suggested.lowestOffer' | translate: { price: request().lowestOfferPrice | number } }}
           }
         </div>
       </div>
 
       <div class="card__actions">
         <button type="button" class="btn btn--ghost" (click)="details.emit(request().id)">
-          التفاصيل
+          {{ 'common.details' | translate }}
         </button>
 
         <button
           type="button"
           class="btn btn--primary"
           [disabled]="overCapacity()"
-          [attr.title]="overCapacity() ? 'لا توجد لديك سفينة بسعة كافية لهذه الشحنة' : null"
+          [attr.title]="overCapacity() ? ('suggested.noVesselForCargo' | translate) : null"
           (click)="makeOffer.emit(request().id)"
         >
-          تقديم عرض
+          {{ 'offers.form.submit' | translate }}
         </button>
       </div>
     </article>
@@ -217,31 +223,36 @@ export class SuggestedRequestCardComponent {
   readonly details = output<string>();
   readonly makeOffer = output<string>();
 
+  private readonly translate = inject(TranslateService);
+  protected readonly language = inject(LanguageService);
+
   protected readonly overCapacity = computed(() => this.request().fittingVesselsCount === 0);
 
   protected readonly fitsLabel = computed(() => {
     const count = this.request().fittingVesselsCount;
-    if (count === 1) return 'تناسب سفينة واحدة';
-    if (count === 2) return 'تناسب سفينتين';
-    return `تناسب ${count} سفن`;
+    if (count === 1) return this.translate.translate('suggested.fits.one')();
+    if (count === 2) return this.translate.translate('suggested.fits.two')();
+    return this.translate.translate('suggested.fits.many', { count: String(count) })();
   });
 
   protected readonly offersLabel = computed(() => {
     const count = this.request().offersCount;
-    if (count === 0) return 'لا عروض بعد';
-    if (count === 1) return 'عرض واحد';
-    if (count === 2) return 'عرضان';
-    return `${count} عروض`;
+    if (count === 0) return this.translate.translate('offers.count.zero')();
+    if (count === 1) return this.translate.translate('offers.count.one')();
+    if (count === 2) return this.translate.translate('offers.count.two')();
+    return this.translate.translate('offers.count.many', { count: String(count) })();
   });
 
   protected readonly berthPair = computed(
     () =>
-      `${BERTH_TYPE_LABEL[this.request().originNileBerth.type]} ← ${
-        BERTH_TYPE_LABEL[this.request().destinationNileBerth.type]
+      `${this.translate.instant(BERTH_TYPE_KEY[this.request().originNileBerth.type])} ← ${
+        this.translate.instant(BERTH_TYPE_KEY[this.request().destinationNileBerth.type])
       }`,
   );
 
-  protected readonly axisLabel = computed(() => AXIS_LABEL[this.request().originNileBerth.axis]);
+  protected readonly axisLabel = computed(() =>
+    this.translate.translate(AXIS_KEY[this.request().originNileBerth.axis])(),
+  );
 
   protected readonly cargoIcon = computed(() => {
     const type = this.request().cargoType;

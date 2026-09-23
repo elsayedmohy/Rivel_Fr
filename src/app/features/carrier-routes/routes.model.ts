@@ -56,36 +56,28 @@ export interface SuggestedRequestsPage {
 
 export type SuggestedSort = 'newest' | 'pickupSoonest' | 'weightAsc' | 'weightDesc';
 
-export const BERTH_TYPE_LABEL: Record<BerthType, string> = {
-  Port: 'ميناء',
-  Terminal: 'محطة',
-  Dock: 'رصيف',
-  Pier: 'رصيف بحري',
-  LandingSite: 'مرسى',
+export const BERTH_TYPE_KEY: Record<BerthType, string> = {
+  Port: 'routes.berthType.Port',
+  Terminal: 'routes.berthType.Terminal',
+  Dock: 'routes.berthType.Dock',
+  Pier: 'routes.berthType.Pier',
+  LandingSite: 'routes.berthType.LandingSite',
 };
 
-export const AXIS_LABEL: Record<NavigationAxis, string> = {
-  CairoAswan: 'محور القاهرة – أسوان',
-  CairoDamietta: 'محور القاهرة – دمياط',
-  AswanWadiHalfa: 'محور أسوان – وادي حلفا',
+export const AXIS_KEY: Record<NavigationAxis, string> = {
+  CairoAswan: 'routes.axis.CairoAswan',
+  CairoDamietta: 'routes.axis.CairoDamietta',
+  AswanWadiHalfa: 'routes.axis.AswanWadiHalfa',
 };
 
-export const ACCURACY_LABEL: Record<CoordinateAccuracy, string> = {
-  Exact: 'إحداثيات دقيقة',
-  Approximate: 'إحداثيات تقريبية',
+export const ACCURACY_KEY: Record<CoordinateAccuracy, string> = {
+  Exact: 'routes.accuracy.Exact',
+  Approximate: 'routes.accuracy.Approximate',
 };
 
-export const SORT_LABEL: Record<SuggestedSort, string> = {
-  newest: 'الأحدث',
-  pickupSoonest: 'الأقرب استلامًا',
-  weightAsc: 'الأقل وزنًا',
-  weightDesc: 'الأكبر وزنًا',
+export const SORT_KEY: Record<SuggestedSort, string> = {
+  newest: 'routes.sort.newest',
+  pickupSoonest: 'routes.sort.pickupSoonest',
+  weightAsc: 'routes.sort.weightAsc',
+  weightDesc: 'routes.sort.weightDesc',
 };
-
-export function berthLine(berth: NileBerth): string {
-  return `${BERTH_TYPE_LABEL[berth.type]} · محافظة ${berth.governorate}`;
-}
-
-export function routeLabel(route: CarrierRoute): string {
-  return `${route.originNileBerth.arabicName} ← ${route.destinationNileBerth.arabicName}`;
-}

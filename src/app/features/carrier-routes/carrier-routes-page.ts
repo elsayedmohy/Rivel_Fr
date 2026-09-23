@@ -3,27 +3,28 @@ import { RouterLink } from '@angular/router';
 import { TuiButton, TuiDialogService, TuiIcon, TuiLoader } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { switchMap } from 'rxjs';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { AddRouteDialogComponent } from './components/add-route-dialog.component';
 import { RouteCardComponent } from './components/route-card.component';
 import { CarrierRoute, CreateCarrierRouteDto, NileBerth, SuggestedRequest } from './routes.model';
-import { DecimalPipe } from '@angular/common';
 import { CarrierRouteService } from './data/carrier-route.service';
 import { NileBerthService } from './data/nile-berth.service';
 import { AlertService } from '../../core/services/alert.service';
+import { LanguageService } from '../../core/config/language.service';
 
 @Component({
   selector: 'rl-carrier-routes-page',
   standalone: true,
-  imports: [DecimalPipe, RouterLink, TuiButton, TuiIcon, TuiLoader, RouteCardComponent],
+  imports: [RouterLink, TuiButton, TuiIcon, TuiLoader, RouteCardComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="rl-page">
       <header class="head">
         <div>
-          <h1 class="rl-page__title">خطوط السير</h1>
+          <h1 class="rl-page__title">{{ 'routes.title' | translate }}</h1>
           <p class="rl-page__subtitle">
-            حدّد المسارات التي تعمل عليها، وسنقترح عليك الشحنات المطابقة فور نشرها.
+            {{ 'routes.subtitle' | translate }}
           </p>
         </div>
 
@@ -36,31 +37,30 @@ import { AlertService } from '../../core/services/alert.service';
           [disabled]="berths().length === 0"
           (click)="openAddDialog()"
         >
-          إضافة خط سير
+          {{ 'routes.add' | translate }}
         </button>
       </header>
 
       @if (loading()) {
-        <tui-loader class="loader" size="l" [textContent]="'جارٍ التحميل…'" />
+        <tui-loader class="loader" size="l" [textContent]="'common.loading' | translate" />
       } @else if (routes().length === 0) {
         <div class="empty">
           <div class="empty__glyph">
             <tui-icon icon="@tui.git-fork" [style.font-size.px]="30" />
           </div>
 
-          <h2 class="empty__title">لم تُضف أي خط سير بعد</h2>
+          <h2 class="empty__title">{{ 'routes.empty.title' | translate }}</h2>
           <p class="empty__text">
-            أضف المسارات التي تعمل عليها حتى نرشّح لك الشحنات المطابقة تلقائيًا فور نشرها، بدل البحث
-            اليدوي في كل الشحنات المفتوحة.
+            {{ 'routes.empty.text' | translate }}
           </p>
 
           <button tuiButton type="button" size="l" iconStart="@tui.plus" (click)="openAddDialog()">
-            إضافة أول خط سير
+            {{ 'routes.empty.cta' | translate }}
           </button>
         </div>
       } @else {
         <h2 class="section">
-          خطوط السير المحفوظة <span class="section__count">({{ routes().length }})</span>
+          {{ 'routes.saved' | translate: { count: routes().length } }}
         </h2>
 
         <div class="grid">
@@ -81,18 +81,17 @@ import { AlertService } from '../../core/services/alert.service';
 
             <span class="banner__body">
               <span class="banner__title">
-                {{ suggestedCount() }} شحنة مفتوحة مطابقة لخطوط سيرك
+                {{ 'routes.banner.title' | translate: { count: suggestedCount() } }}
               </span>
               @if (latestSuggested(); as latest) {
                 <span class="banner__meta">
-                  أحدثها: {{ latest.cargoType }} · {{ latest.originNileBerth.arabicName }} ←
-                  {{ latest.destinationNileBerth.arabicName }} · {{ latest.weight | number }} طن
+                  {{ bannerLatest(latest) }}
                 </span>
               }
             </span>
 
             <span class="banner__cta">
-              عرض الشحنات المقترحة
+              {{ 'routes.banner.view' | translate }}
               <tui-icon icon="@tui.chevron-left" [style.font-size.px]="15" />
             </span>
           </a>
@@ -241,6 +240,8 @@ export class CarrierRoutesPage implements OnInit {
   private readonly berthService = inject(NileBerthService);
   private readonly dialogs = inject(TuiDialogService);
   private readonly alerts = inject(AlertService);
+  private readonly translate = inject(TranslateService);
+  private readonly language = inject(LanguageService);
 
   protected readonly routes = signal<CarrierRoute[]>([]);
   protected readonly berths = signal<NileBerth[]>([]);
@@ -250,10 +251,25 @@ export class CarrierRoutesPage implements OnInit {
   protected readonly suggestedCount = signal(0);
   protected readonly latestSuggested = signal<SuggestedRequest | null>(null);
 
+  private formatNumber(value: number): string {
+    return new Intl.NumberFormat(this.language.current(), {
+      maximumFractionDigits: 1,
+    }).format(value);
+  }
+
+  protected bannerLatest(latest: SuggestedRequest): string {
+    return this.translate.translate('routes.banner.latest', {
+      cargo: latest.cargoType,
+      origin: latest.originNileBerth.arabicName,
+      destination: latest.destinationNileBerth.arabicName,
+      weight: this.formatNumber(latest.weight),
+    })();
+  }
+
   ngOnInit(): void {
     this.berthService.getAll().subscribe({
       next: (berths) => this.berths.set(berths),
-      error: () => this.alerts.error('تعذّر تحميل قائمة المراسي.'),
+      error: () => this.alerts.error(this.translate.instant('routes.alerts.berthsFailed')),
     });
 
     this.loadRoutes();
@@ -275,7 +291,7 @@ export class CarrierRoutesPage implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.alerts.success('تعذّر تحميل خطوط السير.');
+        this.alerts.error(this.translate.instant('routes.alerts.routesFailed'));
       },
     });
   }
@@ -310,7 +326,7 @@ export class CarrierRoutesPage implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.alerts.success('تمت إضافة خط السير.');
+          this.alerts.success(this.translate.instant('routes.alerts.added'));
           this.loadRoutes();
         },
         error: (err: unknown) => {
@@ -318,7 +334,8 @@ export class CarrierRoutesPage implements OnInit {
             return;
           }
           const message =
-            (err as { error?: { message?: string } })?.error?.message ?? 'تعذّرت إضافة خط السير.';
+            (err as { error?: { message?: string } })?.error?.message ??
+            this.translate.instant('routes.alerts.addFailed');
           this.alerts.error(message);
         },
       });
@@ -339,7 +356,7 @@ export class CarrierRoutesPage implements OnInit {
       },
       error: () => {
         this.deletingId.set(null);
-        this.alerts.error('تعذّر حذف خط السير.');
+        this.alerts.error(this.translate.instant('routes.alerts.deleteFailed'));
       },
     });
   }

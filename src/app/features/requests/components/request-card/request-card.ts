@@ -1,14 +1,14 @@
 import { Component, computed, inject, input, output } from '@angular/core';
-import { AXIS_LABEL, BERTH_TYPE_LABEL, NileBerth } from '../../../carrier-routes/routes.model';
+import { AXIS_KEY, BERTH_TYPE_KEY, NileBerth } from '../../../carrier-routes/routes.model';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { ShipmentRequestDto } from '../../../../models/request/shipment-request';
 import { ShipmentRequestStatus } from '../../../../models/enums';
 import { LanguageService } from '../../../../core/config/language.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 
 @Component({
-  imports: [TuiIcon, DatePipe, DecimalPipe, TuiButton],
+  imports: [TuiIcon, DatePipe, DecimalPipe, TuiButton, TranslatePipe],
   selector: 'request-card',
   styleUrl: './request-card.scss',
   templateUrl: './request-card.html',
@@ -17,24 +17,19 @@ export class RequestCard {
   private readonly translate = inject(TranslateService);
   readonly request = input.required<ShipmentRequestDto>();
   readonly deleting = input(false);
-  private readonly language = inject(LanguageService);
+  protected readonly language = inject(LanguageService);
   readonly details = output<string>();
   readonly remove = output<string>();
 
-  protected originName(): string {
-    return this.request().originNileBerth.arabicName;
-  }
-
-  protected destinationName(): string {
-    return this.request().destinationNileBerth.arabicName;
-  }
-
   protected axisLabel(): string {
-    return AXIS_LABEL[this.request().originNileBerth?.axis];
+    return this.translate.translate(AXIS_KEY[this.request().originNileBerth?.axis])();
   }
 
   protected meta(berth: NileBerth): string {
-    return `${BERTH_TYPE_LABEL[berth.type]} · محافظة ${berth.governorate}`;
+    return this.translate.translate('routes.berthMeta', {
+      type: this.translate.instant(BERTH_TYPE_KEY[berth.type]),
+      governorate: berth.governorate,
+    })();
   }
   statusLabel(status: ShipmentRequestStatus): string {
     return this.translate.translate(`requests.status.${status}`)();
@@ -48,16 +43,16 @@ export class RequestCard {
 
   protected readonly offersLabel = computed(() => {
     const count = this.request().offersCount;
-    if (count === 0) return 'لا عروض بعد';
-    if (count === 1) return 'عرض واحد';
-    if (count === 2) return 'عرضان';
-    return `${count} عروض `;
+    if (count === 0) return this.translate.translate('offers.count.zero')();
+    if (count === 1) return this.translate.translate('offers.count.one')();
+    if (count === 2) return this.translate.translate('offers.count.two')();
+    return this.translate.translate('offers.count.many', { count: String(count) })();
   });
 
   protected readonly berthPair = computed(
     () =>
-      `${BERTH_TYPE_LABEL[this.request().originNileBerth.type]} ← ${
-        BERTH_TYPE_LABEL[this.request().destinationNileBerth.type]
+      `${this.translate.instant(BERTH_TYPE_KEY[this.request().originNileBerth.type])} ← ${
+        this.translate.instant(BERTH_TYPE_KEY[this.request().destinationNileBerth.type])
       }`,
   );
 }

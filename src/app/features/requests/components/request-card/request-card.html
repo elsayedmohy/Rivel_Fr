@@ -7,22 +7,7 @@
     <div class="card__titles">
       <span class="card__cargo">{{ request().cargoType }}</span>
 
-<!--      @if (request().status) {-->
-
         <span class="rl-chip rl-chip--{{ request().status.toLowerCase() }}">{{statusLabel(request().status)}}</span>
-<!--      }-->
-
-<!--      @if (overCapacity()) {-->
-<!--        <span class="rl-chip rl-chip&#45;&#45;over">-->
-<!--              <tui-icon icon="@tui.circle-alert" [style.font-size.px]="11" />-->
-<!--              أكبر من سعة سفنك — أقصى سعة {{ request().maxVesselCapacity | number }} طن-->
-<!--            </span>-->
-<!--      } @else {-->
-<!--        <span class="rl-chip rl-chip&#45;&#45;fits">-->
-<!--              <tui-icon icon="@tui.check" [style.font-size.px]="11" />-->
-<!--          {{ fitsLabel() }}-->
-<!--            </span>-->
-<!--      }-->
     </div>
 
     <div class="card__route">
@@ -48,8 +33,8 @@
     </div>
 
     <div class="card__meta">
-      {{ request().weight | number }} طن · التاريخ المطلوب
-      {{ request().requestedDate | date: 'd MMMM yyyy':undefined:'ar-EG' }} ·
+      {{ request().weight | number }} {{ 'common.ton' | translate }} · {{ 'requests.meta.date' | translate }}
+      {{ request().requestedDate | date: 'd MMMM yyyy':undefined:language.current() }} ·
       {{ offersLabel() }}
 <!--      @if (request().lowestOfferPrice !== null) {-->
 <!--        · أقل عرض {{ request().lowestOfferPrice | number }} ج.م-->
@@ -59,7 +44,7 @@
 
   <div class="card__actions">
     <button type="button" tuiButton appearance="primary"  (click)="details.emit(request().id)">
-      التفاصيل
+      {{ 'common.details' | translate }}
     </button>
 
 <!--    <button-->

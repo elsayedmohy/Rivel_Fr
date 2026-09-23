@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { TuiButton, TuiDialogContext, TuiIcon } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
+import { TranslatePipe } from '@ngx-translate/core';
 import { BerthPickerComponent } from './berth-picker.component';
 import { CreateCarrierRouteDto, NileBerth } from '../routes.model';
 
@@ -8,19 +9,19 @@ import { CreateCarrierRouteDto, NileBerth } from '../routes.model';
 @Component({
   selector: 'rl-add-route-dialog',
   standalone: true,
-  imports: [TuiButton, TuiIcon, BerthPickerComponent],
+  imports: [TuiButton, TuiIcon, BerthPickerComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="dialog">
       <header class="dialog__head">
         <div>
-          <h2 class="dialog__title">إضافة خط سير</h2>
-          <p class="dialog__sub">اختر ميناء القيام وميناء الوصول من مراسي النيل المسجّلة.</p>
+          <h2 class="dialog__title">{{ 'routes.dialog.title' | translate }}</h2>
+          <p class="dialog__sub">{{ 'routes.dialog.subtitle' | translate }}</p>
         </div>
       </header>
 
       <rl-berth-picker
-        label="ميناء القيام"
+        [label]="'routes.dialog.origin' | translate"
         [berths]="berths"
         [excludeId]="destination()?.id ?? null"
         [(value)]="origin"
@@ -31,7 +32,7 @@ import { CreateCarrierRouteDto, NileBerth } from '../routes.model';
         <button
           type="button"
           class="dialog__swap-btn"
-          aria-label="عكس اتجاه خط السير"
+          [attr.aria-label]="'routes.dialog.swap' | translate"
           [disabled]="!origin() && !destination()"
           (click)="swap()"
         >
@@ -41,19 +42,19 @@ import { CreateCarrierRouteDto, NileBerth } from '../routes.model';
       </div>
 
       <rl-berth-picker
-        label="ميناء الوصول"
+        [label]="'routes.dialog.destination' | translate"
         [berths]="berths"
         [excludeId]="origin()?.id ?? null"
         [(value)]="destination"
       />
 
       @if (error(); as message) {
-        <p class="dialog__error" role="alert">{{ message }}</p>
+        <p class="dialog__error" role="alert">{{ message | translate }}</p>
       }
 
       <footer class="dialog__foot">
         <button tuiButton type="button" appearance="outline" size="m" (click)="cancel()">
-          إلغاء
+          {{ 'common.cancel' | translate }}
         </button>
         <button
           tuiButton
@@ -63,7 +64,7 @@ import { CreateCarrierRouteDto, NileBerth } from '../routes.model';
           [disabled]="!canSave()"
           (click)="save()"
         >
-          حفظ خط السير
+          {{ 'common.save' | translate }}
         </button>
       </footer>
     </div>
@@ -199,7 +200,7 @@ export class AddRouteDialogComponent {
       return;
     }
     if (from.id === to.id) {
-      this.error.set('ميناء القيام وميناء الوصول لا يمكن أن يكونا نفس الميناء.');
+      this.error.set('routes.dialog.samePort');
       return;
     }
 
