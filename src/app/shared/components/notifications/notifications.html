@@ -1,88 +1,84 @@
+<tui-badged-content>
+  <button
+    tuiIconButton
+    type="button"
+    appearance="flat"
+    [tuiDropdown]="dropdown"
+    [tuiDropdownOpen]="open()"
+    (tuiDropdownOpenChange)="open.set($event)"
+    [attr.aria-label]="'notifications.title' | translate"
+    (click)="toggle()"
+  >
+    <tui-icon icon="@tui.bell" />
 
-  <tui-badged-content>
+    @if (notifService.unreadCount() > 0) {
+      <tui-badge-notification style="top: 5px" size="m" tuiSlot="top">
+        {{ notifService.unreadCount() }}
+      </tui-badge-notification>
+    }
+  </button>
 
+  <ng-template #dropdown>
+    <div class="panel">
+      <header class="panel__head">
+        <span class="panel__title">{{ 'notifications.title' | translate }}</span>
 
-    <button
-      tuiIconButton
-      [tuiDropdown]="dropdown"
-      [(tuiDropdownOpen)]="open"
-      type="button"
-      appearance="flat"
-      aria-label="الإشعارات"
-      (click)="toggle()"
-    >
-      <tui-icon icon="@tui.bell"/>
-      @if (notifService.unreadCount() > 0) {
-        <tui-badge-notification
-          style="top: 5px"
-          size="m"
-          tuiSlot="top"
-        >
-          {{ notifService.unreadCount() }}
-        </tui-badge-notification>
-      }
-    </button>
-    <ng-template #dropdown>
-      <div class="notifications-dropdown">
-        <header class="notifications-header">
-      <span class="notifications-title">
-  الإشعارات
-  </span>
+        @if (notifService.unreadCount() > 0) {
+          <button type="button" class="rl-btn rl-btn--quiet" (click)="markAllRead()">
+            {{ 'notifications.markAllRead' | translate }}
+          </button>
+        }
+      </header>
 
-          @if (notifService.unreadCount() > 0) {
+      <div class="panel__list">
+        @if (notifService.loading() && notifService.notifications().length === 0) {
+          <div class="panel__state"><tui-loader size="m" /></div>
+        } @else if (notifService.notifications().length === 0) {
+          <div class="panel__state empty">
+            <tui-icon icon="@tui.bell-off" class="empty__icon" />
+            <p>{{ 'notifications.empty' | translate }}</p>
+          </div>
+        } @else {
+          @for (n of notifService.notifications(); track n.id) {
             <button
-              tuiButton
               type="button"
-              appearance="primary"
-              size="s"
-              (click)="markAllRead()"
+              class="item"
+              [class.item--unread]="!n.isRead"
+              (click)="activate(n)"
             >
-              تعليم الكل كمقروء
+              <span class="item__icon"><tui-icon [icon]="iconFor(n)" /></span>
+
+              <span class="item__body">
+                <span class="item__text">
+                  {{ 'notifications.type.' + n.type | translate: params(n) }}
+                </span>
+                <time class="item__time" [attr.datetime]="n.createdAt">
+                  {{ timeAgo(n.createdAt) }}
+                </time>
+              </span>
+
+              @if (!n.isRead) {
+                <span class="item__dot" aria-hidden="true"></span>
+              }
             </button>
           }
-        </header>
 
-        <div class="notifications-list">
-          @if (notifService.notifications().length > 0) {
-            @for (
-              notification of notifService.notifications();
-              track notification.id
-              ) {
-              <div
-                class="notification-item"
-                [class.unread]="!notification.isRead"
-              >
-                <div class="notification-icon-wrapper">
-                  <tui-icon icon="@tui.check-circle" />
-                </div>
-
-                <div class="notification-content">
-                  <h3 class="my-2">
-                    {{ notification.title }}
-                  </h3>
-                  <p class="notification-message">
-                    {{ notification.message }}
-                  </p>
-
-                  <time class="notification-time">
-                    {{ notification.createdAt | date: 'shortTime' }}
-                  </time>
-                </div>
-              </div>
-            }
-          } @else {
-            <div class="empty-state">
-              <tui-icon
-                icon="@tui.bell-off"
-                class="empty-icon"
-              />
-
-              <p>لا توجد إشعارات</p>
-            </div>
+          @if (notifService.hasMore()) {
+            <button
+              type="button"
+              class="more"
+              [disabled]="notifService.loading()"
+              (click)="loadMore()"
+            >
+              @if (notifService.loading()) {
+                {{ 'common.loading' | translate }}
+              } @else {
+                {{ 'notifications.loadMore' | translate }}
+              }
+            </button>
           }
-        </div>
+        }
       </div>
-    </ng-template>
-  </tui-badged-content>
-
-
+    </div>
+  </ng-template>
+</tui-badged-content>
