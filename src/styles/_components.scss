@@ -248,3 +248,9 @@ a { color: var(--rl-ink); font-weight: 600; text-decoration: none; }
   &:hover { background: var(--rl-quiet-hover); color: var(--rl-ink); }
   &:focus-visible { outline: 2px solid var(--rl-focus); outline-offset: 2px; }
 }
+
+.t-actions {
+  .t-button {
+    margin: .75rem 1.75rem;
+  }
+}

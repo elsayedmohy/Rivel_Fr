@@ -5,9 +5,8 @@
     appearance="flat"
     [tuiDropdown]="dropdown"
     [tuiDropdownOpen]="open()"
-    (tuiDropdownOpenChange)="open.set($event)"
+    (tuiDropdownOpenChange)="toggle($event)"
     [attr.aria-label]="'notifications.title' | translate"
-    (click)="toggle()"
   >
     <tui-icon icon="@tui.bell" />
 
@@ -46,11 +45,11 @@
               [class.item--unread]="!n.isRead"
               (click)="activate(n)"
             >
-              <span class="item__icon"><tui-icon [icon]="iconFor(n)" /></span>
+              <span class="item__icon"><tui-icon [icon]="notifService.iconFor(n)" /></span>
 
               <span class="item__body">
                 <span class="item__text">
-                  {{ 'notifications.type.' + n.type | translate: params(n) }}
+                  {{notificationBody(n)}}
                 </span>
                 <time class="item__time" [attr.datetime]="n.createdAt">
                   {{ timeAgo(n.createdAt) }}

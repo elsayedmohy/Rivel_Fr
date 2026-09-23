@@ -1,18 +1,27 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { TuiNotificationService } from '@taiga-ui/core';
+import { TuiPushService } from '@taiga-ui/kit';
+import { switchMap, take, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AlertService {
   protected readonly notifications = inject(TuiNotificationService);
+  protected readonly push = inject(TuiPushService);
   private readonly translate = inject(TranslateService);
 
-  show(title: string, message: Record<string, unknown>) {
-    const label = Object.values(message ?? {})
-      .map((value) => (value === null || value === undefined ? '' : String(value)))
-      .filter(Boolean)
-      .join(' · ');
-    this.notifications.open(this.translate.instant(title), { label }).subscribe();
+  show(content: string, type: string, icon: string, action: () => void) {
+    this.push
+      .open(content, {
+        type: type,
+        icon: icon,
+        buttons: [this.translate.instant('common.show')],
+      })
+      .pipe(
+        take(1),
+        tap(() => action()),
+      )
+      .subscribe();
   }
   success(message: string): void {
     this.notifications

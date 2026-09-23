@@ -4,18 +4,11 @@ import * as signalR from '@microsoft/signalr';
 
 import { appConfig } from '../config/app-config';
 import { AlertService } from './alert.service';
+import { FALLBACK, ISO_DATE, LOCALE, META, NotificationType } from '../../models/notifications';
+import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
-export enum NotificationType {
-  OfferReceived = 0,
-  OfferAccepted = 1,
-  OfferRejected = 2,
-  OfferWithdrawn = 3,
-  RequestMatched = 4,
-  RequestExpired = 5,
-  ShipmentStatusChanged = 6,
-  ShipmentCancelled = 7,
-  RatingReceived = 8,
-}
+
 
 export interface AppNotification {
   id: string;
@@ -40,6 +33,9 @@ const PAGE_SIZE = 20;
 export class NotificationService {
   private readonly http = inject(HttpClient);
   private readonly alert = inject(AlertService);
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+
   private readonly base = `${appConfig.apiBaseUrl}/notifications`;
 
   private hub?: signalR.HubConnection;
@@ -66,13 +62,23 @@ export class NotificationService {
 
     this.hub.on('notification', (n: AppNotification) => {
       this.notifications.update((list) => [n, ...list]);
+      console.log(this.notifications());
       this.unreadCount.update((c) => c + 1);
-      this.alert.show(this.textKeyFor(n), n.data);
+      const content = this.translate.instant('notifications.type.' + n.type, this.params(n));
+
+      const type = this.translate.instant('notifications.title.' + n.type);
+
+      this.alert.show(content, type, this.iconFor(n),() => this.open(n));
     });
 
     this.hub.onreconnected(() => this.load(true));
 
     this.hub.start().catch((err) => console.error('SignalR failed', err));
+  }
+
+  open(n:AppNotification) {
+    const meta = META[n.type] ?? FALLBACK;
+    this.router.navigate(meta.link(n.entityId));
   }
 
   disconnect(): void {
@@ -148,7 +154,7 @@ export class NotificationService {
     this.unreadCount.update((c) => Math.max(0, c - 1));
 
     this.http.post(`${this.base}/${id}/read`, {}).subscribe({
-      error: () => this.refreshUnreadCount(), // فشل؟ هات الحقيقة من السيرفر
+      error: () => this.refreshUnreadCount(),
     });
   }
 
@@ -167,5 +173,28 @@ export class NotificationService {
 
   private textKeyFor(n: AppNotification): string {
     return `notifications.type.${n.type}`;
+  }
+
+   iconFor(n: AppNotification): string {
+    return (META[n.type] ?? FALLBACK).icon;
+  }
+
+   params(n: AppNotification): Record<string, unknown> {
+    const out: Record<string, unknown> = {};
+
+    for (const [key, value] of Object.entries(n.data ?? {})) {
+      if (typeof value === 'number') {
+        out[key] = value.toLocaleString(LOCALE);
+      } else if (typeof value === 'string' && ISO_DATE.test(value)) {
+        const date = new Date(value);
+        out[key] = Number.isNaN(date.getTime())
+          ? value
+          : date.toLocaleDateString(LOCALE, { day: 'numeric', month: 'long', year: 'numeric' });
+      } else {
+        out[key] = value;
+      }
+    }
+
+    return out;
   }
 }
