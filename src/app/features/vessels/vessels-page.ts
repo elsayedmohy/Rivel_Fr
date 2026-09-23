@@ -1,124 +1,153 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
-import { TuiButton, TuiError, TuiIcon, TuiInput } from '@taiga-ui/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TuiButton, TuiDialogService, TuiIcon, TuiLoader } from '@taiga-ui/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { VesselService } from '../../core/http/vessel.service';
-import { VESSEL_TYPES } from '../../models/enums';
-import type { VesselStatus, VesselType } from '../../models/enums';
-import type { VesselDto } from '../../models/vessel/vessel';
-import { RlCard } from '../../shared/components/rl-card/rl-card';
+import { VesselService } from './data/vessel.service';
+import { VesselCardComponent } from './components/vessel-card.component';
+import { Vessel, VesselPayload, VesselStatus } from './data/vessel.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { EMPTY, switchMap } from 'rxjs';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { VesselDialogComponent, VesselDialogData } from './components/vessel-dialog.component';
 
 @Component({
   selector: 'rl-vessels-page',
-  imports: [ReactiveFormsModule, TuiButton, TuiError, TuiIcon, TuiInput, TranslatePipe, RlCard],
+  imports: [ReactiveFormsModule, TuiButton, TuiIcon, TranslatePipe, TuiLoader, VesselCardComponent],
   templateUrl: './vessels-page.html',
   styleUrl: './vessels-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VesselsPage {
-  private readonly service = inject(VesselService);
+  private readonly api = inject(VesselService);
+  private readonly dialogs = inject(TuiDialogService);
   private readonly translate = inject(TranslateService);
 
-  readonly vesselTypes = VESSEL_TYPES;
-  readonly vessels = signal<VesselDto[]>([]);
-  readonly loading = signal(true);
-  readonly error = signal<string | null>(null);
-  readonly showForm = signal(false);
+  protected readonly vessels = signal<Vessel[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly error = signal<string | null>(null);
+  protected readonly formError = signal<string | null>(null);
+  protected readonly busyId = signal<string | null>(null);
 
-  readonly form = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(100)],
-    }),
-    type: new FormControl<VesselType>('Barge', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    registrationNumber: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(50)],
-    }),
-    capacity: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, greaterThanZero],
-    }),
-  });
+  protected readonly availableCount = computed(
+    () => this.vessels().filter((v) => v.status === VesselStatus.Available).length,
+  );
+
+  protected readonly totalCapacity = computed(() =>
+    this.vessels().reduce((sum, v) => sum + v.capacity, 0),
+  );
 
   constructor() {
     this.reload();
   }
 
-  reload(): void {
+  protected reload(): void {
     this.loading.set(true);
     this.error.set(null);
+    this.formError.set(null);
 
-    this.service.list().subscribe({
-      next: (vessels) => {
-        this.vessels.set(vessels);
+    this.api.getMine().subscribe({
+      next: (list) => {
+        this.vessels.set(list);
         this.loading.set(false);
       },
-      error: (error: unknown) => {
-        this.error.set((error as { message?: string }).message ?? 'vessels.error.load');
+      error: (err: HttpErrorResponse) => {
+        this.error.set(this.messageFor(err));
         this.loading.set(false);
       },
     });
   }
 
-  fieldError(key: 'name' | 'type' | 'registrationNumber' | 'capacity'): string | null {
-    const control = this.form.controls[key];
-    if (control.touched &&  control.invalid && control.errors) {
-      const first = Object.keys(control.errors)[0];
-      return this.translate.translate(`auth.validation.${first}`)();
-    }
-    return null;
+  protected add(): void {
+    this.openDialog(null)
+      .pipe(switchMap((payload) => (payload ? this.api.create(payload) : EMPTY)))
+      .subscribe({
+        next: (created) => this.vessels.update((list) => [...list, created]),
+        error: (err: HttpErrorResponse) => this.formError.set(this.messageFor(err)),
+      });
   }
 
-  add(): void {
-    this.form.markAllAsTouched();
-    if (this.form.invalid) {
-      return;
-    }
-
-    const raw = this.form.getRawValue();
-    this.service
-      .create({
-        name: raw.name.trim(),
-        type: raw.type,
-        registrationNumber: raw.registrationNumber.trim(),
-        capacity: Number(raw.capacity),
-      })
+  protected edit(vessel: Vessel): void {
+    this.openDialog(vessel)
+      .pipe(
+        switchMap((payload) => {
+          if (!payload) {
+            return EMPTY;
+          }
+          this.busyId.set(vessel.id);
+          return this.api.update(vessel.id, payload);
+        }),
+      )
       .subscribe({
-        next: () => {
-          this.form.reset({ type: 'Barge' });
-          this.showForm.set(false);
-          this.reload();
+        next: (updated) => {
+          this.busyId.set(null);
+          this.replace(updated);
         },
-        error: (error: unknown) => {
-          this.error.set((error as { message?: string }).message ?? 'vessels.error.create');
+        error: (err: HttpErrorResponse) => {
+          this.busyId.set(null);
+          this.formError.set(this.messageFor(err));
         },
       });
   }
 
-  statusLabel(status: VesselStatus): string {
-    return this.translate.translate(`vessels.status.${status}`)();
+  protected toggleStatus(vessel: Vessel): void {
+    const next =
+      vessel.status === VesselStatus.Maintenance
+        ? VesselStatus.Available
+        : VesselStatus.Maintenance;
+
+    this.busyId.set(vessel.id);
+    this.formError.set(null);
+
+    this.api.setStatus(vessel.id, next).subscribe({
+      next: (updated) => {
+        this.busyId.set(null);
+        this.replace(updated);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.busyId.set(null);
+        this.formError.set(this.messageFor(err));
+      },
+    });
   }
 
-  capacityText(vessel: VesselDto): string {
-    return `${vessel.capacity.toLocaleString()} ${vessel.capacityUnit}`;
-  }
-}
+  protected archive(vessel: Vessel): void {
+    this.busyId.set(vessel.id);
+    this.formError.set(null);
 
-function greaterThanZero(control: AbstractControl): ValidationErrors | null {
-  const value = Number(control.value);
-  if (control.value === '' || Number.isNaN(value)) {
-    return null;
+    this.api.archive(vessel.id).subscribe({
+      next: () => {
+        this.busyId.set(null);
+        this.vessels.update((list) => list.filter((v) => v.id !== vessel.id));
+      },
+      error: (err: HttpErrorResponse) => {
+        this.busyId.set(null);
+        this.formError.set(this.messageFor(err));
+      },
+    });
   }
-  return value > 0 ? null : { greaterThanZero: true };
+
+  private openDialog(vessel: Vessel | null) {
+    return this.dialogs.open<VesselPayload | null>(
+      new PolymorpheusComponent(VesselDialogComponent),
+      { data: { vessel } satisfies VesselDialogData, size: 'm', dismissible: true },
+    );
+  }
+
+  private replace(updated: Vessel): void {
+    this.vessels.update((list) => list.map((v) => (v.id === updated.id ? updated : v)));
+  }
+
+  private messageFor(err: HttpErrorResponse): string {
+    const code = err.error?.code as string | undefined;
+
+    if (code) {
+      const key = `errors.${code}`;
+      const translated = this.translate.instant(key);
+      if (translated !== key) {
+        return translated;
+      }
+    }
+
+    return err.error?.message ?? this.translate.instant('errors.unknown');
+  }
 }

@@ -1,118 +1,83 @@
-<main class="rl-page">
-  <header class="rl-page__heading">
+<main class="rl-page vessels">
+  <header class="head">
     <div>
-      <h1  class="rl-page__title">{{ 'vessels.title' | translate }}</h1>
+      <h1 class="rl-page__title">{{ 'vessels.title' | translate }}</h1>
       <p class="rl-page__subtitle">{{ 'vessels.subtitle' | translate }}</p>
-    </div >
-    <button tuiButton appearance="primary" iconStart="@tui.plus" type="button" (click)="showForm.set(!showForm())">
-      {{ 'vessels.add.button' | translate }}
-    </button>
+    </div>
+
+    <div class="head__actions">
+      <button
+        type="button"
+        class="rl-icon-btn refresh"
+        [attr.aria-label]="'requests.refresh' | translate"
+        [disabled]="loading()"
+        (click)="reload()"
+      >
+        <tui-icon icon="@tui.refresh-cw" [class.spin]="loading()" />
+      </button>
+
+      <button tuiButton appearance="primary" size="m" iconStart="@tui.plus" (click)="add()">
+        {{ 'vessels.add' | translate }}
+      </button>
+    </div>
   </header>
 
-  @if (showForm()) {
-    <section class="card form-card">
-      <form [formGroup]="form" (ngSubmit)="add()" novalidate class="form">
-        @if (error(); as message) {
-          <div class="error-box" role="alert">
-            <p>{{ message }}</p>
-          </div>
-        }
-
-        <div class="field">
-          <tui-textfield [invalid]="!!fieldError('name')" tuiTextfieldSize="l">
-            <label tuiLabel>{{ 'vessels.form.name' | translate }}</label>
-            <input
-              tuiInput
-              formControlName="name"
-              [placeholder]="'vessels.form.namePlaceholder' | translate"
-            />
-          </tui-textfield>
-          @if (fieldError('name'); as message) {
-            <tui-error [error]="message" />
-          }
-        </div>
-
-        <div class="field">
-          <label class="label" for="vessel-type">{{ 'vessels.form.type' | translate }}</label>
-          <select id="vessel-type" class="select" formControlName="type">
-            @for (type of vesselTypes; track type) {
-              <option [value]="type">{{ type }}</option>
-            }
-          </select>
-          @if (fieldError('type'); as message) {
-            <tui-error [error]="message" />
-          }
-        </div>
-
-        <div class="field">
-          <tui-textfield [invalid]="!!fieldError('registrationNumber')" tuiTextfieldSize="l">
-            <label tuiLabel>{{ 'vessels.form.registrationNumber' | translate }}</label>
-            <input
-              tuiInput
-              formControlName="registrationNumber"
-              [placeholder]="'vessels.form.registrationNumberPlaceholder' | translate"
-            />
-          </tui-textfield>
-          @if (fieldError('registrationNumber'); as message) {
-            <tui-error [error]="message" />
-          }
-        </div>
-
-        <div class="field">
-          <tui-textfield [invalid]="!!fieldError('capacity')" tuiTextfieldSize="l">
-            <label tuiLabel>{{ 'vessels.form.capacity' | translate }}</label>
-            <input tuiInput type="number" min="0" step="1" formControlName="capacity" />
-          </tui-textfield>
-          @if (fieldError('capacity'); as message) {
-            <tui-error [error]="message" />
-          }
-        </div>
-
-        <div class="form-actions">
-          <button tuiButton appearance="primary" type="submit">
-            {{ 'vessels.form.submit' | translate }}
-          </button>
-          <button tuiButton appearance="accent" type="button" (click)="showForm.set(false)">
-            {{ 'common.cancel' | translate }}
-          </button>
-        </div>
-      </form>
-    </section>
-  }
-
-  @if (loading()) {
-    <div class="state">{{ 'common.loading' | translate }}</div>
-  } @else if (error() && vessels().length === 0) {
-    <div class="state state-error" role="alert">
-      <p>{{ error() }}</p>
+  @if (error(); as message) {
+    <div class="state" role="alert">
+      <p class="state__error">{{ message }}</p>
       <button tuiButton appearance="primary" type="button" (click)="reload()">
         {{ 'requests.retry' | translate }}
       </button>
     </div>
+  } @else if (loading()) {
+    <div class="state" aria-live="polite"><tui-loader size="m" /></div>
   } @else if (vessels().length === 0) {
-    <div class="state">
-      <tui-icon [icon]="'@tui.ship'" class="state-icon" />
-      <p>{{ 'vessels.empty' | translate }}</p>
+    <!-- الناقل الجديد بينزل هنا أول حاجة — لازم يفهم ليه ده مهم -->
+    <div class="state rl-card empty">
+      <span class="rl-tile empty__tile"><tui-icon icon="@tui.ship" /></span>
+      <h2 class="empty__title">{{ 'vessels.empty.title' | translate }}</h2>
+      <p class="empty__body">{{ 'vessels.empty.body' | translate }}</p>
+      <button tuiButton appearance="primary" size="m" iconStart="@tui.plus" (click)="add()">
+        {{ 'vessels.empty.cta' | translate }}
+      </button>
     </div>
   } @else {
-    <div class="rl-page__grid">
-      @for (vessel of vessels(); track vessel.id) {
-        <rl-card>
-          <div class="vessel-info flex-1">
-            <div class="vessel-title">
-              <tui-icon [icon]="'@tui.ship'" class="vessel-icon" />
-              <h2>{{ vessel.name }}</h2>
-            </div>
-            <p class="vessel-meta">{{ vessel.type }} — {{ capacityText(vessel) }}</p>
-          </div>
+    <section class="band rl-card" aria-label="{{ 'vessels.summary' | translate }}">
+      <div class="band__cell">
+        <bdi class="band__value rl-num">{{ vessels().length }}</bdi>
+        <span class="band__label">{{ 'vessels.stat.total' | translate }}</span>
+      </div>
+      <div class="band__cell">
+        <bdi class="band__value rl-num">{{ availableCount() }}</bdi>
+        <span class="band__label">{{ 'vessels.stat.available' | translate }}</span>
+      </div>
+      <div class="band__cell">
+        <bdi class="band__value rl-num">{{ totalCapacity() }}</bdi>
+        <span class="band__label">
+              {{ 'vessels.stat.capacity' | translate }} · {{ 'common.ton' | translate }}
+            </span>
+      </div>
+    </section>
 
-          <div>
-            <span class="badge badge-{{ vessel.status.toLowerCase() }}">
-            {{ statusLabel(vessel.status) }}
-          </span>
-          </div>
-        </rl-card>
+    @if (formError(); as message) {
+      <p class="notice notice--error" role="alert">
+        <tui-icon icon="@tui.circle-alert" />
+        <span>{{ message }}</span>
+      </p>
+    }
+
+    <ul class="list">
+      @for (v of vessels(); track v.id) {
+        <li>
+          <rl-vessel-card
+            [vessel]="v"
+            [busy]="busyId() === v.id"
+            (edit)="edit($event)"
+            (toggleStatus)="toggleStatus($event)"
+            (archive)="archive($event)"
+          />
+        </li>
       }
-    </div>
+    </ul>
   }
 </main>

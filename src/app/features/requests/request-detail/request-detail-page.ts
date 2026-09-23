@@ -8,11 +8,11 @@ import { LanguageService } from '../../../core/config/language.service';
 import { TokenService } from '../../../core/http/token.service';
 import { ShipmentRequestService } from '../../../core/http/shipment-request.service';
 import { OfferService } from '../../../core/http/offer.service';
-import { VesselService } from '../../../core/http/vessel.service';
 import type { ShipmentRequestDto } from '../../../models/request/shipment-request';
 import type { CreateOfferDto, OfferDto } from '../../../models/offer/offer';
-import type { ShipmentRequestStatus, VesselStatus } from '../../../models/enums';
-import type { VesselDto } from '../../../models/vessel/vessel';
+import { VesselService } from '../../vessels/data/vessel.service';
+import { Vessel, VesselStatus } from '../../vessels/data/vessel.model';
+import { ShipmentRequestStatus } from '../../../models/enums';
 
 @Component({
   selector: 'rl-request-detail-page',
@@ -49,7 +49,7 @@ export class RequestDetailPage {
   readonly offersError = signal<string | null>(null);
   readonly acceptingId = signal<string | null>(null);
 
-  readonly vessels = signal<VesselDto[]>([]);
+  readonly vessels = signal<Vessel[]>([]);
   readonly vesselsLoading = signal(false);
   readonly minDate = today();
   readonly offerForm = new FormGroup({
@@ -118,7 +118,7 @@ export class RequestDetailPage {
 
   offerFieldError(key: 'price' | 'proposedPickupDate' | 'vesselId'): string | null {
     const control = this.offerForm.controls[key];
-    if (control.touched &&  control.invalid && control.errors) {
+    if (control.touched && control.invalid && control.errors) {
       const first = Object.keys(control.errors)[0];
       return this.translate.translate(`auth.validation.${first}`)();
     }
@@ -219,7 +219,7 @@ export class RequestDetailPage {
   private loadVessels(): void {
     this.vesselsLoading.set(true);
 
-    this.vesselService.list().subscribe({
+    this.vesselService.getMine().subscribe({
       next: (vessels) => {
         this.vessels.set(vessels);
         this.vesselsLoading.set(false);

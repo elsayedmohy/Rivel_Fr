@@ -3,7 +3,7 @@ export type UserRole = 'CargoOwner' | 'Carrier';
 export type ShipmentRequestStatus = 'Open' | 'Matched' | 'Closed';
 export type OfferStatus = 'Pending' | 'Accepted' | 'Rejected';
 export type ShipmentStatus = 'Matched' | 'PickedUp' | 'InTransit' | 'Delivered';
-export type VesselStatus = 'Available' | 'OnTrip';
+export type VesselStatus = 'Available' | 'OnTrip' | 'Maintenance';
 
 export type VesselType =
   | 'Barge'

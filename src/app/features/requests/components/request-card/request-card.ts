@@ -1,14 +1,14 @@
 import { Component, computed, inject, input, output } from '@angular/core';
-import { AXIS_LABEL, BERTH_TYPE_LABEL, CarrierRoute, NileBerth } from '../../../carrier-routes/routes.model';
+import { AXIS_LABEL, BERTH_TYPE_LABEL, NileBerth } from '../../../carrier-routes/routes.model';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { ShipmentRequestDto } from '../../../../models/request/shipment-request';
 import { ShipmentRequestStatus } from '../../../../models/enums';
 import { LanguageService } from '../../../../core/config/language.service';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 
 @Component({
-  imports: [TuiIcon, TranslatePipe, DatePipe, DecimalPipe, TuiButton],
+  imports: [TuiIcon, DatePipe, DecimalPipe, TuiButton],
   selector: 'request-card',
   styleUrl: './request-card.scss',
   templateUrl: './request-card.html',
