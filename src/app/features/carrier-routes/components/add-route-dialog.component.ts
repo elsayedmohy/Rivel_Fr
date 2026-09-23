@@ -140,7 +140,7 @@ import { CreateCarrierRouteDto, NileBerth } from '../routes.model';
         background: var(--rl-ground);
         border: 1px solid var(--rl-border);
         border-radius: 12px;
-        color: var(--rl-teal);
+        color: var(--rl-feature);
         cursor: pointer;
 
         &:disabled {

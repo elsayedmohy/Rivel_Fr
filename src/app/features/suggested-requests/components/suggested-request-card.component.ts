@@ -1,6 +1,6 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
-import { TuiIcon } from '@taiga-ui/core';
+import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AXIS_KEY, BERTH_TYPE_KEY, SuggestedRequest } from '../../carrier-routes/routes.model';
 import { LanguageService } from '../../../core/config/language.service';
@@ -9,7 +9,7 @@ import { LanguageService } from '../../../core/config/language.service';
 @Component({
   selector: 'rl-suggested-request-card',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, TuiIcon, TranslatePipe],
+  imports: [DatePipe, DecimalPipe, TuiIcon, TuiButton, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="card rl-card" [class.card--blocked]="overCapacity()">
@@ -64,24 +64,28 @@ import { LanguageService } from '../../../core/config/language.service';
         </div>
 
         <div class="card__meta">
-          {{ request().weight | number }} {{ 'common.ton' | translate }} · {{ 'common.pickup' | translate }}
+          {{ request().weight | number }} {{ 'common.ton' | translate }} ·
+          {{ 'common.pickup' | translate }}
           {{ request().pickupDate | date: 'd MMMM' : undefined : language.current() }} ·
           {{ offersLabel() }}
           @if (request().lowestOfferPrice !== null) {
             ·
-            {{ 'suggested.lowestOffer' | translate: { price: request().lowestOfferPrice | number } }}
+            {{
+              'suggested.lowestOffer' | translate: { price: request().lowestOfferPrice | number }
+            }}
           }
         </div>
       </div>
 
       <div class="card__actions">
-        <button type="button" class="btn btn--ghost" (click)="details.emit(request().id)">
+        <button type="button" tuiButton appearance="outline" (click)="details.emit(request().id)">
           {{ 'common.details' | translate }}
         </button>
 
         <button
+          tuiButton
+          appearance="primary"
           type="button"
-          class="btn btn--primary"
           [disabled]="overCapacity()"
           [attr.title]="overCapacity() ? ('suggested.noVesselForCargo' | translate) : null"
           (click)="makeOffer.emit(request().id)"
@@ -105,7 +109,7 @@ import { LanguageService } from '../../../core/config/language.service';
         gap: 16px;
 
         &--blocked {
-          background: var(--rl-surface-soft);
+          background: var(--rl-line-subtle);
         }
       }
 
@@ -117,11 +121,11 @@ import { LanguageService } from '../../../core/config/language.service';
         width: 48px;
         height: 48px;
         border-radius: 13px;
-        background: var(--rl-teal-tint);
-        color: var(--rl-teal);
+        background: var(--rl-feature-tint);
+        color: var(--rl-feature);
 
         &--muted {
-          background: var(--rl-surface-muted);
+          background: var(--rl-line-subtle);
           color: var(--rl-ink-2);
         }
       }
@@ -139,7 +143,6 @@ import { LanguageService } from '../../../core/config/language.service';
       }
 
       .card__cargo {
-
         font-size: 17px;
         font-weight: 600;
         color: var(--rl-ink);
@@ -245,9 +248,9 @@ export class SuggestedRequestCardComponent {
 
   protected readonly berthPair = computed(
     () =>
-      `${this.translate.instant(BERTH_TYPE_KEY[this.request().originNileBerth.type])} ← ${
-        this.translate.instant(BERTH_TYPE_KEY[this.request().destinationNileBerth.type])
-      }`,
+      `${this.translate.instant(BERTH_TYPE_KEY[this.request().originNileBerth.type])} ← ${this.translate.instant(
+        BERTH_TYPE_KEY[this.request().destinationNileBerth.type],
+      )}`,
   );
 
   protected readonly axisLabel = computed(() =>

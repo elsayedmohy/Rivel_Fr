@@ -138,8 +138,8 @@ const PAGE_SIZE = 4;
   styles: [
     `
       .link {
-        color: var(--rl-clay);
-        font-weight: 600;
+        color: var(--rl-on-feature);
+        font-weight: 700;
         text-decoration: none;
 
         &:hover {
@@ -175,9 +175,9 @@ const PAGE_SIZE = 4;
         }
 
         &--active {
-          background: var(--rl-teal);
+          background: var(--rl-feature);
           color: #fff;
-          border-color: var(--rl-teal);
+          border-color: var(--rl-feature);
 
           .chip__count {
             color: rgb(255 255 255 / 72%);
@@ -277,8 +277,8 @@ const PAGE_SIZE = 4;
         width: 60px;
         height: 60px;
         border-radius: 17px;
-        background: var(--rl-teal-tint);
-        color: var(--rl-teal);
+        background: var(--rl-feature-tint);
+        color: var(--rl-feature);
       }
 
       .empty__title {
@@ -384,7 +384,7 @@ export class SuggestedRequestsPage implements OnInit {
         },
         error: () => {
           this.loading.set(false);
-          this.alerts.error(this.translate.instant('suggested.alerts.loadFailed'))
+          this.alerts.error(this.translate.instant('suggested.alerts.loadFailed'));
         },
       });
   }

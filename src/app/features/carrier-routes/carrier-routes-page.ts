@@ -74,7 +74,7 @@ import { LanguageService } from '../../core/config/language.service';
         </div>
 
         @if (suggestedCount() > 0) {
-          <a class="banner" routerLink="/carrier/suggested-requests">
+          <a class="banner" routerLink="/suggested-requests">
             <span class="banner__glyph">
               <tui-icon icon="@tui.sparkles" [style.font-size.px]="21" />
             </span>
@@ -90,10 +90,10 @@ import { LanguageService } from '../../core/config/language.service';
               }
             </span>
 
-            <span class="banner__cta">
+            <button tuiButton appearance="neutral">
               {{ 'routes.banner.view' | translate }}
               <tui-icon icon="@tui.chevron-left" [style.font-size.px]="15" />
-            </span>
+            </button>
           </a>
         }
       }
@@ -139,14 +139,10 @@ import { LanguageService } from '../../core/config/language.service';
         display: flex;
         align-items: center;
         gap: 16px;
-        background: var(--rl-teal);
+        background: var(--rl-raised);
         border-radius: var(--rl-radius);
-        color: #fff;
+        color: var(--rl-ink);
         text-decoration: none;
-
-        &:hover .banner__cta {
-          background: #eb9a71;
-        }
       }
 
       .banner__glyph {
@@ -175,22 +171,6 @@ import { LanguageService } from '../../core/config/language.service';
         display: block;
         margin-top: 5px;
         font-size: 13px;
-        color: var(--rl-on-teal-body);
-      }
-
-      .banner__cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        flex-shrink: 0;
-        height: 44px;
-        padding: 0 18px;
-        background: var(--rl-clay-light);
-        color: var(--rl-teal-deep);
-        border-radius: var(--rl-radius-sm);
-        font-size: 13.5px;
-        font-weight: 600;
-        transition: background 0.15s;
       }
 
       .empty {
@@ -214,8 +194,8 @@ import { LanguageService } from '../../core/config/language.service';
         width: 64px;
         height: 64px;
         border-radius: 18px;
-        background: var(--rl-teal-tint);
-        color: var(--rl-teal);
+        background: var(--rl-feature-tint);
+        color: var(--rl-feature);
       }
 
       .empty__title {

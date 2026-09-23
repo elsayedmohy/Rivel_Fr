@@ -146,7 +146,7 @@ interface BerthGroup {
         transition: border-color 0.15s;
 
         &--open {
-          border: 2px solid var(--rl-teal);
+          border: 2px solid var(--rl-feature);
           padding-inline: 13px 11px;
         }
       }
@@ -160,7 +160,7 @@ interface BerthGroup {
         margin-inline-end: 10px;
 
         &--filled {
-          background: var(--rl-teal);
+          background: var(--rl-feature);
         }
       }
 
@@ -252,7 +252,7 @@ interface BerthGroup {
         background: #c7bfb1;
 
         &--active {
-          background: var(--rl-teal);
+          background: var(--rl-feature);
         }
       }
 
