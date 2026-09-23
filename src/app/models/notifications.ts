@@ -30,7 +30,7 @@ export const META : Record<NotificationType, { icon: string; link: (id: string) 
   },
   [NotificationType.RequestMatched]: {
     icon: '@tui.route',
-    link: () => ['/carrier/suggested'],
+    link: () => ['/suggested'],
   },
   [NotificationType.RequestExpired]: {
     icon: '@tui.clock-alert',

@@ -36,12 +36,12 @@ export const appShellRoutes: Route[] = [
         loadChildren: () => import('../../features/ratings/ratings.routes').then((m) => m.default),
       },
       {
-        path: 'carrier-routes',
+        path: 'routes',
         loadChildren: () =>
           import('../../features/carrier-routes/carrier.routes').then((m) => m.CARRIER_ROUTES),
       },
       {
-        path: 'suggested-requests',
+        path: 'suggested',
         loadChildren: () =>
           import('../../features/suggested-requests/suggested-requests.routes').then(
             (m) => m.SUGGESTED_ROUTES,

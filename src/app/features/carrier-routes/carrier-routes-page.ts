@@ -74,7 +74,7 @@ import { LanguageService } from '../../core/config/language.service';
         </div>
 
         @if (suggestedCount() > 0) {
-          <a class="banner" routerLink="/suggested-requests">
+          <a class="banner" routerLink="/suggested">
             <span class="banner__glyph">
               <tui-icon icon="@tui.sparkles" [style.font-size.px]="21" />
             </span>

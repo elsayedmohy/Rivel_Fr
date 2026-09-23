@@ -40,7 +40,7 @@ const PAGE_SIZE = 4;
         <h1 class="rl-page__title">{{ 'suggested.title' | translate }}</h1>
         <p class="rl-page__subtitle">
           {{ 'suggested.subtitle' | translate }}
-          <a routerLink="/carrier/routes" class="link">{{ 'suggested.editRoutes' | translate }}</a>
+          <a routerLink="/routes" class="link">{{ 'suggested.editRoutes' | translate }}</a>
           {{ 'suggested.subtitleHint' | translate }}
         </p>
       </header>
@@ -421,10 +421,10 @@ export class SuggestedRequestsPage implements OnInit {
   }
 
   protected openDetails(requestId: string): void {
-    this.router.navigate(['/carrier/shipment-requests', requestId]);
+    this.router.navigate(['/requests', requestId]);
   }
 
   protected openOfferForm(requestId: string): void {
-    this.router.navigate(['/carrier/shipment-requests', requestId, 'offer']);
+    this.router.navigate(['/requests', requestId]);
   }
 }

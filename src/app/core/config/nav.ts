@@ -16,7 +16,7 @@ export function createNavItems(translate: TranslateService, role: UserRole | nul
   const items: NavItem[] = [
     { link: '/dashboard', icon: '@tui.layout-dashboard', label: t('nav.dashboard') },
     {
-      link: '/suggested-requests',
+      link: '/suggested',
       icon: '@tui.astroid',
       label: t('nav.suggestedRequests'),
       roles: ['Carrier'],
@@ -27,7 +27,7 @@ export function createNavItems(translate: TranslateService, role: UserRole | nul
 
     { link: '/ratings', icon: '@tui.star', label: t('nav.ratings')},
     {
-      link: '/carrier-routes',
+      link: '/routes',
       icon: '@tui.route',
       label: t('nav.shippingRoutes'),
       roles: ['Carrier'],

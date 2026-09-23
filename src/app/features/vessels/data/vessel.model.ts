@@ -13,9 +13,9 @@ export enum VesselType {
 }
 
 export enum VesselStatus {
-  Available = 0,
-  OnTrip = 1,
-  Maintenance = 2,
+  Available = "Available",
+  OnTrip = "OnTrip",
+  Maintenance = "Maintenance",
 }
 
 export enum ShipmentStatus {

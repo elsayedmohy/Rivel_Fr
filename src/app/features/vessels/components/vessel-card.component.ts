@@ -46,7 +46,7 @@ import {
       </p>
 
       @if (v.activeShipment; as trip) {
-        <a class="trip" [routerLink]="['/shipments', trip.shipmentId]">
+        <a class="trip" [routerLink]="['/shipments']">
           <span class="rl-tile trip__tile"><tui-icon icon="@tui.package" /></span>
           <span class="trip__body">
             <span class="trip__cargo">{{ trip.cargoType }}</span>

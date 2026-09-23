@@ -325,7 +325,7 @@
   "notifications.type.RequestExpired": "Your shipment request from {{origin}} to {{destination}} passed its shipping date and was closed",
   "notifications.type.ShipmentStatusChanged": "The shipment from {{origin}} to {{destination}} is now {{status}}",
   "notifications.type.ShipmentCancelled": "The shipment from {{origin}} to {{destination}} was cancelled",
-  "notifications.type.RatingReceived": "You received a rating of {{score}} from {{cargoOwnerName}}"
+  "notifications.type.RatingReceived": "You received a rating of {{score}} from {{cargoOwnerName}}",
 
 
   "errors.unknown": "An unexpected error occurred. Please try again.",
