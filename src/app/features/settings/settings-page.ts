@@ -28,10 +28,10 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
   imports: [TuiButton, TuiIcon, TranslatePipe],
   template: `
     <main class="rl-page">
-      <header class="header">
-        <div class="headings">
-          <h1>{{ 'settings.title' | translate }}</h1>
-          <p>{{ 'settings.description' | translate }}</p>
+      <header class="rl-page__heading">
+        <div >
+          <h1 class="rl-page__title">{{ 'settings.title' | translate }}</h1>
+          <p class="rl-page__subtitle">{{ 'settings.description' | translate }}</p>
         </div>
       </header>
 
@@ -70,7 +70,7 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
             <button
               tuiButton
               type="button"
-              appearance="primary"
+              appearance="flat"
               [iconStart]="option.icon"
               [class.active]="theme() === option.value"
               (click)="setTheme(option)"
@@ -92,7 +92,7 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
             <button
               tuiButton
               type="button"
-              appearance="primary"
+              appearance="flat"
               [iconStart]="option.icon"
               [class.active]="language() === option.value"
               (click)="setLanguage(option)"
@@ -159,7 +159,7 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
       inline-size: 3rem;
       block-size: 3rem;
       border-radius: var(--tui-radius-m);
-      background: var(--tui-background-accent-1);
+      background: var(--tui-background-base);
       color: var(--tui-text-on-accent-1);
       font-weight: 600;
     }
