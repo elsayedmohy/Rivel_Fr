@@ -4,6 +4,16 @@
   <rl-topbar class="topbar" />
   <rl-sidebar class="sidebar" />
   <main id="main" class="content">
+    @if (profile(); as p) {
+      @if (!p.emailConfirmed) {
+        <div class="px-6">
+        <div class="confirm-banner rl-error" role="status">
+          {{ 'settings.profile.emailUnconfirmed' | translate }}
+          <a class="rl-link" routerLink="/settings">{{ 'settings.profile.resendConfirmation' | translate }}</a>
+        </div>
+        </div>
+      }
+    }
     <router-outlet />
   </main>
   <rl-mobile-navigation class="mobile-nav" />

@@ -10,6 +10,7 @@ export interface AppConfig {
   readonly defaultLanguage: AppLanguage;
   readonly supportedLanguages: readonly AppLanguage[];
   readonly tokenStorageKey: string;
+  readonly refreshTokenStorageKey: string;
   readonly userStorageKey: string;
   readonly themeStorageKey: string;
   readonly knownUsersKey: string;
@@ -21,6 +22,7 @@ export const appConfig: AppConfig = {
   defaultLanguage: 'en',
   supportedLanguages: ['en', 'ar'],
   tokenStorageKey: 'rl:access_token',
+  refreshTokenStorageKey: 'rl:refresh_token',
   userStorageKey: 'rl:user',
   themeStorageKey: 'tuiDark',
   knownUsersKey: 'rl:known_users',

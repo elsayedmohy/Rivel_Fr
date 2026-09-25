@@ -1,18 +1,27 @@
 import type { UserRole } from '../enums';
 
-/** POST /api/auth/register, POST /api/auth/login */
 export interface AuthResponseDto {
   readonly token: string;
+  readonly refreshToken: string;
   readonly userId: string;
   readonly role: string;
 }
 
-/**
- * Both register and login share this envelope:
- * - success: `{ response, errors: [], succeeded: true }`
- * - register identity failure (e.g. duplicate email): HTTP 200 with
- *   `response: null` + Identity errors
- */
+export interface ForgotPasswordDto {
+  readonly email: string;
+}
+
+export interface ResetPasswordDto {
+  readonly email: string;
+  readonly token: string;
+  readonly newPassword: string;
+}
+
+export interface ConfirmEmailDto {
+  readonly userId: string;
+  readonly token: string;
+}
+
 export interface AuthResultDto {
   readonly response: AuthResponseDto | null;
   readonly errors: IdentityError[];
@@ -35,4 +44,9 @@ export interface RegisterDto {
   readonly password: string;
   readonly role: UserRole;
   readonly companyName?: string;
+}
+
+export interface TokensResponseDto {
+  readonly accessToken: string;
+  readonly refreshToken: string;
 }

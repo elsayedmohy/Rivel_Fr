@@ -1,39 +1,43 @@
-import type {
-  HttpEvent,
-  HttpHandlerFn,
-  HttpInterceptorFn,
-  HttpRequest,
-} from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { HttpErrorResponse, type HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { catchError, switchMap, throwError } from 'rxjs';
 import { TokenService } from '../http/token.service';
+import { TokenRefreshService } from '../http/token-refresh.service';
 
-/**
- * Maps backend error shapes to a single message:
- * - 400 validation errors (`errors: Record<string, string[]>`)
- * - business errors (plain-text body)
- * - 401 → clear the session and redirect to login
- *
- * Data services consume errors through the shared ApiService, so this
- * interceptor only logs and handles the global 401 case for now.
- */
-export const errorInterceptor: HttpInterceptorFn = (
-  request: HttpRequest<unknown>,
-  next: HttpHandlerFn,
-): Observable<HttpEvent<unknown>> => {
+const NO_REFRESH = ['auth/login', 'auth/register', 'auth/refresh'];
+
+export const errorInterceptor: HttpInterceptorFn = (request, next) => {
   const router = inject(Router);
-  const tokenService = inject(TokenService);
+  const tokens = inject(TokenService);
+  const refresher = inject(TokenRefreshService);
+
+  const logout = () => {
+    tokens.clear();
+    void router.navigate(['/auth/login']);
+  };
 
   return next(request).pipe(
-    tap({
-      error: (error: unknown) => {
-        const status = (error as { status?: number })?.status;
-        if (status === 401) {
-          tokenService.clear();
-          void router.navigate(['/auth/login']);
-        }
-      },
+    catchError((error: unknown) => {
+      const is401 = error instanceof HttpErrorResponse && error.status === 401;
+      if (!is401 || NO_REFRESH.some((path) => request.url.endsWith(path))) {
+        return throwError(() => error);
+      }
+
+      if (!tokens.getRefreshToken()) {
+        logout();
+        return throwError(() => error);
+      }
+
+      return refresher.refresh().pipe(
+        catchError((refreshError: unknown) => {
+          logout();
+          return throwError(() => refreshError);
+        }),
+        switchMap((accessToken) =>
+          next(request.clone({ setHeaders: { Authorization: `Bearer ${accessToken}` } })),
+        ),
+      );
     }),
   );
 };

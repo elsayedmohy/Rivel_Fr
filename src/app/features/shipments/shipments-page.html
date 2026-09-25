@@ -111,6 +111,20 @@
                 <dd>{{ shipment.carrierCompanyName }}</dd>
               }
             </div>
+            @if (shipment.counterpart; as c) {
+              <div class="ledger__cell">
+                <dt>{{ 'shipments.meta.contact' | translate }}</dt>
+                <dd>
+                  @if (c.phoneNumber) {
+                    <a class="rl-link" dir="ltr" [href]="'tel:' + c.phoneNumber">{{ c.phoneNumber }}</a>
+                  } @else {
+                    {{ 'shipments.meta.noPhone' | translate }}
+                  }
+                  <br />
+                  <a class="rl-link" [href]="'mailto:' + c.email">{{ c.email }}</a>
+                </dd>
+              </div>
+            }
           </dl>
 
           <!-- ٤. الخطوة الجاية — للناقل بس -->

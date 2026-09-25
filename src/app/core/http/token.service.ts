@@ -9,23 +9,21 @@ interface TokenClaims {
   readonly role: string;
 }
 
-/**
- * Owns the access token and the locally persisted user profile.
- *
- * The backend returns a single JWT (no refresh token) that expires after
- * 7 days, and it does NOT return the user's name in the auth response —
- * so we persist the profile payload at register/login time for display.
- */
 @Injectable({ providedIn: 'root' })
 export class TokenService {
   private readonly config = inject(APP_CONFIG);
   private readonly token = signal<string | null>(this.readToken());
+  private readonly refreshToken = signal<string | null>(this.readRefresh());
   private readonly user = signal<User | null>(this.readUser());
   readonly tokenSignal = this.token.asReadonly();
   readonly userSignal = this.user.asReadonly();
 
   getToken(): string | null {
     return this.token();
+  }
+
+  getRefreshToken(): string | null {
+    return this.refreshToken();
   }
 
   getUser(): User | null {
@@ -36,17 +34,23 @@ export class TokenService {
     return this.token() !== null;
   }
 
-  save(token: string, user: User): void {
+  save(token: string, user: User, refreshToken?: string): void {
     localStorage.setItem(this.config.tokenStorageKey, token);
     localStorage.setItem(this.config.userStorageKey, JSON.stringify(user));
     this.token.set(token);
     this.user.set(user);
+    if (refreshToken) {
+      localStorage.setItem(this.config.refreshTokenStorageKey, refreshToken);
+      this.refreshToken.set(refreshToken);
+    }
   }
 
   clear(): void {
     localStorage.removeItem(this.config.tokenStorageKey);
+    localStorage.removeItem(this.config.refreshTokenStorageKey);
     localStorage.removeItem(this.config.userStorageKey);
     this.token.set(null);
+    this.refreshToken.set(null);
     this.user.set(null);
   }
 
@@ -60,8 +64,23 @@ export class TokenService {
     }
   }
 
+  setTokens(accessToken: string, refreshToken: string): void {
+    localStorage.setItem(this.config.tokenStorageKey, accessToken);
+    localStorage.setItem(this.config.refreshTokenStorageKey, refreshToken);
+    this.token.set(accessToken);
+    this.refreshToken.set(refreshToken);
+  }
+
+  private readRefresh(): string | null {
+    return typeof localStorage === 'undefined'
+      ? null
+      : localStorage.getItem(this.config.refreshTokenStorageKey);
+  }
+
   private readToken(): string | null {
-    return typeof localStorage === 'undefined' ? null : localStorage.getItem(this.config.tokenStorageKey);
+    return typeof localStorage === 'undefined'
+      ? null
+      : localStorage.getItem(this.config.tokenStorageKey);
   }
 
   private readUser(): User | null {

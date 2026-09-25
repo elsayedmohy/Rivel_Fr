@@ -1,19 +1,26 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, EMPTY, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { ApiService } from './api.service';
+import { ProfileService } from './profile.service';
 import { TokenService } from './token.service';
 import { APP_CONFIG } from '../config/app-config';
 import { toApiErrorResponse, toApiErrorResponseFromIdentity } from './api-error.util';
-import type { AuthResponseDto, AuthResultDto, CredentialsDto, RegisterDto } from '../../models/auth/auth';
+import type {
+  AuthResponseDto,
+  AuthResultDto,
+  ConfirmEmailDto,
+  CredentialsDto,
+  RegisterDto,
+  ResetPasswordDto,
+} from '../../models/auth/auth';
 import type { UserRole } from '../../models/enums';
 import type { User } from '../../models/user/user';
-
-type KnownUsers = Record<string, string>;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = inject(ApiService);
   private readonly tokenService = inject(TokenService);
+  private readonly profile = inject(ProfileService);
   private readonly config = inject(APP_CONFIG);
 
   login(credentials: CredentialsDto): Observable<AuthResponseDto> {
@@ -46,60 +53,49 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string): Observable<void> {
+    return this.api.post<void>('auth/forgot-password', { email });
+  }
+
+  resetPassword(payload: ResetPasswordDto): Observable<void> {
+    return this.api.post<void>('auth/reset-password', payload);
+  }
+
+  confirmEmail(payload: ConfirmEmailDto): Observable<void> {
+    return this.api.post<void>('auth/confirm-email', payload);
+  }
+
   logout(): void {
     this.tokenService.clear();
+    this.profile.profile.set(null);
+    this.forgetLegacyKnownUsers();
   }
 
   private persist(
     response: AuthResponseDto,
     email: string,
-    newName?: string,
+    initialName = '',
   ): Observable<AuthResponseDto> {
-    if (!response) {
-      return EMPTY;
-    }
-
-    this.rememberUser(email, newName);
-
-    const name = this.knownName(email) ?? newName ?? '';
     const user: User = {
       id: response.userId,
-      name,
+      name: initialName,
       email,
       role: toUserRole(response.role),
     };
 
-    this.tokenService.save(response.token, user);
+    this.tokenService.save(response.token, user,response.refreshToken);
+    this.forgetLegacyKnownUsers();
     return of(response);
   }
 
-  private rememberUser(email: string, name?: string): void {
-    if (!name) {
-      return;
-    }
-    const users = this.readKnownUsers();
-    users[normalizeEmail(email)] = name;
-    localStorage.setItem(this.config.knownUsersKey, JSON.stringify(users));
-  }
-
-  private knownName(email: string): string | null {
-    return this.readKnownUsers()[normalizeEmail(email)] ?? null;
-  }
-
-  private readKnownUsers(): KnownUsers {
+  private forgetLegacyKnownUsers(): void {
     try {
-      const raw = localStorage.getItem(this.config.knownUsersKey);
-      return raw ? (JSON.parse(raw) as KnownUsers) : {};
+      localStorage.removeItem(this.config.knownUsersKey);
     } catch {
-      return {};
     }
   }
 }
 
 function toUserRole(role: string): UserRole {
   return role === 'Carrier' ? 'Carrier' : 'CargoOwner';
-}
-
-function normalizeEmail(email: string): string {
-  return email.trim().toLowerCase();
 }

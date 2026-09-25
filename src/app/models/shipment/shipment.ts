@@ -1,3 +1,4 @@
+import type { ContactDto } from '../profile/profile';
 import type { RatingDto } from '../rating/rating';
 import type { ShipmentStatus, VesselType } from '../enums';
 import { NileBerth } from '../../features/carrier-routes/routes.model';
@@ -22,6 +23,8 @@ export interface ShipmentDto {
   readonly carrierCompanyName: string;
   readonly isRated: boolean;
   readonly rating: RatingDto | null;
+  /** The other party's contact details; the backend sends it only to the two parties of the shipment. */
+  readonly counterpart?: ContactDto | null;
 }
 
 /** PATCH /api/shipments/{id}/status */

@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import type { TranslateService } from '@ngx-translate/core';
 import type { ApiError, ApiErrorResponse, ProblemDetails } from '../../models/api/api-error';
 
 function isProblemDetails(body: unknown): body is ProblemDetails {
@@ -64,4 +65,13 @@ export function isApiErrorResponse(value: unknown): value is ApiErrorResponse {
 
 function firstError(errors: ApiError[]): string | null {
   return errors[0]?.message ?? null;
+}
+
+
+/** Translates a stable backend error code (plain-text body) via `errors.<code>`, else falls back to the raw message. */
+export function apiErrorText(error: unknown, translate: TranslateService): string {
+  const message = toApiErrorResponse(error).message;
+  const key = `errors.${message}`;
+  const translated = translate.instant(key);
+  return translated === key ? message : translated;
 }

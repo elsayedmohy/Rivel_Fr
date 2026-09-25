@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TuiButton, TuiIcon } from '@taiga-ui/core';
+import { TuiButton } from '@taiga-ui/core';
+import { PasswordCard } from './password-card';
+import { ProfileCard } from './profile-card';
 import { LanguageService } from '../../core/config/language.service';
 import { ThemeService } from '../../core/config/theme.service';
-import { TokenService } from '../../core/http/token.service';
 import type { AppLanguage, Theme } from '../../models/enums';
 
 interface ChoiceOption<T extends string> {
@@ -25,7 +26,7 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
 
 @Component({
   selector: 'rl-settings-page',
-  imports: [TuiButton, TuiIcon, TranslatePipe],
+  imports: [TuiButton, TranslatePipe, ProfileCard, PasswordCard],
   template: `
     <main class="rl-page">
       <header class="rl-page__heading">
@@ -35,29 +36,8 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
         </div>
       </header>
 
-      @if (profile(); as profile) {
-        <section class="card">
-          <div class="card-head">
-            <h2>{{ 'settings.profile.title' | translate }}</h2>
-            <p>{{ 'settings.profile.subtitle' | translate }}</p>
-          </div>
-
-          <div class="profile">
-            <div class="avatar">{{ profile.initials }}</div>
-            <div class="profile-body">
-              <p class="name">{{ profile.name }}</p>
-              <p class="email">{{ profile.email }}</p>
-              <p class="role">{{ profile.roleKey | translate }}</p>
-              @if (profile.company) {
-                <p class="company">
-                  <tui-icon [icon]="'@tui.briefcase'" />
-                  {{ profile.company }}
-                </p>
-              }
-            </div>
-          </div>
-        </section>
-      }
+      <rl-profile-card />
+      <rl-password-card />
 
       <section class="card">
         <div class="card-head">
@@ -105,6 +85,12 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
     </main>
   `,
   styles: `
+    rl-profile-card,
+    rl-password-card {
+      display: block;
+      margin-block-end: var(--tui-padding-m);
+    }
+
     .page {
       display: flex;
       flex-direction: column;
@@ -199,34 +185,11 @@ const LANGUAGE_OPTIONS: readonly ChoiceOption<AppLanguage>[] = [
 export class SettingsPage {
   private readonly themeService = inject(ThemeService);
   private readonly languageService = inject(LanguageService);
-  private readonly tokenService = inject(TokenService);
 
   readonly themeOptions = THEME_OPTIONS;
   readonly languageOptions = LANGUAGE_OPTIONS;
-  readonly user = this.tokenService.userSignal;
   readonly theme = this.themeService.current;
   readonly language = this.languageService.current;
-
-  readonly profile = computed(() => {
-    const user = this.user();
-    if (!user) return null;
-    const name = user.name?.trim() || user.email;
-    const initials = name
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase() ?? '')
-      .join('');
-    const roleKey =
-      user.role === 'Carrier' ? 'auth.register.role.carrier' : 'auth.register.role.cargoOwner';
-    return {
-      name,
-      email: user.email,
-      initials,
-      roleKey,
-      company: user.companyName?.trim() || null,
-    };
-  });
 
   setTheme(option: ChoiceOption<Theme>): void {
     this.themeService.setTheme(option.value);

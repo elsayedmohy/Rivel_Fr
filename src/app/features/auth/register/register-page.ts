@@ -1,3 +1,4 @@
+import { strongPassword } from '../password.validator';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -54,7 +55,7 @@ export class RegisterPage {
     }),
     password: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, strongPasswordValidator],
+      validators: [Validators.required, strongPassword],
     }),
     role: new FormControl<UserRole>('CargoOwner', { nonNullable: true }),
     companyName: new FormControl('', { nonNullable: true }),
@@ -114,23 +115,6 @@ export class RegisterPage {
       },
     });
   }
-}
-
-function strongPasswordValidator(control: AbstractControl): Record<string, boolean> | null {
-  const value = control.value as string;
-
-  if (!value) {
-    return null;
-  }
-
-  const valid =
-    value.length >= 8 &&
-    /[a-z]/.test(value) &&
-    /[A-Z]/.test(value) &&
-    /\d/.test(value) &&
-    /[^A-Za-z0-9]/.test(value);
-
-  return valid ? null : { strongPassword: true };
 }
 
 function companyNameValidator(form: FormGroup): ValidatorFn {

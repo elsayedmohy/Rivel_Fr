@@ -195,7 +195,7 @@
                     {{ (offer.carrierName ?? offer.companyName ?? '?').charAt(0) }}
                   </span>
                   <span>
-                    <span class="offer__name">{{ offer.carrierName ?? offer.companyName ?? ('common.guest' | translate) }}</span>
+                    <a class="offer__name rl-link" [routerLink]="['/carriers', offer.carrierId]">{{ offer.carrierName ?? offer.companyName ?? ('common.guest' | translate) }}</a>
                     @if (offer.companyName && offer.carrierName) {
                       <span class="offer__company">{{ offer.companyName }}</span>
                     }

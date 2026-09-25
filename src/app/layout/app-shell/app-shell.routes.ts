@@ -48,6 +48,11 @@ export const appShellRoutes: Route[] = [
           ),
       },
       {
+        path: 'carriers/:id',
+        loadComponent: () =>
+          import('../../features/carriers/carrier-profile-page').then((m) => m.CarrierProfilePage),
+      },
+      {
         path: 'settings',
         loadChildren: () =>
           import('../../features/settings/settings.routes').then((m) => m.default),
