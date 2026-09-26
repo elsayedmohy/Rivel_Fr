@@ -358,6 +358,9 @@
   "errors.profile.update_failed": "Failed to save the changes.",
   "errors.password.current_incorrect": "The current password is incorrect.",
   "errors.password.rejected": "The new password does not meet the required criteria.",
+  "errors.auth.confirm_invalid": "The link is invalid or has expired. Please request a new confirmation link from Settings.",
+  "errors.auth.reset_invalid": "The link is invalid or has expired. Please request a new link.",
+  "errors.email.unconfirmed": "Please confirm your email address first. You can find the confirmation link in Settings.",
 
 
   "settings.profile.name": "Full name",
@@ -395,6 +398,5 @@
   "carrier.contactHint": "Contact details are shared after an offer is accepted.",
   "carrier.notFound": "Carrier not found.",
   "shipments.meta.contact": "Contact",
-  "shipments.meta.noPhone": "No phone number yet",
-  "errors.email.unconfirmed": "Confirm your email before submitting offers"
+  "shipments.meta.noPhone": "No phone number yet"
 }

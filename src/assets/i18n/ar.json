@@ -354,6 +354,10 @@
   "errors.profile.update_failed": "تعذر حفظ التعديلات.",
   "errors.password.current_incorrect": "كلمة المرور الحالية غير صحيحة.",
   "errors.password.rejected": "كلمة المرور الجديدة لا تستوفي الشروط المطلوبة.",
+  "errors.auth.confirm_invalid": "الرابط غير صالح أو انتهت صلاحيته. يُرجى طلب رابط تأكيد جديد من الإعدادات.",
+  "errors.auth.reset_invalid": "الرابط غير صالح أو انتهت صلاحيته. يُرجى طلب رابط جديد.",
+  "errors.email.unconfirmed": "يُرجى تأكيد بريدك الإلكتروني أولًا. يمكنك العثور على رابط التأكيد في الإعدادات.",
+
   "settings.profile.name": "الاسم بالكامل",
   "settings.profile.phone": "رقم التليفون",
   "settings.profile.phoneHint": "بيظهر للطرف التاني بعد قبول العرض بس.",
@@ -389,6 +393,5 @@
   "carrier.contactHint": "بيانات التواصل بتظهر بعد قبول العرض.",
   "carrier.notFound": "الناقل مش موجود.",
   "shipments.meta.contact": "التواصل",
-  "shipments.meta.noPhone": "لسه مفيش رقم تليفون",
-  "errors.email.unconfirmed": "أكّد إيميلك قبل ما تقدّم عروض"
+  "shipments.meta.noPhone": "لسه مفيش رقم تليفون"
 }

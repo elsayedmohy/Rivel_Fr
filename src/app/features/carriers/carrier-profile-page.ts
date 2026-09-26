@@ -1,19 +1,20 @@
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe ,Location} from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TuiLoader } from '@taiga-ui/core';
+import { TuiButton, TuiLoader } from '@taiga-ui/core';
 import { ProfileService } from '../../core/http/profile.service';
 import type { CarrierPublicProfileDto } from '../../models/profile/profile';
 
 @Component({
   selector: 'rl-carrier-profile-page',
-  imports: [DecimalPipe, TranslatePipe, TuiLoader],
+  imports: [DecimalPipe, TranslatePipe, TuiLoader, TuiButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <main class="rl-page">
-      <a class="rl-link" href="javascript:history.back()">{{ 'requests.back' | translate }}</a>
-
+      <button tuiButton type="button" appearance="outline" class="mb-6" (click)="back()">
+        {{ 'requests.back' | translate }}
+      </button>
       @if (loading()) {
         <tui-loader />
       } @else if (carrier(); as c) {
@@ -65,19 +66,48 @@ import type { CarrierPublicProfileDto } from '../../models/profile/profile';
     </main>
   `,
   styles: `
-    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 16px; padding: 20px; margin: 24px 0 16px; }
-    dt { font-size: 13px; color: var(--rl-ink-3); }
-    dd { margin: 4px 0 0; font-size: 20px; }
-    small { font-size: 13px; color: var(--rl-ink-3); }
-    .routes { padding: 20px; }
-    .routes h2 { margin: 0 0 8px; font-size: 16px; }
-    .routes ul { margin: 0; padding-inline-start: 18px; }
-    .hint { margin-block-start: 16px; font-size: 13px; color: var(--rl-ink-3); }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+      gap: 16px;
+      padding: 20px;
+      margin: 24px 0 16px;
+    }
+    dt {
+      font-size: 13px;
+      color: var(--rl-ink-3);
+    }
+    dd {
+      margin: 4px 0 0;
+      font-size: 20px;
+    }
+    small {
+      font-size: 13px;
+      color: var(--rl-ink-3);
+    }
+    .routes {
+      padding: 20px;
+    }
+    .routes h2 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .routes ul {
+      margin: 0;
+      padding-inline-start: 18px;
+    }
+    .hint {
+      margin-block-start: 16px;
+      font-size: 13px;
+      color: var(--rl-ink-3);
+    }
   `,
 })
 export class CarrierProfilePage {
   protected readonly carrier = signal<CarrierPublicProfileDto | null>(null);
   protected readonly loading = signal(true);
+  private readonly location = inject(Location);
+  private readonly router = inject(Router);
 
   constructor() {
     const id = inject(ActivatedRoute).snapshot.paramMap.get('id')!;
@@ -90,5 +120,11 @@ export class CarrierProfilePage {
         },
         error: () => this.loading.set(false),
       });
+  }
+
+  protected back(): void {
+    const id = (history.state as { navigationId?: number } | null)?.navigationId ?? 1;
+    if (id > 1) this.location.back();
+    else void this.router.navigate(['/']);
   }
 }

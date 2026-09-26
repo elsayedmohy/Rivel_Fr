@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/http/auth.service';
+import { ProfileService } from '../../../core/http/profile.service';
+import { TokenService } from '../../../core/http/token.service';
 
 @Component({
   selector: 'rl-confirm-email-page',
@@ -28,6 +30,8 @@ export class ConfirmEmailPage {
   protected readonly state = signal<'pending' | 'ok' | 'failed'>('pending');
 
   constructor() {
+    const tokens = inject(TokenService);
+    const profile = inject(ProfileService);
     const params = inject(ActivatedRoute).snapshot.queryParamMap;
     const userId = params.get('userId');
     const token = params.get('token');
@@ -39,7 +43,10 @@ export class ConfirmEmailPage {
     inject(AuthService)
       .confirmEmail({ userId, token })
       .subscribe({
-        next: () => this.state.set('ok'),
+        next: () => {
+          this.state.set('ok');
+          if (tokens.isAuthenticated()) profile.load();
+        },
         error: () => this.state.set('failed'),
       });
   }

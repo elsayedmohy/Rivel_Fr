@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TuiButton, TuiInput } from '@taiga-ui/core';
@@ -9,7 +9,15 @@ import { AuthService } from '../../../core/http/auth.service';
 
 @Component({
   selector: 'rl-forgot-password-page',
-  imports: [ReactiveFormsModule, RouterLink, TuiButton, TuiButtonLoading, TuiInput, TranslatePipe],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TuiButton,
+    TuiButtonLoading,
+    TuiInput,
+    TranslatePipe,
+    FormsModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: '../login/login-page.scss',
   template: `
@@ -25,19 +33,30 @@ import { AuthService } from '../../../core/http/auth.service';
         } @else {
           <form (ngSubmit)="submit()" novalidate class="form">
             @if (error(); as e) {
-              <div class="error-box" role="alert"><p>{{ e }}</p></div>
+              <div class="error-box" role="alert">
+                <p>{{ e }}</p>
+              </div>
             }
             <tui-textfield tuiTextfieldSize="l" [invalid]="email.touched && email.invalid">
               <label tuiLabel>{{ 'auth.login.email' | translate }}</label>
               <input tuiInput type="email" [formControl]="email" autocomplete="email" />
             </tui-textfield>
-            <button tuiButton type="submit" appearance="primary" size="l" class="submit" [loading]="submitting()">
+            <button
+              tuiButton
+              type="submit"
+              appearance="primary"
+              size="l"
+              class="submit"
+              [loading]="submitting()"
+            >
               {{ 'auth.forgot.submit' | translate }}
             </button>
           </form>
         }
 
-        <p class="switch"><a routerLink="/auth/login">{{ 'auth.forgot.backToLogin' | translate }}</a></p>
+        <p class="switch">
+          <a routerLink="/auth/login">{{ 'auth.forgot.backToLogin' | translate }}</a>
+        </p>
       </section>
     </main>
   `,
