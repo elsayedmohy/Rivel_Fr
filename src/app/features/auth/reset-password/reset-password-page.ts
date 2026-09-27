@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TuiButton, TuiInput } from '@taiga-ui/core';
@@ -10,7 +10,15 @@ import { strongPassword } from '../password.validator';
 
 @Component({
   selector: 'rl-reset-password-page',
-  imports: [ReactiveFormsModule, RouterLink, TuiButton, TuiButtonLoading, TuiInput, TranslatePipe],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TuiButton,
+    TuiButtonLoading,
+    TuiInput,
+    TranslatePipe,
+    FormsModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: '../login/login-page.scss',
   template: `
@@ -23,22 +31,40 @@ import { strongPassword } from '../password.validator';
 
         @if (done()) {
           <p role="status">{{ 'auth.reset.done' | translate }}</p>
-          <p class="switch"><a routerLink="/auth/login">{{ 'auth.forgot.backToLogin' | translate }}</a></p>
+          <p class="switch">
+            <a routerLink="/auth/login">{{ 'auth.forgot.backToLogin' | translate }}</a>
+          </p>
         } @else if (!link) {
-          <div class="error-box" role="alert"><p>{{ 'auth.reset.badLink' | translate }}</p></div>
+          <div class="error-box" role="alert">
+            <p>{{ 'auth.reset.badLink' | translate }}</p>
+          </div>
         } @else {
           <form (ngSubmit)="submit()" novalidate class="form">
             @if (error(); as e) {
-              <div class="error-box" role="alert"><p>{{ e }}</p></div>
+              <div class="error-box" role="alert">
+                <p>{{ e }}</p>
+              </div>
             }
             <tui-textfield tuiTextfieldSize="l" [invalid]="password.touched && password.invalid">
               <label tuiLabel>{{ 'settings.password.new' | translate }}</label>
-              <input tuiInput type="password" [formControl]="password" autocomplete="new-password" />
+              <input
+                tuiInput
+                type="password"
+                [formControl]="password"
+                autocomplete="new-password"
+              />
             </tui-textfield>
             @if (password.touched && password.invalid) {
               <p class="error-box">{{ 'auth.validation.strongPassword' | translate }}</p>
             }
-            <button tuiButton type="submit" appearance="primary" size="l" class="submit" [loading]="submitting()">
+            <button
+              tuiButton
+              type="submit"
+              appearance="primary"
+              size="l"
+              class="submit"
+              [loading]="submitting()"
+            >
               {{ 'auth.reset.submit' | translate }}
             </button>
           </form>
@@ -52,9 +78,10 @@ export class ResetPasswordPage {
   private readonly translate = inject(TranslateService);
   private readonly params = inject(ActivatedRoute).snapshot.queryParamMap;
 
-  protected readonly link = this.params.get('email') && this.params.get('token')
-    ? { email: this.params.get('email')!, token: this.params.get('token')! }
-    : null;
+  protected readonly link =
+    this.params.get('email') && this.params.get('token')
+      ? { email: this.params.get('email')!, token: this.params.get('token')! }
+      : null;
 
   protected readonly password = new FormControl('', {
     nonNullable: true,
