@@ -1,14 +1,15 @@
-import { DecimalPipe ,Location} from '@angular/common';
+import { DecimalPipe ,Location, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TuiButton, TuiLoader } from '@taiga-ui/core';
 import { ProfileService } from '../../core/http/profile.service';
 import type { CarrierPublicProfileDto } from '../../models/profile/profile';
+import { TuiAvatar } from '@taiga-ui/kit';
 
 @Component({
   selector: 'rl-carrier-profile-page',
-  imports: [DecimalPipe, TranslatePipe, TuiLoader, TuiButton],
+  imports: [DecimalPipe, TranslatePipe, TuiLoader, TuiButton, NgOptimizedImage, TuiAvatar],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <main class="rl-page">
@@ -18,7 +19,12 @@ import type { CarrierPublicProfileDto } from '../../models/profile/profile';
       @if (loading()) {
         <tui-loader />
       } @else if (carrier(); as c) {
-        <header class="rl-page__heading">
+        <header class="rl-page__heading" style="justify-content: normal">
+          @if (c?.logoPath; as url) {
+            <div tuiAvatar size="xl">
+              <img class="logo__img" [ngSrc]="url" [fill]="true" alt="" />
+            </div>
+          }
           <div>
             <h1 class="rl-page__title">{{ c.companyName }}</h1>
             @if (c.bio) {
