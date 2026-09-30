@@ -1,0 +1,99 @@
+<section class="rl-card card">
+  <h2>{{ 'settings.profile.title' | translate }}</h2>
+  <p class="hint">{{ 'settings.profile.subtitle' | translate }}</p>
+
+  @if (profile(); as p) {
+    <p class="meta">{{ p.email }} · {{ roleKey() | translate }}</p>
+
+    @if (!p.emailConfirmed) {
+      <div class="rl-error">
+        {{ 'settings.profile.emailUnconfirmed' | translate }}
+        <button type="button" class="rl-link link" (click)="resend()" [disabled]="resent()">
+          {{ (resent() ? 'settings.profile.confirmationSent' : 'settings.profile.resendConfirmation') | translate }}
+        </button>
+      </div>
+    }
+
+    @if (isCarrier()) {
+      <div class="logo flex flex-col items-center mt-8">
+        @if (profile()?.logoPath; as url) {
+
+          <div
+            tuiAvatar
+            size="xl"
+          >
+            <img class="logo__img" [ngSrc]="url" [fill]="true" alt="" />
+
+          </div>
+        } @else {
+          <div tuiAvatar
+               size="xl" class="logo__placeholder">{{ profile()?.companyName?.charAt(0) }}
+          </div>
+        }
+
+        <div class="my-4">
+          <div class="flex row justify-center">
+
+          <label tuiButton appearance="primary" class="m-2" [class.is-disabled]="logoBusy()">
+            {{ (profile()?.logoPath ? 'settings.profile.logo.change' : 'settings.profile.logo.upload') | translate }}
+            <input type="file" hidden accept="image/png,image/jpeg,image/webp"
+                   [disabled]="logoBusy()" (change)="onLogoSelected($event)" />
+          </label>
+          @if (profile()?.logoPath) {
+            <button
+              class="m-2"
+              appearance="outline-grayscale"
+              tuiAppearanceMode="checked invalid"
+              tuiButton type="button" [disabled]="logoBusy()" (click)="removeLogo()">
+              {{ 'settings.profile.logo.remove' | translate }}
+            </button>
+          }
+          </div>
+          <div>
+            <p class="hint ">{{ 'settings.profile.logo.hint' | translate }}</p>
+            @if (logoError(); as e) {
+              <p class="rl-error" role="alert">{{ e }}</p>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+
+    <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+      <label class="rl-label" for="pf-name">{{ 'settings.profile.name' | translate }}</label>
+      <div class="rl-control" [class.rl-control--invalid]="form.controls.name.touched && form.controls.name.invalid">
+        <input id="pf-name" formControlName="name" maxlength="100" autocomplete="name" />
+      </div>
+
+      <label class="rl-label" for="pf-phone">{{ 'settings.profile.phone' | translate }}</label>
+      <div class="rl-control"
+           [class.rl-control--invalid]="form.controls.phoneNumber.touched && form.controls.phoneNumber.invalid">
+        <input id="pf-phone" formControlName="phoneNumber" type="tel" dir="ltr" autocomplete="tel" />
+      </div>
+      <p class="hint">{{ 'settings.profile.phoneHint' | translate }}</p>
+
+      @if (isCarrier()) {
+        <label class="rl-label" for="pf-company">{{ 'settings.profile.company' | translate }}</label>
+        <div class="rl-control"
+             [class.rl-control--invalid]="form.controls.companyName.touched && form.controls.companyName.invalid">
+          <input id="pf-company" formControlName="companyName" maxlength="200" />
+        </div>
+
+        <label class="rl-label" for="pf-bio">{{ 'settings.profile.bio' | translate }}</label>
+        <textarea id="pf-bio" class="rl-control bio" formControlName="bio" maxlength="1000" rows="4"></textarea>
+      }
+
+      @if (error(); as e) {
+        <p class="rl-error" role="alert">{{ e }}</p>
+      }
+      @if (saved()) {
+        <p class="ok" role="status">{{ 'settings.profile.saved' | translate }}</p>
+      }
+
+      <button class="rl-btn rl-btn--primary submit" type="submit" [disabled]="saving()">
+        {{ 'common.save' | translate }}
+      </button>
+    </form>
+  }
+</section>

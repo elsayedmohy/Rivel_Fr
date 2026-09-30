@@ -1,0 +1,57 @@
+.card {
+  padding: var(--rl-s6, 24px);
+}
+
+h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.hint {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--rl-ink-3);
+}
+
+.meta {
+  margin: 12px 0;
+  color: var(--rl-ink-2);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: 16px;
+}
+
+.rl-label {
+  margin-block-start: 14px;
+}
+
+.bio {
+  height: auto;
+  padding: 12px 14px;
+  resize: vertical;
+  font: inherit;
+  color: var(--rl-ink);
+}
+
+.submit {
+  align-self: flex-start;
+  margin-block-start: 20px;
+}
+
+.ok {
+  margin: 12px 0 0;
+  color: var(--rl-ink-2);
+  font-size: 13px;
+}
+
+.link {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  margin-inline-start: 8px;
+}

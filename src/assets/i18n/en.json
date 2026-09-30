@@ -327,7 +327,6 @@
   "notifications.type.ShipmentCancelled": "The shipment from {{origin}} to {{destination}} was cancelled",
   "notifications.type.RatingReceived": "You received a rating of {{score}} from {{cargoOwnerName}}",
 
-
   "errors.unknown": "An unexpected error occurred. Please try again.",
 
   "errors.vessel.not_found": "Vessel not found",
@@ -350,7 +349,6 @@
 
   "errors.carrier.profile_not_found": "No carrier profile is associated with this account",
 
-
   "errors.rate_limited": "Too many attempts. Please wait a moment and try again.",
   "errors.user.not_found": "Account not found.",
   "errors.profile.company_required": "Company name is required for carriers.",
@@ -361,8 +359,14 @@
   "errors.auth.confirm_invalid": "The link is invalid or has expired. Please request a new confirmation link from Settings.",
   "errors.auth.reset_invalid": "The link is invalid or has expired. Please request a new link.",
   "errors.email.unconfirmed": "Please confirm your email address first. You can find the confirmation link in Settings.",
+  "errors.logo.empty": "The file is empty.",
+  "errors.logo.too_large": "The image size exceeds 2 MB.",
+  "errors.logo.invalid_type": "The image must be in PNG, JPEG, or WebP format.",
 
-
+  "settings.profile.logo.upload": "Upload Logo",
+  "settings.profile.logo.change": "Change Logo",
+  "settings.profile.logo.remove": "Remove Logo",
+  "settings.profile.logo.hint": "PNG, JPEG, or WebP, up to 2 MB. A square image is recommended.",
   "settings.profile.name": "Full name",
   "settings.profile.phone": "Phone number",
   "settings.profile.phoneHint": "Shared with the other party only after an offer is accepted.",

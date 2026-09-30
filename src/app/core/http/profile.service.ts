@@ -56,4 +56,14 @@ export class ProfileService {
       });
     }
   }
+
+  uploadLogo(file: File): Observable<ProfileDto> {
+    const form = new FormData();
+    form.append('file', file);
+    return this.api.post<ProfileDto>('profile/logo', form).pipe(tap((p) => this.apply(p)));
+  }
+
+  removeLogo(): Observable<ProfileDto> {
+    return this.api.delete<ProfileDto>('profile/logo').pipe(tap((p) => this.apply(p)));
+  }
 }

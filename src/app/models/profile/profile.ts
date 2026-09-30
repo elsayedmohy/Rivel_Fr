@@ -8,6 +8,7 @@ export interface ProfileDto {
   readonly emailConfirmed: boolean;
   readonly companyName: string | null;
   readonly bio: string | null;
+  readonly logoPath: string | null;
 }
 
 /** PUT /api/profile/me — companyName/bio are carrier-only */
@@ -35,9 +36,11 @@ export interface CarrierPublicProfileDto {
   readonly userId: string;
   readonly companyName: string;
   readonly bio: string | null;
+  readonly logoPath: string | null;
   readonly overallRating: number;
   readonly ratingCount: number;
   readonly completedShipments: number;
   readonly vesselCount: number;
   readonly activeRoutes: readonly { readonly originName: string; readonly destinationName: string }[];
+
 }

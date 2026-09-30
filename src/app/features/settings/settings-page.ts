@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TuiButton } from '@taiga-ui/core';
 import { PasswordCard } from './password-card';
-import { ProfileCard } from './profile-card';
+import { ProfileCard } from './profile-card/profile-card';
 import { LanguageService } from '../../core/config/language.service';
 import { ThemeService } from '../../core/config/theme.service';
 import type { AppLanguage, Theme } from '../../models/enums';
