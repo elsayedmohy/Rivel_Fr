@@ -15,11 +15,13 @@ import type {
 } from '../../models/auth/auth';
 import type { UserRole } from '../../models/enums';
 import type { User } from '../../models/user/user';
+import { NotificationService } from '../services/notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = inject(ApiService);
   private readonly tokenService = inject(TokenService);
+  private readonly notificationService = inject(NotificationService);
   private readonly profile = inject(ProfileService);
   private readonly config = inject(APP_CONFIG);
 
@@ -30,7 +32,10 @@ export class AuthService {
           ? this.persist(result.response, credentials.email)
           : throwError(() =>
               toApiErrorResponseFromIdentity(
-                result.errors.map(({ code, description }) => ({ field: code, message: description })),
+                result.errors.map(({ code, description }) => ({
+                  field: code,
+                  message: description,
+                })),
               ),
             ),
       ),
@@ -45,7 +50,10 @@ export class AuthService {
           ? this.persist(result.response, payload.email, payload.name)
           : throwError(() =>
               toApiErrorResponseFromIdentity(
-                result.errors.map(({ code, description }) => ({ field: code, message: description })),
+                result.errors.map(({ code, description }) => ({
+                  field: code,
+                  message: description,
+                })),
               ),
             ),
       ),
@@ -73,6 +81,7 @@ export class AuthService {
 
     if (refreshToken) {
       this.api.post<void>('auth/logout', { refreshToken }).subscribe({ error: () => {} });
+      this.notificationService.disconnect();
     }
   }
 
@@ -88,10 +97,9 @@ export class AuthService {
       role: toUserRole(response.role),
     };
 
-    this.tokenService.save(response.token, user,response.refreshToken);
+    this.tokenService.save(response.token, user, response.refreshToken);
     return of(response);
   }
-
 }
 
 function toUserRole(role: string): UserRole {
