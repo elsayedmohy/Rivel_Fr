@@ -66,9 +66,14 @@ export class AuthService {
   }
 
   logout(): void {
+    const refreshToken = this.tokenService.getRefreshToken();
+
     this.tokenService.clear();
     this.profile.profile.set(null);
-    this.forgetLegacyKnownUsers();
+
+    if (refreshToken) {
+      this.api.post<void>('auth/logout', { refreshToken }).subscribe({ error: () => {} });
+    }
   }
 
   private persist(
@@ -84,16 +89,9 @@ export class AuthService {
     };
 
     this.tokenService.save(response.token, user,response.refreshToken);
-    this.forgetLegacyKnownUsers();
     return of(response);
   }
 
-  private forgetLegacyKnownUsers(): void {
-    try {
-      localStorage.removeItem(this.config.knownUsersKey);
-    } catch {
-    }
-  }
 }
 
 function toUserRole(role: string): UserRole {
