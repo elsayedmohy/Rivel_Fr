@@ -105,7 +105,13 @@
       tuiDropdownAuto
       [attr.aria-label]="'topbar.account' | translate"
     >
-      <div tuiAvatar size="s" [tuiAvatar]="'@tui.user'"></div>
+      @if (user()?.logoPath; as url) {
+        <div tuiAvatar size="m">
+          <img class="logo__img" [ngSrc]="url" [fill]="true" alt="" />
+        </div>
+      } @else {
+        <div tuiAvatar size="m" [tuiAvatar]="'@tui.user'"></div>
+      }
       <span class="user-meta">
         <span class="user-name">{{ displayName() }}</span>
         @if (user()?.name) {

@@ -53,6 +53,7 @@ export class ProfileService {
         name: p.name,
         email: p.email,
         companyName: p.companyName ?? undefined,
+        logoPath: p.logoPath ?? undefined,
       });
     }
   }

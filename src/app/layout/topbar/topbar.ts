@@ -15,6 +15,7 @@ import { LanguageService } from '../../core/config/language.service';
 import { TokenService } from '../../core/http/token.service';
 import { AuthService } from '../../core/http/auth.service';
 import { NotificationsComponent } from '../../shared/components/notifications/notifications';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'rl-topbar',
@@ -30,6 +31,7 @@ import { NotificationsComponent } from '../../shared/components/notifications/no
     TranslatePipe,
     TuiDropdownOpen,
     NotificationsComponent,
+    NgOptimizedImage,
   ],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',

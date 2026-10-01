@@ -6,4 +6,5 @@ export interface User {
   readonly email: string;
   readonly role: UserRole;
   readonly companyName?: string;
+  readonly logoPath?: string;
 }
