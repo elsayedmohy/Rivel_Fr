@@ -362,7 +362,8 @@
   "errors.logo.empty": "The file is empty.",
   "errors.logo.too_large": "The image size exceeds 2 MB.",
   "errors.logo.invalid_type": "The image must be in PNG, JPEG, or WebP format.",
-
+  "errors.phone.required": "Please add your phone number from Settings first so the other party can contact you after the offer is accepted.",
+  "errors.shipment.not_found": "Shipment not found.",
   "settings.profile.logo.upload": "Upload Logo",
   "settings.profile.logo.change": "Change Logo",
   "settings.profile.logo.remove": "Remove Logo",
@@ -394,6 +395,10 @@
   "auth.confirm.ok": "Your email is confirmed.",
   "auth.confirm.failed": "This confirmation link is invalid or expired. Request a new one from Settings.",
   "auth.confirm.continue": "Continue to Rivel",
+  "auth.register.phone": "Phone Number (Optional)",
+  "auth.register.phonePlaceholder": "01xxxxxxxxx",
+  "auth.register.phoneHint": "You will need to add your phone number before submitting or accepting an offer.",
+  "auth.validation.pattern": "Invalid format.",
   "carrier.rating": "Rating",
   "carrier.noRatings": "No ratings yet",
   "carrier.completed": "Completed shipments",
@@ -402,5 +407,6 @@
   "carrier.contactHint": "Contact details are shared after an offer is accepted.",
   "carrier.notFound": "Carrier not found.",
   "shipments.meta.contact": "Contact",
-  "shipments.meta.noPhone": "No phone number yet"
+  "shipments.meta.noPhone": "No phone number yet",
+  "shipments.contact.show": "Contact Information"
 }

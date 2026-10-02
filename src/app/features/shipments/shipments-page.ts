@@ -3,12 +3,12 @@ import { TuiButton, TuiDialogService, TuiIcon, TuiLoader } from '@taiga-ui/core'
 import { TuiButtonLoading } from '@taiga-ui/kit';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../core/config/language.service';
-import { toApiErrorResponse } from '../../core/http/api-error.util';
+import { apiErrorText, toApiErrorResponse } from '../../core/http/api-error.util';
 import { ShipmentService } from '../../core/http/shipment.service';
 import { TokenService } from '../../core/http/token.service';
 import { SHIPMENT_TRANSITIONS } from '../../models/enums';
 import type { ShipmentStatus } from '../../models/enums';
-import type { ShipmentDto } from '../../models/shipment/shipment';
+import type { ShipmentContactDto, ShipmentDto } from '../../models/shipment/shipment';
 import { RatingService } from '../../core/http/rating.service';
 import {
   RateCarrierData,
@@ -43,11 +43,38 @@ export class ShipmentsPage {
   private readonly ratings = inject(RatingService);
   protected readonly ratingId = signal<string | null>(null);
 
+  protected readonly contacts = signal<Record<string, ShipmentContactDto>>({});
+  protected readonly contactLoadingId = signal<string | null>(null);
+
   constructor() {
     this.reload();
   }
 
+  protected showContact(shipment: ShipmentDto): void {
+    if (this.contacts()[shipment.id] || this.contactLoadingId()) return;
 
+    this.contactLoadingId.set(shipment.id);
+    this.actionError.set(null);
+
+    this.service.getContact(shipment.id).subscribe({
+      next: (contact) => {
+        this.contacts.update((map) => ({ ...map, [shipment.id]: contact }));
+        this.contactLoadingId.set(null);
+      },
+      error: (err: unknown) => {
+        this.contactLoadingId.set(null);
+        this.actionError.set(apiErrorText(err, this.translate));
+      },
+    });
+  }
+
+  protected whatsappUrl(phone: string): string | null {
+    const digits = phone.replace(/\D/g, '');
+    if (phone.startsWith('+')) return `https://wa.me/${digits}`;
+    if (/^01[0125]\d{8}$/.test(digits)) return `https://wa.me/2${digits}`; // Egypt 01x → 201x
+    if (/^05\d{8}$/.test(digits)) return `https://wa.me/966${digits.slice(1)}`; // Saudi 05x → 9665x
+    return null; // unknown format: show the call link only
+  }
 
   protected rate(shipment: ShipmentDto): void {
     const data: RateCarrierData = {
@@ -88,7 +115,6 @@ export class ShipmentsPage {
   }
 
   private markRated(id: string, score: number | null): void {
-    // لو shipments عندك signal
     this.shipments.update((list) =>
       list.map((s) => (s.id === id ? { ...s, isRated: true, ratingScore: score } : s)),
     );

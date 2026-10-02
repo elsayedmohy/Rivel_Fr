@@ -17,7 +17,7 @@ import { startWith } from 'rxjs';
 import { AuthService } from '../../../core/http/auth.service';
 import type { ApiErrorResponse } from '../../../models/api/api-error';
 import type { RegisterDto } from '../../../models/auth/auth';
-import type { UserRole } from '../../../models/enums';
+import { PHONE_PATTERN, UserRole } from '../../../models/enums';
 
 @Component({
   selector: 'rl-register-page',
@@ -59,11 +59,18 @@ export class RegisterPage {
     }),
     role: new FormControl<UserRole>('CargoOwner', { nonNullable: true }),
     companyName: new FormControl('', { nonNullable: true }),
+    phoneNumber: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.pattern(PHONE_PATTERN)],
+    }),
   });
 
-  readonly isCarrier = toSignal(this.form.controls.role.valueChanges.pipe(startWith('CargoOwner' as UserRole)), {
-    initialValue: 'CargoOwner' as UserRole,
-  });
+  readonly isCarrier = toSignal(
+    this.form.controls.role.valueChanges.pipe(startWith('CargoOwner' as UserRole)),
+    {
+      initialValue: 'CargoOwner' as UserRole,
+    },
+  );
 
   readonly showPassword = signal(false);
   readonly submitting = signal(false);
@@ -76,9 +83,9 @@ export class RegisterPage {
     );
   }
 
-  fieldError(key: 'name' | 'email' | 'password' | 'companyName'): string | null {
+  fieldError(key: 'name' | 'email' | 'password' | 'companyName' | 'phoneNumber'): string | null {
     const control = this.form.controls[key];
-    if (control.touched &&  control.invalid && control.errors) {
+    if (control.touched && control.invalid && control.errors) {
       const firstKey = Object.keys(control.errors)[0];
       return this.translate.translate(`auth.validation.${firstKey}`)();
     }
@@ -105,6 +112,7 @@ export class RegisterPage {
       password: raw.password,
       role: raw.role,
       ...(raw.role === 'Carrier' ? { companyName: raw.companyName.trim() } : {}),
+      ...(raw.phoneNumber.trim() ? { phoneNumber: raw.phoneNumber.trim() } : {}),
     };
 
     this.authService.register(payload).subscribe({

@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import type { ShipmentDto, UpdateShipmentStatusDto } from '../../models/shipment/shipment';
+import type {
+  ShipmentContactDto,
+  ShipmentDto,
+  UpdateShipmentStatusDto,
+} from '../../models/shipment/shipment';
 import type { ShipmentStatus } from '../../models/enums';
 
 @Injectable({ providedIn: 'root' })
@@ -22,5 +26,10 @@ export class ShipmentService {
   updateStatus(id: string, newStatus: ShipmentStatus): Observable<ShipmentDto> {
     const payload: UpdateShipmentStatusDto = { newStatus };
     return this.api.patch<ShipmentDto>(`shipments/${id}/status`, payload);
+  }
+
+  /** GET /api/shipments/{id}/contact */
+  getContact(id: string): Observable<ShipmentContactDto> {
+    return this.api.get<ShipmentContactDto>(`shipments/${id}/contact`);
   }
 }

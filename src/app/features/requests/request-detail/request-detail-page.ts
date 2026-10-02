@@ -13,6 +13,7 @@ import type { CreateOfferDto, OfferDto } from '../../../models/offer/offer';
 import { VesselService } from '../../vessels/data/vessel.service';
 import { Vessel, VesselStatus, VESSEL_STATUS_KEY } from '../../vessels/data/vessel.model';
 import { ShipmentRequestStatus } from '../../../models/enums';
+import { apiErrorText } from '../../../core/http/api-error.util';
 
 @Component({
   selector: 'rl-request-detail-page',
@@ -155,7 +156,7 @@ export class RequestDetailPage {
       },
       error: (error: unknown) => {
         this.offerSubmitting.set(false);
-        this.offerError.set((error as { message?: string }).message ?? 'Unknown error');
+        this.offersError.set(apiErrorText(error, this.translate));
       },
     });
   }
@@ -174,7 +175,7 @@ export class RequestDetailPage {
       },
       error: (error: unknown) => {
         this.acceptingId.set(null);
-        this.offersError.set((error as { message?: string }).message ?? 'Unknown error');
+        this.offersError.set(apiErrorText(error, this.translate));
       },
     });
   }
@@ -210,7 +211,7 @@ export class RequestDetailPage {
         this.offersLoading.set(false);
       },
       error: (error: unknown) => {
-        this.offersError.set((error as { message?: string }).message ?? 'Unknown error');
+        this.offersError.set(apiErrorText(error, this.translate));
         this.offersLoading.set(false);
       },
     });

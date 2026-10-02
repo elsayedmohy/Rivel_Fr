@@ -20,6 +20,7 @@ import { BerthPickerComponent } from '../../carrier-routes/components/berth-pick
 import { NileBerth } from '../../carrier-routes/routes.model';
 import { NileBerthService } from '../../carrier-routes/data/nile-berth.service';
 import { AlertService } from '../../../core/services/alert.service';
+import { apiErrorText } from '../../../core/http/api-error.util';
 
 const SERVER_FIELD_KEYS: Record<
   string,
@@ -179,7 +180,7 @@ export class CreateRequestPage {
       },
       error: (error: ApiErrorResponse) => {
         this.submitting.set(false);
-        this.serverErrors.set(error);
+        this.error.set(apiErrorText(error, this.translate));
       },
     });
   }

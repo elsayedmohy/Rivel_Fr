@@ -25,11 +25,6 @@ export interface ChangePasswordDto {
   readonly newPassword: string;
 }
 
-export interface ContactDto {
-  readonly name: string;
-  readonly phoneNumber: string | null;
-  readonly email: string;
-}
 
 /** GET /api/carriers/{userId} — never contains phone/email */
 export interface CarrierPublicProfileDto {

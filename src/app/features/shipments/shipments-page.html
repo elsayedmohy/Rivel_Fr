@@ -5,7 +5,6 @@
       <p class="rl-page__subtitle">{{ 'shipments.subtitle' | translate }}</p>
     </div>
 
-    <!-- التحديث مش هو الإجراء الأساسي في الصفحة — زرار أيقونة هادي -->
     <button
       type="button"
       class="rl-icon-btn refresh"
@@ -42,7 +41,6 @@
   } @else {
     <p class="rl-eyebrow count">{{ shipments().length }}</p>
 
-    <!-- ⚠️ راجع الأسماء دي على الـ enum بتاع ShipmentStatus في الباك -->
     @let steps = ['Matched', 'PickedUp', 'InTransit', 'Delivered'];
 
     <ul class="list">
@@ -67,7 +65,6 @@
             </span>
           </div>
 
-          <!-- ٢. مراحل الشحنة -->
           @if (at >= 0) {
             <ol class="steps" [attr.aria-label]="statusLabel(shipment.shipmentStatus)">
               @for (step of steps; track step; let i = $index) {
@@ -84,7 +81,6 @@
             </ol>
           }
 
-          <!-- ٣. الأرقام — الطرف التاني بس، مش إنت -->
           <dl class="ledger">
             <div class="ledger__cell">
               <dt>{{ 'shipments.meta.weight' | translate }}</dt>
@@ -111,23 +107,37 @@
                 <dd>{{ shipment.carrierCompanyName }}</dd>
               }
             </div>
-            @if (shipment.counterpart; as c) {
-              <div class="ledger__cell">
-                <dt>{{ 'shipments.meta.contact' | translate }}</dt>
-                <dd>
+            <div class="ledger__cell ledger__cell--contact">
+              <dt>{{ 'shipments.meta.contact' | translate }}</dt>
+              <dd>
+                @if (contacts()[shipment.id]; as c) {
                   @if (c.phoneNumber) {
                     <a class="rl-link" dir="ltr" [href]="'tel:' + c.phoneNumber">{{ c.phoneNumber }}</a>
+                    @if (whatsappUrl(c.phoneNumber); as wa) {
+                      · <a class="rl-link" [href]="wa" target="_blank" rel="noopener">WhatsApp</a>
+                    }
                   } @else {
                     {{ 'shipments.meta.noPhone' | translate }}
                   }
                   <br />
-                  <a class="rl-link" [href]="'mailto:' + c.email">{{ c.email }}</a>
-                </dd>
-              </div>
-            }
+                  <a class="rl-link" dir="ltr" [href]="'mailto:' + c.email">{{ c.email }}</a>
+                } @else {
+                  <button
+                    tuiButton
+                    appearance="secondary"
+                    size="s"
+                    type="button"
+                    iconStart="@tui.phone"
+                    [loading]="contactLoadingId() === shipment.id"
+                    (click)="showContact(shipment)"
+                  >
+                    {{ 'shipments.contact.show' | translate }}
+                  </button>
+                }
+              </dd>
+            </div>
           </dl>
 
-          <!-- ٤. الخطوة الجاية — للناقل بس -->
           @if (isCarrier() && nextStatus(shipment); as next) {
             <div class="shipment__foot">
               <button
@@ -144,7 +154,6 @@
             </div>
           }
 
-          <!-- ٥. التقييم — صاحب الشحنة بعد التسليم بس -->
           @if (!isCarrier() && done) {
             <div class="shipment__foot">
               @if (shipment.isRated) {

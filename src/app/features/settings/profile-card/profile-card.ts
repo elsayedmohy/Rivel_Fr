@@ -6,6 +6,7 @@ import { ProfileService } from '../../../core/http/profile.service';
 import { NgOptimizedImage } from '@angular/common';
 import { TuiButton } from '@taiga-ui/core';
 import { TuiAvatar } from '@taiga-ui/kit';
+import { PHONE_PATTERN } from '../../../models/enums';
 
 @Component({
   selector: 'rl-profile-card',
@@ -40,7 +41,7 @@ export class ProfileCard {
     }),
     phoneNumber: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.pattern(/^\+?[0-9\s-]{7,20}$/)],
+      validators: [Validators.pattern(PHONE_PATTERN)],
     }),
     companyName: new FormControl('', {
       nonNullable: true,

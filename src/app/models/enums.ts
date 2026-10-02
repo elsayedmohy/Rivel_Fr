@@ -57,10 +57,8 @@ export const SHIPMENT_TRANSITIONS: Record<ShipmentStatus, ShipmentStatus | null>
   Delivered: null,
 };
 
-/**
- * Suggested cargo types for the UI. The backend accepts free text, so the
- * field stays a plain string — these values are only a convenience list.
- */
+export const PHONE_PATTERN = /^\+?[0-9٠-٩۰-۹\s-]{7,20}$/;
+
 export const CARGO_TYPES = ['General', 'Food', 'Agricultural', 'Construction', 'Liquid', 'Other'] as const;
 
 export enum BerthType {

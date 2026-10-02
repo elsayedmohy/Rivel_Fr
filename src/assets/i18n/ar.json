@@ -360,6 +360,8 @@
   "errors.logo.empty": "الملف فارغ.",
   "errors.logo.too_large": "حجم الصورة أكبر من ٢ ميجابايت.",
   "errors.logo.invalid_type": "يجب أن تكون الصورة بصيغة PNG أو JPEG أو WebP.",
+  "errors.phone.required": "أضف رقم موبايلك من الإعدادات الأول، عشان الطرف التاني يقدر يتواصل معاك بعد قبول العرض",
+  "errors.shipment.not_found": "الشحنة دي مش موجودة",
 
   "settings.profile.logo.upload": "رفع الشعار",
   "settings.profile.logo.change": "تغيير الشعار",
@@ -392,6 +394,10 @@
   "auth.confirm.ok": "الإيميل اتأكد.",
   "auth.confirm.failed": "لينك التأكيد غلط أو انتهت صلاحيته. اطلب واحد جديد من الإعدادات.",
   "auth.confirm.continue": "كمّل على رِفل",
+  "auth.register.phone": "رقم الموبايل (اختياري)",
+  "auth.register.phonePlaceholder": "01xxxxxxxxx",
+  "auth.register.phoneHint": "هتحتاجه قبل ما تقدّم عرض أو تقبل عرض",
+  "auth.validation.pattern": "الصيغة مش صحيحة",
   "carrier.rating": "التقييم",
   "carrier.noRatings": "لسه مفيش تقييمات",
   "carrier.completed": "شحنات مكتملة",
@@ -400,5 +406,6 @@
   "carrier.contactHint": "بيانات التواصل بتظهر بعد قبول العرض.",
   "carrier.notFound": "الناقل مش موجود.",
   "shipments.meta.contact": "التواصل",
-  "shipments.meta.noPhone": "لسه مفيش رقم تليفون"
+  "shipments.meta.noPhone": "لسه مفيش رقم تليفون",
+  "shipments.contact.show": "بيانات التواصل"
 }

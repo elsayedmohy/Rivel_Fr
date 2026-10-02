@@ -35,6 +35,18 @@
       </div>
 
       <div class="field">
+        <tui-textfield [invalid]="!!fieldError('phoneNumber')" tuiTextfieldSize="l">
+          <label tuiLabel>{{ 'auth.register.phone' | translate }}</label>
+          <input tuiInput formControlName="phoneNumber" type="tel" dir="ltr" autocomplete="tel"
+                 [placeholder]="'auth.register.phonePlaceholder' | translate" />
+        </tui-textfield>
+        <p class="hint">{{ 'auth.register.phoneHint' | translate }}</p>
+        @if (fieldError('phoneNumber'); as message) {
+          <tui-error [error]="message" />
+        }
+      </div>
+
+      <div class="field">
         <tui-textfield [invalid]="!!fieldError('password')" tuiTextfieldSize="l">
           <label tuiLabel>{{ 'auth.register.password' | translate }}</label>
           <input
